@@ -1,0 +1,30 @@
+<canvas id="the-canvas" width="1000" height="400"></canvas>
+<input id="range" type="range" min="0" max="1" step="0.01" />
+
+<style>
+	body {
+		text-align: center;
+	}
+	#the-canvas {
+		display: block;
+		margin: 200px auto;
+		background: black;
+		border: 1px solid white;
+	}
+	#range {
+		width: 300px;
+	}
+</style>
+
+<script src="siriwave.js"></script>
+<script>
+
+	var s = new SiriWave({ id: 'the-canvas' });
+	s.setNoise(1);
+	s.start();
+
+	document.getElementById('range').addEventListener('change', function(e){
+		s.setNoise(document.getElementById('range').value);
+	});
+
+</script>
