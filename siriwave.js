@@ -7,7 +7,6 @@ function SiriWave(opt){
 	this.K = 2;
 	this.F = 6;
 
-	this.background = '#000';
 	this.color = '#FFF';
 
 	this.canvas = document.getElementById(opt.id);
@@ -16,7 +15,7 @@ function SiriWave(opt){
 	this.width = this.canvas.width;
 	this.height = this.canvas.height;
 
-	this.MAX = this.height/2;
+	this.MAX = (this.height/2)-4;
 	this.run = false;
 }
 
@@ -41,8 +40,9 @@ SiriWave.prototype = {
 	},
 
 	_clear: function(){
-		this.ctx.fillStyle = this.background;
-		this.ctx.fillRect(0,0,this.width,this.height);
+		this.ctx.globalCompositeOperation = 'destination-out';
+		this.ctx.fillRect(0, 0, this.width, this.height);
+		this.ctx.globalCompositeOperation = 'source-over';
 	},
 
 	_draw: function(){
@@ -50,11 +50,11 @@ SiriWave.prototype = {
 
 		this.phase = (this.phase+this.speed)%(Math.PI*64);
 		this._clear();
-		this._drawLine(-2, '#111');
-		this._drawLine(-6, '#222');
-		this._drawLine(4, '#444');
-		this._drawLine(2, '#888');
-		this._drawLine(1, '#FFF', 3);
+		this._drawLine(-2, 'rgba(255,255,255,0.1)');
+		this._drawLine(-6, 'rgba(255,255,255,0.2)');
+		this._drawLine(4, 'rgba(255,255,255,0.4)');
+		this._drawLine(2, 'rgba(255,255,255,0.6)');
+		this._drawLine(1, 'rgba(255,255,255,1)', 1.5);
 
 		requestAnimationFrame(this._draw.bind(this), 1000);
 	},
@@ -71,7 +71,11 @@ SiriWave.prototype = {
 	},
 
 	setNoise: function(v){
-		this.noise = v*this.MAX;
+		this.noise = Math.min(v, 1)*this.MAX;
+	},
+
+	setSpeed: function(v){
+		this.speed = v;
 	}
 
 };
