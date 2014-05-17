@@ -1,21 +1,25 @@
 function SiriWave(opt){
-	this.opt = opt;
-	this.speed = this.opt.speed || 0.1;
-	this.noise = this.opt.noise || 0;
+	this.opt = opt || {};
 
-	this.phase = 0;
 	this.K = 2;
 	this.F = 6;
+	this.speed = this.opt.speed || 0.1;
+	this.noise = this.opt.noise || 0;
+	this.phase = this.opt.phase || 0;
 
-	this.color = '#FFF';
+	if (!devicePixelRatio) devicePixelRatio = 1;
+	this.width = devicePixelRatio * (this.opt.width || 320);
+	this.height = devicePixelRatio * (this.opt.height || 100);
+	this.MAX = (this.height/2)-4;
 
-	this.canvas = document.getElementById(opt.id);
+	this.canvas = document.createElement('canvas');
+	this.canvas.width = this.width;
+	this.canvas.height = this.height;
+	this.canvas.style.width = (this.width/devicePixelRatio)+'px';
+	this.canvas.style.height = (this.height/devicePixelRatio)+'px';
+	(this.opt.container || document.body).appendChild(this.canvas);
 	this.ctx = this.canvas.getContext('2d');
 
-	this.width = this.canvas.width;
-	this.height = this.canvas.height;
-
-	this.MAX = (this.height/2)-4;
 	this.run = false;
 }
 
@@ -76,6 +80,11 @@ SiriWave.prototype = {
 
 	setSpeed: function(v){
 		this.speed = v;
+	},
+
+	set: function(noise, speed) {
+		this.setNoise(noise);
+		this.setSpeed(speed);
 	}
 
 };
