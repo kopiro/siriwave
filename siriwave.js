@@ -3,9 +3,9 @@ function SiriWave(opt){
 
 	this.K = 2;
 	this.F = 6;
-	this.speed = this.opt.speed || 0.1;
-	this.noise = this.opt.noise || 0;
-	this.phase = this.opt.phase || 0;
+	this.speed = 0.1;
+	this.noise = 0;
+	this.phase = 0;
 
 	if (!devicePixelRatio) devicePixelRatio = 1;
 	this.width = devicePixelRatio * (this.opt.width || 320);
@@ -70,8 +70,10 @@ SiriWave.prototype = {
 	},
 
 	stop: function(){
+		this.speed = 0;
+		this.phase = 0;
+		this.noise = 0;
 		this.run = false;
-		this._clear();
 	},
 
 	setNoise: function(v){
