@@ -7,15 +7,22 @@ https://github.com/CaffeinaLab/SiriWaveJS
 
 */
 
-
 function SiriWave(opt){
 	this.opt = opt || {};
 
 	this.K = 2;
 	this.F = 6;
-	this.speed = 0.1;
-	this.noise = 0;
 	this.phase = 0;
+
+	this.speed = opt.speed || 0.1;
+	this.noise = opt.noise || 1;
+
+	this.color = (function hex2rgb(hex){
+		var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+		hex = hex.replace(shorthandRegex, function(m,r,g,b) { return r + r + g + g + b + b; });
+    	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+		return result ? parseInt(result[1], 16)+','+parseInt(result[2], 16)+','+parseInt(result[3], 16) : null;
+	})(opt.color) || '255,255,255';
 
 	var ratio = opt.ratio ? opt.ratio : ( window.devicePixelRatio ? window.devicePixelRatio : 1 );
 	this.width = ratio * (this.opt.width || 320);
@@ -65,11 +72,11 @@ SiriWave.prototype = {
 
 		this.phase = (this.phase+this.speed)%(Math.PI*64);
 		this._clear();
-		this._drawLine(-2, 'rgba(255,255,255,0.1)');
-		this._drawLine(-6, 'rgba(255,255,255,0.2)');
-		this._drawLine(4, 'rgba(255,255,255,0.4)');
-		this._drawLine(2, 'rgba(255,255,255,0.6)');
-		this._drawLine(1, 'rgba(255,255,255,1)', 1.5);
+		this._drawLine(-2, 'rgba('+this.color+',0.1)');
+		this._drawLine(-6, 'rgba('+this.color+',0.2)');
+		this._drawLine(4, 'rgba('+this.color+',0.4)');
+		this._drawLine(2, 'rgba('+this.color+',0.6)');
+		this._drawLine(1, 'rgba('+this.color+',1)', 1.5);
 
 		window.requestAnimationFrame(this._draw.bind(this), 1000);
 	},
