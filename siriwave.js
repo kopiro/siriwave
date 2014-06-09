@@ -1,3 +1,13 @@
+/*
+
+SiriWave JS
+Have you ever thought on how to get the Siri wave effect on your website or mobile app? SiriWaveJS is a library that easily allows you to get this effect.
+
+https://github.com/CaffeinaLab/SiriWaveJS
+
+*/
+
+
 function SiriWave(opt){
 	this.opt = opt || {};
 
@@ -7,16 +17,17 @@ function SiriWave(opt){
 	this.noise = 0;
 	this.phase = 0;
 
-	if (!devicePixelRatio) devicePixelRatio = 1;
-	this.width = devicePixelRatio * (this.opt.width || 320);
-	this.height = devicePixelRatio * (this.opt.height || 100);
+	var ratio = opt.ratio ? opt.ratio : ( window.devicePixelRatio ? window.devicePixelRatio : 1 );
+	this.width = ratio * (this.opt.width || 320);
+	this.height = ratio * (this.opt.height || 100);
 	this.MAX = (this.height/2)-4;
 
 	this.canvas = document.createElement('canvas');
 	this.canvas.width = this.width;
 	this.canvas.height = this.height;
-	this.canvas.style.width = (this.width/devicePixelRatio)+'px';
-	this.canvas.style.height = (this.height/devicePixelRatio)+'px';
+	this.canvas.style.width = (this.width/ratio)+'px';
+	this.canvas.style.height = (this.height/ratio)+'px';
+
 	(this.opt.container || document.body).appendChild(this.canvas);
 	this.ctx = this.canvas.getContext('2d');
 
@@ -60,7 +71,7 @@ SiriWave.prototype = {
 		this._drawLine(2, 'rgba(255,255,255,0.6)');
 		this._drawLine(1, 'rgba(255,255,255,1)', 1.5);
 
-		requestAnimationFrame(this._draw.bind(this), 1000);
+		window.requestAnimationFrame(this._draw.bind(this), 1000);
 	},
 
 	start: function(){
