@@ -40,3 +40,7 @@ s.start();
 ```javascript
 s.stop();
 ```
+
+## Some math
+
+![image](https://cloud.githubusercontent.com/assets/839700/3263201/224d98ec-f26f-11e3-971c-1e87f66a212f.JPG)
