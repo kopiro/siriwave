@@ -44,6 +44,8 @@ function SiriWave(opt){
 }
 
 SiriWave.prototype = {
+	
+	_fastSin: function(X){ return 1.2732395*X+((X>0)?-1:1)*-0.40528473*X*X; },
 
 	_globalAttenuationFn: function(x){
 		return Math.pow(this.K*4/(this.K*4+Math.pow(x,4)),this.K*2);
@@ -57,7 +59,7 @@ SiriWave.prototype = {
 		var x, y;
 		for (var i=-this.K; i<=this.K; i+=0.01) {
 			x = this.width*((i+this.K)/(this.K*2));
-			y = this.height/2 + this.noise * this._globalAttenuationFn(i) * (1/attenuation) * Math.sin(this.F*i-this.phase);
+			y = this.height/2 + this.noise * this._globalAttenuationFn(i) * (1/attenuation) * this._fastSin(this.F*i-this.phase);
 			this.ctx.lineTo(x, y);
 		}
 		this.ctx.stroke();
