@@ -11,6 +11,8 @@ function SiriWave(opt){
 	this.opt = opt || {};
 
 	this.K = 2;
+	this.K2 = 2*this.K;
+	this.K4 = 2*this.K2;
 	this.F = 6;
 	this.phase = 0;
 
@@ -29,7 +31,9 @@ function SiriWave(opt){
 	var ratio = opt.ratio ? opt.ratio : ( window.devicePixelRatio ? window.devicePixelRatio : 1 );
 	this.width = ratio * (this.opt.width || 320);
 	this.height = ratio * (this.opt.height || 100);
-	this.MAX = (this.height/2)-4;
+	this.height_2 = this.height/2;
+	this.MAX = (this.height_2)-4;
+	this.PI64 = Math.PI*64;
 
 	this.canvas = document.createElement('canvas');
 	this.canvas.width = this.width;
@@ -48,7 +52,7 @@ SiriWave.prototype = {
 	_fastSin: function(X){ return 1.2732395*X+((X>0)?-1:1)*-0.40528473*X*X; },
 
 	_globalAttenuationFn: function(x){
-		return Math.pow(this.K*4/(this.K*4+Math.pow(x,4)),this.K*2);
+		return Math.pow(this.K4/(this.K4+x*x*x*x),this.K2);
 	},
 
 	_drawLine: function(attenuation, color, width){
@@ -56,10 +60,10 @@ SiriWave.prototype = {
 		this.ctx.beginPath();
 		this.ctx.strokeStyle = color;
 		this.ctx.lineWidth = width || 1;
-		var x, y;
+		var x, y, inv_attenuation = 1/attenuation;
 		for (var i=-this.K; i<=this.K; i+=0.01) {
-			x = this.width*((i+this.K)/(this.K*2));
-			y = this.height/2 + this.noise * this._globalAttenuationFn(i) * (1/attenuation) * this._fastSin(this.F*i-this.phase);
+			x = this.width*((i+this.K)/(this.K2));
+			y = this.height_2 + this.noise * this._globalAttenuationFn(i) * inv_attenuation * this._fastSin(this.F*i-this.phase);
 			this.ctx.lineTo(x, y);
 		}
 		this.ctx.stroke();
@@ -74,7 +78,7 @@ SiriWave.prototype = {
 	_draw: function(){
 		if (!this.run) return;
 
-		this.phase = (this.phase+this.speed)%(Math.PI*64);
+		this.phase = (this.phase+this.speed)%(this.PI64);
 		this._clear();
 		this._drawLine(-2, 'rgba('+this.color+',0.1)');
 		this._drawLine(-6, 'rgba('+this.color+',0.2)');
