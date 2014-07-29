@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  background: #555;
+  color: #fff;
+  text-align: center;
+  font-family: monospace;;
+}
+#siri {
+  display: block;
+  margin: 0 auto;
+  background: black;
+}
+input {
+  width: 640px;
+}
+</style>
+<body>
+  <div id="siri" style=" width: 640px; height: 200px; "></div>
+
+  <p>Amplitude [0...1]</p>
+  <input type="range" id="range" min="0" max="1" step="0.01" value="1" />
+
+  <p>Speed [0...PI]</p>
+  <input type="range" id="speed" min="0" max="3.14" step="0.01" value="0.2" />
+
+  <p>Frequency</p>
+  <input type="range" id="f" min="0" max="40" step="1" value="2" />
+
+  <script src="../siriwave.js"></script>
+
+  <script>
+    var SW = new SiriWave({
+      width: 640,
+      height: 200,
+      color: '#fff',
+      container: document.getElementById('siri')
+    });
+    SW.setSpeed(0.2);
+    SW.setNoise(1);
+    SW.start();
+
+    var range = document.getElementById('range');
+    range.addEventListener('input', function(){
+      SW.setNoise(+range.value);
+    });
+
+    var speed = document.getElementById('speed');
+    speed.addEventListener('input', function(){
+      SW.setSpeed(+speed.value);
+    });
+
+    var F = document.getElementById('f');
+    F.addEventListener('input', function(){
+      SW.F = +F.value;
+    });
+  </script>
+
+</body>
+
+</html>
