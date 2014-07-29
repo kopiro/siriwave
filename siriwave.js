@@ -13,6 +13,7 @@ function SiriWave(opt){
 	this.K = 2;
 	this.K2 = 2*this.K;
 	this.K4 = 2*this.K2;
+        this.K_K2 = this.K / this.K2;
 	this.F = 6;
 	this.phase = 0;
 
@@ -34,6 +35,9 @@ function SiriWave(opt){
 	this.height_2 = this.height/2;
 	this.MAX = (this.height_2)-4;
 	this.PI64 = Math.PI*64;
+  
+        this.width_K2 = this.width/this.K2;
+        this.width_K_K2 = this.width*this.K_K2;
 
 	this.canvas = document.createElement('canvas');
 	this.canvas.width = this.width;
@@ -45,27 +49,42 @@ function SiriWave(opt){
 	this.ctx = this.canvas.getContext('2d');
 
 	this.run = false;
+  
+	// Memoize globalAttenuationFn
+	this._globalAttenuationFn = function(x) {
+	   this._GATF_cache = this._GATF_cache || {};
+	   if (!this._GATF_cache[x]) {
+	       var result = Math.pow(this.K4/(this.K4+x*x*x*x),this.K2);
+	       this._GATF_cache[x] = result;
+	   }
+	   return this._GATF_cache[x];
+	};
+	
+	// Memoize XPOS
+	this._xpos = function(i) {
+	   this._XPOS_cache = this._XPOS_cache || {};
+	   if (!this._XPOS_cache[i]) {
+	       var result = this.width_K_K2 + i*this.width_K2;
+	       this._XPOS_cache[i] = result;
+	   }
+	   return this._XPOS_cache[i];
+	};
+  
 }
 
 SiriWave.prototype = {
-	
-	_fastSin: function(X){ return 1.2732395*X+((X>0)?-1:1)*-0.40528473*X*X; },
-
-	_globalAttenuationFn: function(x){
-		return Math.pow(this.K4/(this.K4+x*x*x*x),this.K2);
-	},
 
 	_drawLine: function(attenuation, color, width){
 		this.ctx.moveTo(0,0);
 		this.ctx.beginPath();
 		this.ctx.strokeStyle = color;
 		this.ctx.lineWidth = width || 1;
-		var x, y, inv_attenuation = 1/attenuation;
-		for (var i=-this.K; i<=this.K; i+=0.01) {
-			x = this.width*((i+this.K)/(this.K2));
-			y = this.height_2 + this.noise * this._globalAttenuationFn(i) * inv_attenuation * this._fastSin(this.F*i-this.phase);
-			this.ctx.lineTo(x, y);
-		}
+		var noise_attenuation = this.noise/attenuation;
+		var i=-this.K-0.01;
+		while ((i+=0.01)<=this.K) this.ctx.lineTo(
+		  this._xpos(i),
+		  this.height_2 + this._globalAttenuationFn(i) * noise_attenuation * Math.sin(this.F*i-this.phase)
+		);
 		this.ctx.stroke();
 	},
 
