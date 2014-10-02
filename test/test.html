@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<style>
+		body {
+			font-family: 'Helvetica Neue', sans-serif;
+			font-weight: 200;
+			background: #000;
+			text-align: center;
+		}
+		a {
+			color: #fff;
+		}
+		canvas {
+			display: block;
+			position: fixed;
+			top: 20px;
+			left: 0;
+			z-index: -1;
+		}
+		#panel {
+			color: #fff;
+			font-size: 14px;
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			padding: 10px;
+			background: rgba(255,255,255,.2);
+		}
+		input {
+			display: block;
+			margin: 0 auto;
+			width: 200px;
+			margin-bottom: 20px;
+		}
+	</style>
+	<body>
+
+		<div id="panel">
+			<div class="panelsec">
+				<div>Amplitude [0...1] <b id="amplitude-val">1</b></div>
+				<input type="range" id="amplitude" min="0" max="1" step="0.01" value="1" />
+			</div>
+			<div class="panelsec">
+				<div>Speed [0...1] <b id="speed-val">0.2</b></div>
+				<input type="range" id="speed" min="0" max="1" step="0.01" value="0.1" />
+			</div>
+			<div class="panelsec">
+				<div>Frequency [0...N] <b id="frequency-val">6</b></div>
+				<input type="range" id="frequency" min="0" max="628" step="0.1" value="6" />
+			</div>
+			<h3><a href="https://github.com/CaffeinaLab/SiriWaveJS">GitHub Repository</a></h3>
+		</div>
+
+		<script src="../siriwave.js"></script>
+		<script>
+			var SW = new SiriWave({
+				width: window.innerWidth,
+				height: window.innerHeight - 40,
+				color: '#fff',
+				frequency: 6,
+				speed: 0.1,
+				amplitude: 1,
+				autostart: true,
+			});
+			['amplitude','speed','frequency'].forEach(function(p){
+				document.getElementById(p).addEventListener('input', function(){
+					document.getElementById(p+'-val').innerText = this.value;
+					SW[p] = +this.value;
+				});
+			});
+		</script>
+
+	</body>
+	</html>

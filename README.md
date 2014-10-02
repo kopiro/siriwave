@@ -1,6 +1,6 @@
 # SiriWaveJS
 
-Have you ever thought on how to get the Siri wave effect on your website or mobile app? 
+Have you ever thought on how to get the Siri wave effect on your website or mobile app?
 
 SiriWaveJS is a library that *easily* allows  you to get this effect.
 
@@ -19,9 +19,7 @@ SiriWaveJS is a library that *easily* allows  you to get this effect.
 var siriWave = new SiriWave({
 	container: document.getElementById('siri-container'),
 	width: 640,
-	height: 200,
-	speed: 0.5,
-	noise: 0.5
+	height: 200
 });
 </script>
 ```
@@ -32,11 +30,15 @@ var siriWave = new SiriWave({
 
 The DOM container where the `canvas` to draw the wave is added.
 
-#### `[speed]` (Number, from `0` to N, default: `0.1`)
+#### `[speed]` (Number, from `0` to `1`, default: `0.1`)
 
 The speed of the wave.
 
-#### `[noise]` (Number, from `0` to `1`, default: `1`)
+#### `[amplitude]` (Number, from `0` to `1`, default: `1`)
+
+The noise (amplitude) of the wave.
+
+#### `[frequency]` (Number, from `0` to `N`, default: `1`)
 
 The noise (amplitude) of the wave.
 
@@ -45,12 +47,6 @@ The noise (amplitude) of the wave.
 The color of the wave, in hexadecimal form (`#336699`, `#FF0`)
 
 ## API
-
-#### `setNoise([ 0...1 ])`
-Set the noise of the wave at runtime.
-
-#### `setNoise([ 0...N ])`
-Set the speed of the wave at runtime
 
 #### `start()`
 Start the animation
