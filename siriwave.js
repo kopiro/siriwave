@@ -1,25 +1,15 @@
-/*
-
-SiriWave JS
-Have you ever thought on how to get the Siri wave effect on your website or mobile app? SiriWaveJS is a library that easily allows you to get this effect.
-
-https://github.com/CaffeinaLab/SiriWaveJS
-
-*/
-
 function SiriWave(opt){
 	this.opt = opt || {};
 
 	this.K = 2;
-	this.K2 = 2*this.K;
-	this.K4 = 2*this.K2;
+	this.K2 = 2 * this.K;
+	this.K4 = 2 * this.K2;
 	this.K_K2 = this.K / this.K2;
 	this.F = 6;
 	this.phase = 0;
 
 	this.speed = opt.speed || 0.1;
 	this.noise = opt.noise || 1;
-
 	this.color = (function hex2rgb(hex){
 		var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
 		hex = hex.replace(shorthandRegex, function(m,r,g,b) { return r + r + g + g + b + b; });
@@ -29,12 +19,12 @@ function SiriWave(opt){
 		: null;
 	})(opt.color || '#fff') || '255,255,255';
 
-	var ratio = opt.ratio ? opt.ratio : ( window.devicePixelRatio ? window.devicePixelRatio : 1 );
+	var ratio = opt.ratio || window.devicePixelRatio || 1;
 	this.width = ratio * (this.opt.width || 320);
 	this.height = ratio * (this.opt.height || 100);
-	this.height_2 = this.height/2;
-	this.MAX = (this.height_2)-4;
-	this.PI64 = Math.PI*64;
+	this.height_2 = this.height / 2;
+	this.MAX = (this.height_2) - 4;
+	this.PI64 = Math.PI * 64;
 
 	this.width_K2 = this.width/this.K2;
 	this.width_K_K2 = this.width*this.K_K2;
@@ -42,8 +32,8 @@ function SiriWave(opt){
 	this.canvas = document.createElement('canvas');
 	this.canvas.width = this.width;
 	this.canvas.height = this.height;
-	this.canvas.style.width = (this.width/ratio)+'px';
-	this.canvas.style.height = (this.height/ratio)+'px';
+	this.canvas.style.width = (this.width / ratio) + 'px';
+	this.canvas.style.height = (this.height / ratio) + 'px';
 
 	(this.opt.container || document.body).appendChild(this.canvas);
 	this.ctx = this.canvas.getContext('2d');
@@ -54,7 +44,7 @@ function SiriWave(opt){
 	this._globalAttenuationFn = function(x) {
 		this._GATF_cache = this._GATF_cache || {};
 		if (!this._GATF_cache[x]) {
-			var result = Math.pow(this.K4/(this.K4+x*x*x*x),this.K2);
+			var result = Math.pow(this.K4/(this.K4 + x*x*x*x),this.K2);
 			this._GATF_cache[x] = result;
 		}
 		return this._GATF_cache[x];
@@ -79,12 +69,12 @@ SiriWave.prototype = {
 		this.ctx.beginPath();
 		this.ctx.strokeStyle = color;
 		this.ctx.lineWidth = width || 1;
-		var noise_attenuation = this.noise/attenuation;
-		var i=-this.K-0.01;
-		while ((i+=0.01)<=this.K) {
+		var noise_attenuation = this.noise / attenuation;
+		var i = -this.K - 0.01;
+		while ((i+=0.01) <= this.K)
 			this.ctx.lineTo(
-			this._xpos(i),
-			this.height_2 + this._globalAttenuationFn(i) * noise_attenuation * Math.sin(this.F*i-this.phase)
+				this._xpos(i),
+				this.height_2 + this._globalAttenuationFn(i) * noise_attenuation * Math.sin(this.F*i-this.phase)
 			);
 		}
 		this.ctx.stroke();
@@ -97,7 +87,7 @@ SiriWave.prototype = {
 	},
 
 	_draw: function(){
-		if (!this.run) return;
+		if (this.run === false) return;
 
 		this.phase = (this.phase+this.speed)%(this.PI64);
 		this._clear();
@@ -109,6 +99,8 @@ SiriWave.prototype = {
 
 		window.requestAnimationFrame(this._draw.bind(this), 1000);
 	},
+	
+	/* API */
 
 	start: function(){
 		this.phase = 0;
@@ -124,7 +116,7 @@ SiriWave.prototype = {
 	},
 
 	setNoise: function(v){
-		this.noise = Math.min(v, 1)*this.MAX;
+		this.noise = Math.min(v, 1) * this.MAX;
 	},
 
 	setSpeed: function(v){
