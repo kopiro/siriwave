@@ -12,11 +12,16 @@ SiriWaveJS is a library that *easily* allows  you to get this effect.
 
 ## Usage
 
-```javascript
-var s = new SiriWave({
-	container: document.getElementById('your-div'),
+```html
+<div id="siri-container"></div>
+<script src="/path/to/your/siriwave.js"></script>
+<script>
+var siriWave = new SiriWave({
+	container: document.getElementById('siri-container'),
 	width: 640,
-	height: 200
+	height: 200,
+	speed: 0.5,
+	noise: 0.5
 });
 ```
 
