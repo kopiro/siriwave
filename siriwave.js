@@ -71,7 +71,7 @@ SiriWave.prototype = {
 		this.ctx.lineWidth = width || 1;
 		var noise_attenuation = this.noise / attenuation;
 		var i = -this.K - 0.01;
-		while ((i+=0.01) <= this.K)
+		while ((i+=0.01) <= this.K) {
 			this.ctx.lineTo(
 				this._xpos(i),
 				this.height_2 + this._globalAttenuationFn(i) * noise_attenuation * Math.sin(this.F*i-this.phase)
