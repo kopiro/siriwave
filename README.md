@@ -23,6 +23,7 @@ var siriWave = new SiriWave({
 	speed: 0.5,
 	noise: 0.5
 });
+</script>
 ```
 
 ## Constructor options
