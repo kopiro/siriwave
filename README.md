@@ -43,10 +43,10 @@ The color of the wave, in hexadecimal form (`#336699`, `#FF0`)
 #### `setNoise([ 0...1 ])`
 Set the noise of the wave at runtime.
 
-### `setNoise([ 0...N ])`
+#### `setNoise([ 0...N ])`
 Set the speed of the wave at runtime
 
-### `start()`
+#### `start()`
 Start the animation
 
 #### `stop()`
