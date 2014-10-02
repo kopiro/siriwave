@@ -1,19 +1,16 @@
 # SiriWaveJS
 
-Have you ever thought on how to get the Siri wave effect on your website or mobile app? SiriWaveJS is a library that *easily* allows  you to get this effect.
+Have you ever thought on how to get the Siri wave effect on your website or mobile app? 
+
+SiriWaveJS is a library that *easily* allows  you to get this effect.
 
 **Embed the script... and Surf!**
 
 ![image](http://f.cl.ly/items/2q0I101D2t0p0W1Y0215/SWave.gif)
 
-### [Live CodePen Example](http://cdpn.io/yfegd)
+#### [See the live CodePen Example](http://cdpn.io/yfegd)
 
-## Projects/examples that uses this script
-
-* [The Capitol - The Official Government of Panem (Hunger Games Mockingjay Part 1 website)](http://www.thecapitol.pn/)
-* [http://blog.kidliaa.com/demo/siri%20wave/](http://blog.kidliaa.com/demo/siri%20wave/ )
-
-### Add the canvas to a container
+## Usage
 
 ```javascript
 var s = new SiriWave({
@@ -23,29 +20,42 @@ var s = new SiriWave({
 });
 ```
 
-### Set the noise
+## Constructor options
 
-```javascript
-s.setNoise([ 0...1 ])
-```
+#### `canvas` (DOM Object, default: `document.body`)
 
-### Set the speed
+The DOM container where the `canvas` to draw the wave is added.
 
-```javascript
-s.setSpeed(0.4);
-```
+#### `[speed]` (Number, from `0` to N, default: `0.1`)
 
-### Start the animation
+The speed of the wave.
 
-```javascript
-s.start();
-```
+#### `[noise]` (Number, from `0` to `1`, default: `1`)
 
-### Stop the animation
+The noise (amplitude) of the wave.
 
-```javascript
-s.stop();
-```
+#### `[color]` (String, Color, default: `#fff')
+
+The color of the wave, in hexadecimal form (`#336699`, `#FF0`)
+
+## API
+
+#### `setNoise([ 0...1 ])`
+Set the noise of the wave at runtime.
+
+### `setNoise([ 0...N ])`
+Set the speed of the wave at runtime
+
+### `start()`
+Start the animation
+
+#### `stop()`
+Stop the animation.
+
+## Projects/examples that uses this script
+
+* [The Capitol - The Official Government of Panem (Hunger Games Mockingjay Part 1 website)](http://www.thecapitol.pn/)
+* [http://blog.kidliaa.com/demo/siri%20wave/](http://blog.kidliaa.com/demo/siri%20wave/ )
 
 ## Some math
 
