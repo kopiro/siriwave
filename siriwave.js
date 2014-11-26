@@ -115,3 +115,11 @@ SiriWave.prototype.stop = function() {
 	this.phase = 0;
 	this.run = false;
 };
+
+SiriWave.prototype.setSpeed = function(v) {
+	this.speed = v;
+};
+
+SiriWave.prototype.setNoise = SiriWave.prototype.setAmplitude = function(v) {
+	this.amplitude = Math.max(Math.min(v, 1), 0);
+};
