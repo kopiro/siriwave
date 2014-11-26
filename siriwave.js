@@ -46,7 +46,7 @@ function SiriWave(opt) {
 
 	// Start
 
-	if (opt.autostart === true) {
+	if (opt.autostart) {
 		this.start();
 	}
 }
@@ -66,7 +66,7 @@ SiriWave.prototype._xpos = function(i) {
 SiriWave.prototype._ypos = function(i, attenuation) {
 	var att = (this.MAX * this.amplitude) / attenuation;
 	return this.height_2 + this._globAttFunc(i) * att * Math.sin(this.frequency * i - this.phase);
-}
+};
 
 SiriWave.prototype._drawLine = function(attenuation, color, width){
 	this.ctx.moveTo(0,0);
