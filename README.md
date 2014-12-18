@@ -1,5 +1,7 @@
 # SiriWaveJS
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/CaffeinaLab/SiriWaveJS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Have you ever thought on how to get the Siri wave effect on your website or mobile app?
 
 SiriWaveJS is a library that *easily* allows  you to get this effect.
