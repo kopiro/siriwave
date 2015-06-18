@@ -8,7 +8,7 @@ SiriWaveJS is a library that *easily* allows  you to get this effect.
 
 **Embed the script... and Surf!**
 
-#### [See the live CodePen Example](http://cdpn.io/yfegd)
+#### [LIVE EXAMPLE!](http://caffeinalab.github.io/SiriWaveJS)
 
 ## Usage
 
@@ -47,13 +47,13 @@ The noise (amplitude) of the wave.
 
 The frequency of the wave.
 
-* Not available in SiriWave9 *
+**Not available in SiriWave9**
 
 #### `[color]` (String, Color, default: `#fff')
 
 The color of the wave, in hexadecimal form (`#336699`, `#FF0`)
 
-* Not available in SiriWave9 *
+**Not available in SiriWave9**
 
 ## API
 
