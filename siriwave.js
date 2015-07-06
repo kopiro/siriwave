@@ -54,7 +54,7 @@ function SiriWave(opt) {
 SiriWave.prototype._GATF_cache = {};
 SiriWave.prototype._globAttFunc = function(x) {
 	if (SiriWave.prototype._GATF_cache[x] == null) {
-		SiriWave.prototype._GATF_cache[x] = Math.pow(4/(4+Math.pow(x,4)), 2);
+		SiriWave.prototype._GATF_cache[x] = Math.pow(4/(4+Math.pow(x,4)), 4);
 	}
 	return SiriWave.prototype._GATF_cache[x];
 };
@@ -76,7 +76,9 @@ SiriWave.prototype._drawLine = function(attenuation, color, width){
 
 	var i = -2;
 	while ((i += 0.01) <= 2) {
-		this.ctx.lineTo(this._xpos(i), this._ypos(i, attenuation));
+		var y = this._ypos(i, attenuation);
+		if (Math.abs(i) >= 1.95) y = this.height_2;
+		this.ctx.lineTo(this._xpos(i), y);
 	}
 
 	this.ctx.stroke();
