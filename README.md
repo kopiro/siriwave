@@ -1,4 +1,4 @@
-# SiriWaveJS
+![image](https://s3.amazonaws.com/f.cl.ly/items/2r2i3p2G262M271N0F2M/siri.gif)
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/CaffeinaLab/SiriWaveJS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -8,9 +8,7 @@ SiriWaveJS is a library that *easily* allows  you to get this effect.
 
 **Embed the script... and Surf!**
 
-![image](http://f.cl.ly/items/2q0I101D2t0p0W1Y0215/SWave.gif)
-
-#### [See the live CodePen Example](http://cdpn.io/yfegd)
+#### [LIVE EXAMPLE!](http://caffeinalab.github.io/SiriWaveJS)
 
 ## Usage
 
@@ -21,14 +19,19 @@ SiriWaveJS is a library that *easily* allows  you to get this effect.
 var siriWave = new SiriWave({
 	container: document.getElementById('siri-container'),
 	width: 640,
-	height: 200
+	height: 200,
+	/*
+	speed: 0.2,
+	color: '#000',
+	frequency: 2
+	*/
 });
 </script>
 ```
 
 ## Constructor options
 
-#### `canvas` (DOM Object, default: `document.body`)
+#### `container` (DOM Object, default: `document.body`)
 
 The DOM container where the `canvas` to draw the wave is added.
 
@@ -42,11 +45,15 @@ The noise (amplitude) of the wave.
 
 #### `[frequency]` (Number, from `0` to `N`, default: `1`)
 
-The noise (amplitude) of the wave.
+The frequency of the wave.
+
+**Not available in SiriWave9**
 
 #### `[color]` (String, Color, default: `#fff')
 
 The color of the wave, in hexadecimal form (`#336699`, `#FF0`)
+
+**Not available in SiriWave9**
 
 ## API
 

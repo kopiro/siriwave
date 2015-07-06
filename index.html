@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<style>
+		body {
+			font-family: 'Helvetica Neue', Helvetica, sans-serif;
+			font-weight: 100;
+			background: #fff;
+			color: #000;
+			text-align: center;
+		}
+		#title {
+			font-size: 120px;
+			font-weight: 100;
+			margin-top: 30px;
+			margin-bottom: 40px;
+		}
+		h1, h2, h3 {
+			font-weight: 100;
+		}
+		#panel {
+			font-size: 14px;
+		}
+		#panel input {
+			display: block;
+			margin: 0 auto;
+			width: 300px;
+			margin-bottom: 40px;
+		}
+		.container {
+			display: inline-block;
+			width: 400px;
+			margin: 0;
+			position: relative;
+		}
+		.container > img {
+			width: 100%;
+		}
+		.container .iphone-display {
+			background: #111;
+			background-size: cover;
+			position: absolute;
+			left: 68px;
+			right: 73px;
+			top: 127px;
+			bottom: 142px;
+		}
+		.container canvas {
+			position: absolute;
+			bottom: 182px;
+			left: 68px;
+			right: 73px;
+		}
+	</style>
+	<body>
+
+		<div id="title">SiriWave JS</div>
+
+		<div>
+			<div id="container-classic" class="container">
+				<img src="http://pngimg.com/upload/iphone_PNG5735.png" />
+				<div class="iphone-display"></div>
+			</div>
+
+			<div id="container-ios9" class="container">
+				<img src="http://pngimg.com/upload/iphone_PNG5735.png" />
+				<div class="iphone-display"></div>
+			</div>
+		</div>
+
+		<script src="siriwave.js"></script>
+		<script src="siriwave9.js"></script>
+		<script>
+			var $siri_classic = document.getElementById('container-classic');
+			var SW = new SiriWave({
+				width: 259,
+				height: 50,
+				speed: 0.12,
+				amplitude: 1,
+				container: $siri_classic,
+				autostart: true,
+			});
+			var $siri_ios9 = document.getElementById('container-ios9');
+			var SW9 = new SiriWave9({
+				width: 259,
+				height: 40,
+				speed: 0.2,
+				amplitude: 1,
+				container: $siri_ios9,
+				autostart: true,
+			});
+		</script>
+
+	</body>
+	</html>
