@@ -77,7 +77,7 @@ SiriWave.prototype._drawLine = function(attenuation, color, width){
 	var i = -2;
 	while ((i += 0.01) <= 2) {
 		var y = this._ypos(i, attenuation);
-		if (Math.abs(i) >= 1.95) y = this.height_2;
+		if (Math.abs(i) >= 1.90) y = this.height_2;
 		this.ctx.lineTo(this._xpos(i), y);
 	}
 
