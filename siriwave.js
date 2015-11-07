@@ -104,7 +104,11 @@ SiriWave.prototype._draw = function() {
 	this._drawLine(2, 'rgba(' + this.color + ',0.6)');
 	this._drawLine(1, 'rgba(' + this.color + ',1)', 1.5);
 
-	requestAnimationFrame(this._draw.bind(this));
+	if (window.requestAnimationFrame) {
+		requestAnimationFrame(this._draw.bind(this));
+		return;
+	};
+	setTimeout(this._draw.bind(this), 20);
 };
 
 /* API */

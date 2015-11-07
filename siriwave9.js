@@ -133,8 +133,11 @@ SiriWave9.prototype._draw = function() {
 		this.curves[i].draw();
 	}
 
-	requestAnimationFrame(this._draw.bind(this));
-	//setTimeout(this._draw.bind(this), 100);
+	if (window.requestAnimationFrame) {
+		requestAnimationFrame(this._draw.bind(this));
+		return;
+	};
+	setTimeout(this._draw.bind(this), 20);
 };
 
 
