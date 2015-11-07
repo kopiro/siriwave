@@ -38,8 +38,12 @@ function SiriWave(opt) {
 	this.canvas = document.createElement('canvas');
 	this.canvas.width = this.width;
 	this.canvas.height = this.height;
-	this.canvas.style.width = (this.width / this.ratio) + 'px';
-	this.canvas.style.height = (this.height / this.ratio) + 'px';
+	if (opt.cover) {
+		this.canvas.style.width = this.canvas.style.height = '100%';
+	} else {
+		this.canvas.style.width = (this.width / this.ratio) + 'px';
+		this.canvas.style.height = (this.height / this.ratio) + 'px';
+	};
 
 	this.container = opt.container || document.body;
 	this.container.appendChild(this.canvas);
