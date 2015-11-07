@@ -1,3 +1,5 @@
+(function() {
+
 function SiriWave(opt) {
 	opt = opt || {};
 
@@ -125,3 +127,12 @@ SiriWave.prototype.setSpeed = function(v) {
 SiriWave.prototype.setNoise = SiriWave.prototype.setAmplitude = function(v) {
 	this.amplitude = Math.max(Math.min(v, 1), 0);
 };
+
+
+if (typeof define === 'function' && define.amd) {
+	define(function(){ return SiriWave; });
+	return;
+};
+window.SiriWave = SiriWave;
+
+})();

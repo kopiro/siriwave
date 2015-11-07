@@ -1,6 +1,8 @@
-///////////////////
+(function() {
+
+////////////////////
 // SiriWave9Curve //
-///////////////////
+////////////////////
 
 function SiriWave9Curve(opt) {
 	opt = opt || {};
@@ -152,3 +154,12 @@ SiriWave9.prototype.COLORS = [
 [94,252,169],
 [253,71,103]
 ];
+
+
+if (typeof define === 'function' && define.amd) {
+	define(function(){ return SiriWave9; });
+	return;
+};
+window.SiriWave9 = SiriWave9;
+
+})();
