@@ -1,3 +1,5 @@
+(function() {
+
 function SiriWave(opt) {
 	opt = opt || {};
 
@@ -36,8 +38,12 @@ function SiriWave(opt) {
 	this.canvas = document.createElement('canvas');
 	this.canvas.width = this.width;
 	this.canvas.height = this.height;
-	this.canvas.style.width = (this.width / this.ratio) + 'px';
-	this.canvas.style.height = (this.height / this.ratio) + 'px';
+	if (opt.cover) {
+		this.canvas.style.width = this.canvas.style.height = '100%';
+	} else {
+		this.canvas.style.width = (this.width / this.ratio) + 'px';
+		this.canvas.style.height = (this.height / this.ratio) + 'px';
+	};
 
 	this.container = opt.container || document.body;
 	this.container.appendChild(this.canvas);
@@ -102,7 +108,11 @@ SiriWave.prototype._draw = function() {
 	this._drawLine(2, 'rgba(' + this.color + ',0.6)');
 	this._drawLine(1, 'rgba(' + this.color + ',1)', 1.5);
 
-	requestAnimationFrame(this._draw.bind(this));
+	if (window.requestAnimationFrame) {
+		requestAnimationFrame(this._draw.bind(this));
+		return;
+	};
+	setTimeout(this._draw.bind(this), 20);
 };
 
 /* API */
@@ -125,3 +135,12 @@ SiriWave.prototype.setSpeed = function(v) {
 SiriWave.prototype.setNoise = SiriWave.prototype.setAmplitude = function(v) {
 	this.amplitude = Math.max(Math.min(v, 1), 0);
 };
+
+
+if (typeof define === 'function' && define.amd) {
+	define(function(){ return SiriWave; });
+	return;
+};
+window.SiriWave = SiriWave;
+
+})();

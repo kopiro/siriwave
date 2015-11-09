@@ -1,6 +1,8 @@
-///////////////////
+(function() {
+
+////////////////////
 // SiriWave9Curve //
-///////////////////
+////////////////////
 
 function SiriWave9Curve(opt) {
 	opt = opt || {};
@@ -91,8 +93,12 @@ function SiriWave9(opt) {
 	this.canvas = document.createElement('canvas');
 	this.canvas.width = this.width;
 	this.canvas.height = this.height;
-	this.canvas.style.width = (this.width / this.ratio) + 'px';
-	this.canvas.style.height = (this.height / this.ratio) + 'px';
+	if (opt.cover) {
+		this.canvas.style.width = this.canvas.style.height = '100%';
+	} else {
+		this.canvas.style.width = (this.width / this.ratio) + 'px';
+		this.canvas.style.height = (this.height / this.ratio) + 'px';
+	};
 
 	this.container = opt.container || document.body;
 	this.container.appendChild(this.canvas);
@@ -131,8 +137,11 @@ SiriWave9.prototype._draw = function() {
 		this.curves[i].draw();
 	}
 
-	requestAnimationFrame(this._draw.bind(this));
-	//setTimeout(this._draw.bind(this), 100);
+	if (window.requestAnimationFrame) {
+		requestAnimationFrame(this._draw.bind(this));
+		return;
+	};
+	setTimeout(this._draw.bind(this), 20);
 };
 
 
@@ -152,3 +161,12 @@ SiriWave9.prototype.COLORS = [
 [94,252,169],
 [253,71,103]
 ];
+
+
+if (typeof define === 'function' && define.amd) {
+	define(function(){ return SiriWave9; });
+	return;
+};
+window.SiriWave9 = SiriWave9;
+
+})();

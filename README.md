@@ -49,11 +49,15 @@ The frequency of the wave.
 
 **Not available in SiriWave9**
 
-#### `[color]` (String, Color, default: `#fff')
+#### `[color]` (String, Color, default: `#fff`)
 
 The color of the wave, in hexadecimal form (`#336699`, `#FF0`)
 
 **Not available in SiriWave9**
+
+#### `[cover]` (Boolean, default: `false`)
+
+The `canvas` covers the entire width or height of the container.
 
 ## API
 
