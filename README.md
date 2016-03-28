@@ -59,6 +59,14 @@ The color of the wave, in hexadecimal form (`#336699`, `#FF0`)
 
 The `canvas` covers the entire width or height of the container.
 
+#### `[speedInterpolationSpeed]` (Number)
+
+The speed to interpolate the `speed` property.
+
+#### `[amplitudeInterpolationSpeed]` (Number)
+
+The speed to interpolate the `amplitude` property.
+
 ## API
 
 #### `start()`
