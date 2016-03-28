@@ -1,5 +1,5 @@
 (function() {
-
+//
 function SiriWave(opt) {
 	opt = opt || {};
 
@@ -33,11 +33,22 @@ function SiriWave(opt) {
 		: null;
 	})(opt.color || '#fff') || '255,255,255';
 
+	// Interpolation
+
+	this.speedInterpolationSpeed = opt.speedInterpolationSpeed || 0.005;
+	this.amplitudeInterpolationSpeed = opt.amplitudeInterpolationSpeed || 0.05;
+
+	this._interpolation = {
+		speed: this.speed,
+		amplitude: this.amplitude
+	};
+
 	// Canvas
 
 	this.canvas = document.createElement('canvas');
 	this.canvas.width = this.width;
 	this.canvas.height = this.height;
+	
 	if (opt.cover) {
 		this.canvas.style.width = this.canvas.style.height = '100%';
 	} else {
@@ -56,6 +67,20 @@ function SiriWave(opt) {
 		this.start();
 	}
 }
+
+SiriWave.prototype._interpolate = function(propertyStr) {
+	increment = this[ propertyStr + 'InterpolationSpeed' ];
+
+	if (Math.abs(this._interpolation[propertyStr] - this[propertyStr]) <= increment) {
+		this[propertyStr] = this._interpolation[propertyStr];
+	} else {
+		if (this._interpolation[propertyStr] > this[propertyStr]) {
+			this[propertyStr] += increment;
+		} else {
+			this[propertyStr] -= increment;
+		}
+	}
+};
 
 SiriWave.prototype._GATF_cache = {};
 SiriWave.prototype._globAttFunc = function(x) {
@@ -97,22 +122,29 @@ SiriWave.prototype._clear = function() {
 };
 
 SiriWave.prototype._draw = function() {
-	if (this.run === false) return;
-
-	this.phase = (this.phase + Math.PI*this.speed) % (2*Math.PI);
-
-	this._clear();
 	this._drawLine(-2, 'rgba(' + this.color + ',0.1)');
 	this._drawLine(-6, 'rgba(' + this.color + ',0.2)');
 	this._drawLine(4, 'rgba(' + this.color + ',0.4)');
 	this._drawLine(2, 'rgba(' + this.color + ',0.6)');
 	this._drawLine(1, 'rgba(' + this.color + ',1)', 1.5);
+};
+
+SiriWave.prototype._startDrawCycle = function() {
+	if (this.run === false) return;
+	this._clear();
+
+	// Interpolate values
+	this._interpolate('amplitude');
+	this._interpolate('speed');
+
+	this._draw();
+	this.phase = (this.phase + Math.PI*this.speed) % (2*Math.PI);
 
 	if (window.requestAnimationFrame) {
-		requestAnimationFrame(this._draw.bind(this));
-		return;
-	};
-	setTimeout(this._draw.bind(this), 20);
+		window.requestAnimationFrame(this._startDrawCycle.bind(this));
+	} else {
+		setTimeout(this._startDrawCycle.bind(this), 20);
+	}
 };
 
 /* API */
@@ -120,7 +152,7 @@ SiriWave.prototype._draw = function() {
 SiriWave.prototype.start = function() {
 	this.phase = 0;
 	this.run = true;
-	this._draw();
+	this._startDrawCycle();
 };
 
 SiriWave.prototype.stop = function() {
@@ -128,19 +160,21 @@ SiriWave.prototype.stop = function() {
 	this.run = false;
 };
 
-SiriWave.prototype.setSpeed = function(v) {
-	this.speed = v;
+SiriWave.prototype.setSpeed = function(v, increment) {
+	this._interpolation.speed = v;
 };
 
 SiriWave.prototype.setNoise = SiriWave.prototype.setAmplitude = function(v) {
-	this.amplitude = Math.max(Math.min(v, 1), 0);
+	this._interpolation.amplitude = Math.max(Math.min(v, 1), 0);
 };
 
+/* Export */
 
 if (typeof define === 'function' && define.amd) {
 	define(function(){ return SiriWave; });
-	return;
-};
-window.SiriWave = SiriWave;
+} else {
+	window.SiriWave = SiriWave;
+}
 
+//
 })();

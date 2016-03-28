@@ -67,6 +67,12 @@ Start the animation
 #### `stop()`
 Stop the animation.
 
+#### `setSpeed(newValue)`
+Set the new value of speed (animated)
+
+#### `setAmplitude(value)`
+Set the new value of amplitude (animated)
+
 ## Projects/examples that uses this script
 
 * [The Capitol - The Official Government of Panem (Hunger Games Mockingjay Part 1 website)](http://www.thecapitol.pn/)

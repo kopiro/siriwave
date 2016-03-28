@@ -88,11 +88,22 @@ function SiriWave9(opt) {
 	this.speed = 0.1;
 	this.amplitude = opt.amplitude || 1;
 
+	// Interpolation
+
+	this.speedInterpolationSpeed = opt.speedInterpolationSpeed || 0.005;
+	this.amplitudeInterpolationSpeed = opt.amplitudeInterpolationSpeed || 0.05;
+
+	this._interpolation = {
+		speed: this.speed,
+		amplitude: this.amplitude
+	};
+
 	// Canvas
 
 	this.canvas = document.createElement('canvas');
 	this.canvas.width = this.width;
 	this.canvas.height = this.height;
+
 	if (opt.cover) {
 		this.canvas.style.width = this.canvas.style.height = '100%';
 	} else {
@@ -123,6 +134,20 @@ function SiriWave9(opt) {
 	}
 }
 
+SiriWave9.prototype._interpolate = function(propertyStr) {
+	increment = this[ propertyStr + 'InterpolationSpeed' ];
+
+	if (Math.abs(this._interpolation[propertyStr] - this[propertyStr]) <= increment) {
+		this[propertyStr] = this._interpolation[propertyStr];
+	} else {
+		if (this._interpolation[propertyStr] > this[propertyStr]) {
+			this[propertyStr] += increment;
+		} else {
+			this[propertyStr] -= increment;
+		}
+	}
+};
+
 SiriWave9.prototype._clear = function() {
 	this.ctx.globalCompositeOperation = 'destination-out';
 	this.ctx.fillRect(0, 0, this.width, this.height);
@@ -130,30 +155,46 @@ SiriWave9.prototype._clear = function() {
 };
 
 SiriWave9.prototype._draw = function() {
-	if (this.run === false) return;
-
-	this._clear();
 	for (var i = 0, len = this.curves.length; i < len; i++) {
 		this.curves[i].draw();
 	}
-
-	if (window.requestAnimationFrame) {
-		requestAnimationFrame(this._draw.bind(this));
-		return;
-	};
-	setTimeout(this._draw.bind(this), 20);
 };
 
+SiriWave9.prototype._startDrawCycle = function() {
+	if (this.run === false) return;
+	this._clear();
+
+	// Interpolate values
+	this._interpolate('amplitude');
+	this._interpolate('speed');
+
+	this._draw();
+	this.phase = (this.phase + Math.PI*this.speed) % (2*Math.PI);
+
+	if (window.requestAnimationFrame) {
+		window.requestAnimationFrame(this._startDrawCycle.bind(this));
+	} else {
+		setTimeout(this._startDrawCycle.bind(this), 20);
+	}
+};
 
 SiriWave9.prototype.start = function() {
 	this.tick = 0;
 	this.run = true;
-	this._draw();
+	this._startDrawCycle();
 };
 
 SiriWave9.prototype.stop = function() {
 	this.tick = 0;
 	this.run = false;
+};
+
+SiriWave9.prototype.setSpeed = function(v, increment) {
+	this._interpolation.speed = v;
+};
+
+SiriWave9.prototype.setNoise = SiriWave9.prototype.setAmplitude = function(v) {
+	this._interpolation.amplitude = Math.max(Math.min(v, 1), 0);
 };
 
 SiriWave9.prototype.COLORS = [
@@ -162,11 +203,11 @@ SiriWave9.prototype.COLORS = [
 [253,71,103]
 ];
 
-
 if (typeof define === 'function' && define.amd) {
 	define(function(){ return SiriWave9; });
 	return;
-};
-window.SiriWave9 = SiriWave9;
+} else {
+	window.SiriWave9 = SiriWave9;
+}
 
 })();
