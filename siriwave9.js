@@ -205,7 +205,6 @@ SiriWave9.prototype.COLORS = [
 
 if (typeof define === 'function' && define.amd) {
 	define(function(){ return SiriWave9; });
-	return;
 } else {
 	window.SiriWave9 = SiriWave9;
 }
