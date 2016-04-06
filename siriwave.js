@@ -168,8 +168,6 @@ SiriWave.prototype.setNoise = SiriWave.prototype.setAmplitude = function(v) {
 	this._interpolation.amplitude = Math.max(Math.min(v, 1), 0);
 };
 
-/* Export */
-
 if (typeof define === 'function' && define.amd) {
 	define(function(){ return SiriWave; });
 } else {
