@@ -109,7 +109,7 @@ function SiriWave9(opt) {
 	} else {
 		this.canvas.style.width = (this.width / this.ratio) + 'px';
 		this.canvas.style.height = (this.height / this.ratio) + 'px';
-	};
+	}
 
 	this.container = opt.container || document.body;
 	this.container.appendChild(this.canvas);
