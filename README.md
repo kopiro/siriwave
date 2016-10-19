@@ -31,7 +31,12 @@ var siriWave = new SiriWave({
 
 ## Constructor options
 
-#### `container` (DOM Object, default: `document.body`)
+#### `style` (String, default: 'none')
+
+* `default` - Default iOS9- style
+* `ios9` - Style of for iOS9+
+
+#### `container` (DOM Object)
 
 The DOM container where the `canvas` to draw the wave is added.
 
@@ -47,13 +52,13 @@ The noise (amplitude) of the wave.
 
 The frequency of the wave.
 
-**Not available in SiriWave9**
+**Not available in iOS9 Style**
 
 #### `[color]` (String, Color, default: `#fff`)
 
 The color of the wave, in hexadecimal form (`#336699`, `#FF0`)
 
-**Not available in SiriWave9**
+**Not available in iOS9 Style**
 
 #### `[cover]` (Boolean, default: `false`)
 
