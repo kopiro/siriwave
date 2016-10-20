@@ -135,7 +135,8 @@ function SiriWave(opt) {
 	this.cache = {};
 	
 	if (opt.container == null) {
-		throw new Error('Invalid container');
+		console.warn("SiriWaveJS: no container defined, using body");
+		opt.container = document.body;
 	}
 
 	this.style = opt.style || 'ios';
