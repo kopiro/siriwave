@@ -155,10 +155,10 @@ function SiriWave(opt) {
 	this.cache.heightMax = (this.cache.height2) - 4;
 
 	// Constructor opt
-	
+
 	this.amplitude = (opt.amplitude == undefined) ? 1 : opt.amplitude;
 	this.speed = (opt.speed == undefined) ? 0.2 : opt.speed;
-	this.frequence = (opt.frequency == undefined) ? 6 : opt.frequency;
+	this.frequency = (opt.frequency == undefined) ? 6 : opt.frequency;
 	this.color = this._hex2rgb(opt.color || '#fff');
 
 	// Interpolation
