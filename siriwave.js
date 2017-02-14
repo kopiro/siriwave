@@ -46,7 +46,7 @@ SiriWave9Curve.prototype._draw = function(sign) {
 		y = yBase + ((sign || 1) * this._ypos(i));
 
 		xInit = xInit || x;
-		
+
 		ctx.lineTo(x, y);
 	}
 
@@ -133,7 +133,7 @@ function SiriWave(opt) {
 	this.phase = 0;
 	this.run = false;
 	this.cache = {};
-	
+
 	if (opt.container == null) {
 		console.warn("SiriWaveJS: no container defined, using body");
 		opt.container = document.body;
@@ -146,7 +146,7 @@ function SiriWave(opt) {
 	this.width = opt.width || window.getComputedStyle(this.container).width.replace('px', '');
 	this.height = opt.height || window.getComputedStyle(this.container).height.replace('px', '');
 	this.ratio = opt.ratio || window.devicePixelRatio || 1;
-	
+
 	this.cache.width = this.ratio * this.width;
 	this.cache.height = this.ratio * this.height;
 	this.cache.height2 = this.cache.height / 2;
@@ -155,10 +155,10 @@ function SiriWave(opt) {
 	this.cache.heightMax = (this.cache.height2) - 4;
 
 	// Constructor opt
-
-	this.amplitude = opt.amplitude || 1;
-	this.speed = opt.speed || 0.2;
-	this.frequency = opt.frequency || 6;
+	
+	this.amplitude = (opt.amplitude == undefined) ? 1 : opt.amplitude;
+	this.speed = (opt.speed == undefined) ? 0.2 : opt.speed;
+	this.frequence = (opt.frequency == undefined) ? 6 : opt.frequency;
 	this.color = this._hex2rgb(opt.color || '#fff');
 
 	// Interpolation
