@@ -189,6 +189,8 @@ function SiriWave(opt) {
 
 	var i = 0, j = 0;
 	if (this.style === 'ios9') {
+		if(typeof opt.definition != 'undefined')
+			SiriWave9Curve.prototype.definition = opt.definition;
 		for (; i < SiriWave9Curve.prototype.definition.length; i++) {
 			for (j = 0; j < (3 * Math.random()) | 0; j++) {
 				this.curves.push(new SiriWave9Curve({
