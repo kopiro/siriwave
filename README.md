@@ -8,7 +8,7 @@ SiriWaveJS is a library that *easily* allows  you to get this effect.
 
 **Embed the script... and Surf!**
 
-#### [LIVE EXAMPLE!](http://caffeinalab.github.io/SiriWaveJS)
+#### [LIVE EXAMPLE!](http://kopiro.github.io/siriwavejs)
 
 ## Usage
 
