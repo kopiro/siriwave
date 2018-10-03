@@ -8,11 +8,12 @@ SiriWaveJS is a library that _easily_ allows you to get this effect.
 
 ## Usage
 
-Download the dist file under **./dist/siriwave.umd.js**,
+Download the dist file under **./dist/siriwave.js**,
+or use the CDN one **https://unpkg.com/siriwavejs/dist/siriwave.umd.js**
 and include in your web page as a script.
 
 ```html
-<script src="siriwave.umd.js"></script>
+<script src="https://unpkg.com/siriwavejs/dist/siriwave.umd.js"></script>
 ```
 
 Create a div container and instantiate a SiriWave object
