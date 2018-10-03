@@ -2,9 +2,13 @@
   "name": "siriwavejs",
   "version": "2.0.0",
   "description": "The Siri wave replicated in a JS library.",
-  "main": "siriwave.js",
+  "main": "./dist/siriwave.cjs.js",
+  "browser": "./dist/siriwave.umd.js",
+  "module": "./dist/siriwave.esm.js",
+  "library": "SiriWave",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
   },
   "repository": {
     "type": "git",
@@ -20,5 +24,16 @@
   "bugs": {
     "url": "https://github.com/caffeinalab/siriwavejs/issues"
   },
-  "homepage": "https://github.com/caffeinalab/siriwavejs#readme"
+  "homepage": "https://github.com/caffeinalab/siriwavejs#readme",
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "rollup": "^0.66.3",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-commonjs": "^9.1.8",
+    "rollup-plugin-livereload": "^0.6.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-serve": "^0.6.0"
+  },
+  "dependencies": {}
 }
