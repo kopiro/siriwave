@@ -46,7 +46,7 @@ function () {
     key: "_ypos",
     value: function _ypos(i) {
       var att = this.ctrl.heightMax * this.ctrl.amplitude / this.definition.attenuation;
-      return this.ctrl.height / 2 + this._globAttenuationEquation(i) * att * Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase);
+      return this.ctrl.heightMax + this._globAttenuationEquation(i) * att * Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase);
     }
   }, {
     key: "draw",
@@ -55,13 +55,10 @@ function () {
       ctx.moveTo(0, 0);
       ctx.beginPath();
       ctx.strokeStyle = 'rgba(' + this.ctrl.color + ',' + this.definition.opacity + ')';
-      ctx.lineWidth = this.definition.lineWidth;
+      ctx.lineWidth = this.definition.lineWidth; // Cycle the graph from -X to +X every PX_DEPTH and draw the line
 
       for (var i = -this.ctrl.MAX_X; i <= this.ctrl.MAX_X; i += this.ctrl.opt.pixelDepth) {
-        var y = this._ypos(i);
-
-        if (Math.abs(i) >= 1.90) y = this.ctrl.height / 2;
-        ctx.lineTo(this._xpos(i), y);
+        ctx.lineTo(this._xpos(i), this._ypos(i));
       }
 
       ctx.stroke();
@@ -106,7 +103,9 @@ function () {
 
     this.ctrl = opt.ctrl;
     this.definition = opt.definition;
-    this.tick = 0;
+    this.phase = 0;
+    this.AMPLITUDE_RANGE = [0.1, 1];
+    this.WIDTH_RANGE = [0.1, 0.3];
 
     this._respawn();
   }
@@ -114,15 +113,19 @@ function () {
   _createClass(iOS9Curve, [{
     key: "_respawn",
     value: function _respawn() {
-      this.amplitude = 0.3 + Math.random() * 0.7;
-      this.seed = Math.random();
-      this.openClass = 2 + Math.random() * 3 | 0;
+      // Generate a random seed
+      this.seed = Math.random(); // Generate random properties for this wave
+
+      this.amplitude = this.AMPLITUDE_RANGE[0] + Math.random() * (this.AMPLITUDE_RANGE[1] - this.AMPLITUDE_RANGE[0]);
+      this.width = this.ctrl.width * (this.WIDTH_RANGE[0] + Math.random() * (this.WIDTH_RANGE[1] - this.WIDTH_RANGE[0])); // Generate a random number to determine the wave class
+
+      this.openClass = 2 + (Math.random() * 3 | 0);
     }
   }, {
     key: "_ypos",
     value: function _ypos(i) {
-      var y = -1 * // Actual real Y in the SIN function
-      Math.abs(Math.sin(this.tick)) * // Amplitude of the original controller
+      var y = 1 * // Actual real Y in the SIN function
+      Math.abs(Math.sin(this.phase)) * // Amplitude of the original controller
       this.ctrl.amplitude * // Amplitude of current wave
       this.amplitude * // Maximum height for the complete wave
       this.ctrl.heightMax * // Class of the wave (small to big)
@@ -136,37 +139,37 @@ function () {
       return y;
     }
   }, {
-    key: "_draw",
-    value: function _draw(sign) {
-      var ctx = this.ctrl.ctx;
-      this.tick += this.ctrl.speed * (1 - 0.5 * Math.sin(this.seed * Math.PI));
-      ctx.beginPath();
-      var xBase = this.ctrl.width / 2 + (-(this.ctrl.width / 4) + this.seed * (this.ctrl.width / 2));
-      var yBase = this.ctrl.height / 2;
-      var x, y, xInit;
-
-      for (var i = -this.ctrl.MAX_X; i <= this.ctrl.MAX_X; i += this.ctrl.opt.pixelDepth) {
-        x = xBase + i * (this.ctrl.width / 4);
-        y = yBase + sign * this._ypos(i);
-        if (xInit == null) xInit = x;
-        ctx.lineTo(x, y);
-      }
-
-      var height = Math.abs(this._ypos(0));
-      var gradient = ctx.createRadialGradient(xBase, yBase, height * 1.15, xBase, yBase, height * 0.3);
-      gradient.addColorStop(0, 'rgba(' + this.definition.color + ', 0.4)');
-      gradient.addColorStop(1, 'rgba(' + this.definition.color + ', 0.2)');
-      ctx.fillStyle = gradient;
-      ctx.lineTo(xInit, yBase);
-      ctx.closePath();
-      ctx.fill();
-    }
-  }, {
     key: "draw",
     value: function draw() {
-      this._draw(-1);
+      this.phase += this.ctrl.speed * (1 - 0.5 * Math.sin(this.seed * Math.PI)); // TODO:  we have to ensure that same colors are not near
 
-      this._draw(1);
+      var xBase = 2 * this.width + (-this.width + this.seed * (2 * this.width));
+      var yBase = this.ctrl.heightMax;
+      var x, y;
+      var height = Math.abs(this._ypos(0));
+      var xInit = xBase + -this.ctrl.MAX_X * this.width;
+      var ctx = this.ctrl.ctx; // Write two opposite waves
+
+      var _arr = [-1, 1];
+
+      for (var _i = 0; _i < _arr.length; _i++) {
+        var sign = _arr[_i];
+        ctx.beginPath(); // Cycle the graph from -X to +X every PX_DEPTH and draw the line
+
+        for (var i = -this.ctrl.MAX_X; i <= this.ctrl.MAX_X; i += this.ctrl.opt.pixelDepth) {
+          x = xBase + i * this.width;
+          y = yBase + sign * this._ypos(i);
+          ctx.lineTo(x, y);
+        }
+
+        var gradient = ctx.createRadialGradient(xBase, yBase, height * 1.15, xBase, yBase, height * 0.3);
+        gradient.addColorStop(0, 'rgba(' + this.definition.color + ', 0.8)');
+        gradient.addColorStop(1, 'rgba(' + this.definition.color + ', 0.2)');
+        ctx.fillStyle = gradient;
+        ctx.lineTo(xInit, yBase);
+        ctx.closePath();
+        ctx.fill();
+      }
     }
   }], [{
     key: "getDefinition",
@@ -215,7 +218,7 @@ function () {
     this.opt = Object.assign({
       style: 'ios',
       ratio: window.devicePixelRatio || 1,
-      speed: 0.2,
+      speed: 0.1,
       amplitude: 1,
       frequency: 6,
       color: '#fff',
@@ -225,7 +228,7 @@ function () {
       width: window.getComputedStyle(this.container).width.replace('px', ''),
       height: window.getComputedStyle(this.container).height.replace('px', ''),
       autostart: false,
-      pixelDepth: 0.01
+      pixelDepth: 0.02
     }, opt);
     /**
      * Max X coordinate to draw the graph
@@ -236,7 +239,7 @@ function () {
      * A really small value to consider a wave "dead" (used in iOS9)
      */
 
-    this.DEAD_THRESHOLD = 0.001;
+    this.DEAD_THRESHOLD = 0.05;
     /**
      * Phase of the wave (passed to Math.sin function)
      */
@@ -271,7 +274,7 @@ function () {
      * Maximum height for a single wave
      */
 
-    this.heightMax = Number(this.height / 2) - 4;
+    this.heightMax = Number(this.height / 2) - 6;
     /**
      * Color of the wave (used in Classic iOS)
      */
@@ -314,7 +317,7 @@ function () {
     this.curves = []; // Instantiate all curves based on the style
 
     if (this.opt.style === 'ios9') {
-      var numberOfCurvesPerDef = 3 * Math.random() | 0;
+      var numberOfCurvesPerDef = 2;
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
