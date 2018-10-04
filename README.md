@@ -31,46 +31,64 @@ var siriWave = new SiriWave({
 
 ## Constructor options
 
-#### `style` (String, default: 'none')
+### `container` (DOMElement)
 
-- `default` - Default iOS9- style
-- `ios9` - Style of for iOS9+
+The DOM container where the DOM canvas element will be added.
 
-#### `container` (DOM Object)
+### `[style]` (String, default: 'ios')
 
-The DOM container where the `canvas` to draw the wave is added.
+The style of the wave.
 
-#### `[speed]` (Number, from `0` to `1`, default: `0.1`)
+- `default` - Original Siri style
+- `ios9` - Style used in iOS9+
 
-The speed of the wave.
+### `[ratio]` (Number)
 
-#### `[amplitude]` (Number, from `0` to `1`, default: `1`)
+Ratio of the display to use. Calculated by default.
 
-The noise (amplitude) of the wave.
+### `[speed]` (Number, from `0` to `1`, default: `0.2`)
 
-#### `[frequency]` (Number, from `0` to `N`, default: `1`)
+The speed of the animation.
 
-The frequency of the wave.
+### `[amplitude]` (Number, from `0` to `1`, default: `1`)
+
+The amplitude of the complete wave.
+
+### `[frequency]` (Number, from `0` to `N`, default: `6`)
+
+The frequency for the complete wave (how many waves).
 
 **Not available in iOS9 Style**
 
-#### `[color]` (String, Color, default: `#fff`)
+### `[color]` (String, Color, default: `#fff`)
 
 The color of the wave, in hexadecimal form (`#336699`, `#FF0`)
 
 **Not available in iOS9 Style**
 
-#### `[cover]` (Boolean, default: `false`)
+### `[cover]` (Boolean, default: `false`)
 
 The `canvas` covers the entire width or height of the container.
 
-#### `[speedInterpolationSpeed]` (Number)
+### `[speedInterpolationSpeed]` (Number, defauilt: `0.005`)
 
 The speed to interpolate the `speed` property.
 
-#### `[amplitudeInterpolationSpeed]` (Number)
+### `[amplitudeInterpolationSpeed]` (Number, default: `0.005`)
 
 The speed to interpolate the `amplitude` property.
+
+### `[autostart]` (Boolean, default: `false`)
+
+Decide wether start the animation on boot.
+
+### `[autostart]` (Boolean, default: `false`)
+
+Decide wether start the animation on boot.
+
+### `[pixelDepth]` (Number, default: `0.01`)
+
+Number of step (in pixels) used when drawed on canvas.
 
 ## API
 
