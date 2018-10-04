@@ -14,7 +14,10 @@ export default class Curve {
 
 	_ypos(i) {
 		const att = (this.ctrl.heightMax * this.ctrl.amplitude) / this.definition.attenuation;
-		return (this.ctrl.height / 2) + this._globAttenuationEquation(i) * att * Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase);
+		return (this.ctrl.heightMax) +
+			this._globAttenuationEquation(i) *
+			att *
+			Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase);
 	}
 
 	draw() {
