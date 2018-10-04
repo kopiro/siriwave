@@ -12,7 +12,6 @@
          text-align: center;
       }
 
-
       #container,
       #container-9 {
          width: 600px;
@@ -21,6 +20,25 @@
          border: 1px solid rgba(255, 255, 255, .1);
          margin: 20px;
          margin: 0 auto;
+      }
+
+      #controls {
+         margin-top: 30px;
+      }
+
+      #controls > div {
+         margin-top: 20px;
+      }
+
+      #controls > div label {
+         width: 150px;
+         display: inline-block;
+         text-align: right;
+         margin-right: 10px;
+      }
+
+      #controls > div input {
+         width: 300px;
       }
    </style>
    <script src="./dist/siriwave.js"></script>
@@ -32,6 +50,17 @@
 <h1>SiriWave iOS9</h1>
 <div id="container-9"></div>
 
+<div id="controls">
+   <div>
+      <label for="ctrl-speed">Speed - <b id="ctrl-show-speed"></b></label>
+      <input type="range" min="0" max="2" step="0.1" id="ctrl-speed" />
+   </div>
+   <div>
+      <label for="ctrl-amplitude">Amplitude - <b id="ctrl-show-amplitude"></b></label>
+      <input type="range" min="0" max="1" step="0.1" id="ctrl-amplitude" />
+   </div>
+</div>
+
 <script>
    var SW = new SiriWave({
       container: document.getElementById('container'),
@@ -42,6 +71,20 @@
       container: document.getElementById('container-9'),
       autostart: true,
    });
+   var SWs = [SW, SW9];
+</script>
+
+<script>
+   for (let e of ['speed', 'amplitude']) {
+      let ctrl = document.querySelector('#ctrl-' + e);
+      let show = document.querySelector('#ctrl-show-' + e);
+      ctrl.value = SWs[0][e];
+      show.innerText = ctrl.value;
+      ctrl.addEventListener('change', () => {
+         show.innerText = ctrl.value;
+         for (let sw of SWs) sw.set(e, ctrl.value);
+      });
+   }
 </script>
 
 </html>

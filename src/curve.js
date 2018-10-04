@@ -2,22 +2,24 @@ export default class Curve {
 	constructor(opt) {
 		this.ctrl = opt.ctrl;
 		this.definition = opt.definition;
+		this.ATT_FACTOR = 4;
 	}
 
-	_globAttenuationEquation(x) {
-		return Math.pow(4 / (4 + Math.pow(x, 4)), 4);
+	_globalAttFn(x) {
+		return Math.pow((this.ATT_FACTOR) / ((this.ATT_FACTOR) + Math.pow(x, (this.ATT_FACTOR))), (this.ATT_FACTOR));
 	}
 
 	_xpos(i) {
-		return (this.ctrl.width / 2) + i * (this.ctrl.width / 4);
+		return (this.ctrl.width / 2) + (i * (this.ctrl.width / 4));
 	}
 
 	_ypos(i) {
-		const att = (this.ctrl.heightMax * this.ctrl.amplitude) / this.definition.attenuation;
-		return (this.ctrl.heightMax) +
-			this._globAttenuationEquation(i) *
-			att *
-			Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase);
+		return this.ctrl.heightMax +
+			(
+				this._globalAttFn(i) *
+				((this.ctrl.heightMax * this.ctrl.amplitude) / this.definition.attenuation) *
+				Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase)
+			);
 	}
 
 	draw() {

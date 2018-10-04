@@ -70,25 +70,17 @@ The color of the wave, in hexadecimal form (`#336699`, `#FF0`)
 
 The `canvas` covers the entire width or height of the container.
 
-### `[speedInterpolationSpeed]` (Number, defauilt: `0.005`)
-
-The speed to interpolate the `speed` property.
-
-### `[amplitudeInterpolationSpeed]` (Number, default: `0.005`)
-
-The speed to interpolate the `amplitude` property.
-
 ### `[autostart]` (Boolean, default: `false`)
 
 Decide wether start the animation on boot.
 
-### `[autostart]` (Boolean, default: `false`)
-
-Decide wether start the animation on boot.
-
-### `[pixelDepth]` (Number, default: `0.01`)
+### `[pixelDepth]` (Number, default: `0.02`)
 
 Number of step (in pixels) used when drawed on canvas.
+
+### `[lerpSpeed]` (Number, default: `0.01`)
+
+Lerp speed to interpolate properties.
 
 ## API
 
