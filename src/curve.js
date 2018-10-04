@@ -1,6 +1,6 @@
 export default class Curve {
 	constructor(opt) {
-		this.controller = opt.controller;
+		this.ctrl = opt.ctrl;
 		this.definition = opt.definition;
 	}
 
@@ -9,25 +9,25 @@ export default class Curve {
 	}
 
 	_xpos(i) {
-		return (this.controller.$.width / 2) + i * (this.controller.$.width / 4);
+		return (this.ctrl.width / 2) + i * (this.ctrl.width / 4);
 	}
 
 	_ypos(i) {
-		const att = (this.controller.$.heightMax * this.controller.amplitude) / this.definition.attenuation;
-		return (this.controller.$.height / 2) + this._globAttenuationEquation(i) * att * Math.sin(this.controller.frequency * i - this.controller.phase);
+		const att = (this.ctrl.heightMax * this.ctrl.amplitude) / this.definition.attenuation;
+		return (this.ctrl.height / 2) + this._globAttenuationEquation(i) * att * Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase);
 	}
 
 	draw() {
-		const ctx = this.controller.ctx;
+		const ctx = this.ctrl.ctx;
 
 		ctx.moveTo(0, 0);
 		ctx.beginPath();
-		ctx.strokeStyle = 'rgba(' + this.controller.color + ',' + this.definition.opacity + ')';
+		ctx.strokeStyle = 'rgba(' + this.ctrl.color + ',' + this.definition.opacity + ')';
 		ctx.lineWidth = this.definition.lineWidth;
 
-		for (let i = -2; i <= 2; i += 0.01) {
+		for (let i = -this.ctrl.MAX_X; i <= this.ctrl.MAX_X; i += this.ctrl.opt.pixelDepth) {
 			let y = this._ypos(i);
-			if (Math.abs(i) >= 1.90) y = (this.controller.$.height / 2);
+			if (Math.abs(i) >= 1.90) y = (this.ctrl.height / 2);
 			ctx.lineTo(this._xpos(i), y);
 		}
 
