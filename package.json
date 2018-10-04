@@ -1,6 +1,6 @@
 {
-  "name": "siriwavejs",
-  "version": "3.1.0",
+  "name": "siriwave",
+  "version": "1.0.0",
   "description": "The Siri wave replicated in a JS library.",
   "browser": "./dist/siriwave.js",
   "module": "./dist/siriwave.esm.js",
