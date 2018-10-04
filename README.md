@@ -8,8 +8,8 @@ SiriWaveJS is a library that _easily_ allows you to get this effect.
 
 ## Usage
 
-Download the dist file under **./dist/siriwave.js**,
-or use the CDN one **https://unpkg.com/siriwavejs/dist/siriwave.umd.js**
+Download the dist file under **./dist/siriwave.min.js**,
+or use the CDN one **https://unpkg.com/siriwavejs/dist/siriwave.min.js**
 and include in your web page as a script.
 
 ```html
