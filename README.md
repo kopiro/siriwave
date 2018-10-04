@@ -4,16 +4,16 @@ Have you ever thought on how to get the Siri wave effect on your website or mobi
 
 SiriWave is a library that _easily_ allows you to get this effect.
 
-### [Live example](http://kopiro.github.io/siriwavejs/)
+### [Live example](http://kopiro.github.io/siriwave)
 
 ## Usage
 
 Download the dist file under **./dist/siriwave.min.js**,
-or use the CDN one **https://unpkg.com/siriwavejs/dist/siriwave.min.js**
+or use the CDN one **https://unpkg.com/siriwave/dist/siriwave.min.js**
 and include in your web page as a script.
 
 ```html
-<script src="https://unpkg.com/siriwavejs/dist/siriwave.umd.js"></script>
+<script src="https://unpkg.com/siriwave/dist/siriwave.js"></script>
 ```
 
 Create a div container and instantiate a SiriWave object
