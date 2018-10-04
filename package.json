@@ -36,6 +36,7 @@
     "rollup-plugin-uglify": "^6.0.0"
   },
   "dependencies": {
+    "lerp": "^1.0.3",
     "raf": "^3.4.0"
   }
 }
