@@ -28,10 +28,9 @@ export default class Curve {
 		ctx.strokeStyle = 'rgba(' + this.ctrl.color + ',' + this.definition.opacity + ')';
 		ctx.lineWidth = this.definition.lineWidth;
 
+		// Cycle the graph from -X to +X every PX_DEPTH and draw the line
 		for (let i = -this.ctrl.MAX_X; i <= this.ctrl.MAX_X; i += this.ctrl.opt.pixelDepth) {
-			let y = this._ypos(i);
-			if (Math.abs(i) >= 1.90) y = (this.ctrl.height / 2);
-			ctx.lineTo(this._xpos(i), y);
+			ctx.lineTo(this._xpos(i), this._ypos(i));
 		}
 
 		ctx.stroke();

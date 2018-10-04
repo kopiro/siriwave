@@ -1,8 +1,8 @@
-# SiriWaveJS
+# SiriWave
 
 Have you ever thought on how to get the Siri wave effect on your website or mobile app?
 
-SiriWaveJS is a library that _easily_ allows you to get this effect.
+SiriWave is a library that _easily_ allows you to get this effect.
 
 ### [Live example](http://kopiro.github.io/siriwavejs/)
 

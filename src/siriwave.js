@@ -39,7 +39,7 @@ export default class SiriWave {
 			width: window.getComputedStyle(this.container).width.replace('px', ''),
 			height: window.getComputedStyle(this.container).height.replace('px', ''),
 			autostart: false,
-			pixelDepth: 0.01
+			pixelDepth: 0.02
 		}, opt);
 
 		/**
@@ -50,7 +50,7 @@ export default class SiriWave {
 		/**
 		 * A really small value to consider a wave "dead" (used in iOS9)
 		 */
-		this.DEAD_THRESHOLD = 0.001;
+		this.DEAD_THRESHOLD = 0.05;
 
 		/**
 		 * Phase of the wave (passed to Math.sin function)
@@ -85,7 +85,7 @@ export default class SiriWave {
 		/**
 		 * Maximum height for a single wave
 		 */
-		this.heightMax = Number(this.height / 2) - 4;
+		this.heightMax = Number(this.height / 2) - 6;
 
 		/**
 		 * Color of the wave (used in Classic iOS)
@@ -130,7 +130,7 @@ export default class SiriWave {
 
 		// Instantiate all curves based on the style
 		if (this.opt.style === 'ios9') {
-			const numberOfCurvesPerDef = ((3 * Math.random()) | 0);
+			const numberOfCurvesPerDef = 2;
 			for (let def of iOS9Curve.getDefinition()) {
 				for (let j = 0; j < numberOfCurvesPerDef; j++) {
 					this.curves.push(new iOS9Curve({
