@@ -1,6 +1,6 @@
 export default class iOS9Curve {
-	constructor(opt) {
-		this.controller = opt.controller;
+	constructor(opt = {}) {
+		this.ctrl = opt.ctrl;
 		this.definition = opt.definition;
 		this.tick = 0;
 
@@ -14,9 +14,21 @@ export default class iOS9Curve {
 	}
 
 	_ypos(i) {
-		const y = -1 * Math.abs(Math.sin(this.tick)) * this.controller.amplitude * this.amplitude * this.controller.$.heightMax * Math.pow(1 / (1 + Math.pow(this.openClass * i, 2)), 2);
+		const y = -1 *
+			// Actual real Y in the SIN function
+			Math.abs(Math.sin(this.tick)) *
+			// Amplitude of the original controller
+			this.ctrl.amplitude *
+			// Amplitude of current wave
+			this.amplitude *
+			// Maximum height for the complete wave
+			this.ctrl.heightMax *
+			// Class of the wave (small to big)
+			Math.pow(1 / (1 + Math.pow(this.openClass * i, 2)), 2);
 
-		if (Math.abs(y) < 0.001) {
+		// If we reach a minimum threshold to consider this wave "dead", 
+		// respawn with other properties
+		if (Math.abs(y) < this.ctrl.DEAD_THRESHOLD) {
 			this._respawn();
 		}
 
@@ -24,21 +36,20 @@ export default class iOS9Curve {
 	}
 
 	_draw(sign) {
-		const ctx = this.controller.ctx;
+		const ctx = this.ctrl.ctx;
 
-		this.tick += this.controller.speed * (1 - 0.5 * Math.sin(this.seed * Math.PI));
+		this.tick += this.ctrl.speed * (1 - 0.5 * Math.sin(this.seed * Math.PI));
 
 		ctx.beginPath();
 
-		let xBase = (this.controller.$.width / 2) + (-(this.controller.$.width / 4) + this.seed * (this.controller.$.width / 2));
-		let yBase = (this.controller.$.height / 2);
+		let xBase = (this.ctrl.width / 2) + (-(this.ctrl.width / 4) + this.seed * (this.ctrl.width / 2));
+		let yBase = (this.ctrl.height / 2);
 
-		let x, y;
-		let xInit = null;
+		let x, y, xInit;
 
-		for (let i = -3; i <= 3; i += 0.01) {
-			x = xBase + i * (this.controller.$.width / 4);
-			y = yBase + ((sign || 1) * this._ypos(i));
+		for (let i = -this.ctrl.MAX_X; i <= this.ctrl.MAX_X; i += this.ctrl.opt.pixelDepth) {
+			x = xBase + i * (this.ctrl.width / 4);
+			y = yBase + (sign * this._ypos(i));
 			if (xInit == null) xInit = x;
 			ctx.lineTo(x, y);
 		}

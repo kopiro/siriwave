@@ -6,7 +6,7 @@
   "module": "./dist/siriwave.esm.js",
   "library": "SiriWave",
   "scripts": {
-    "build": "rollup -c",
+    "build": "NODE_ENV=production rollup -c",
     "dev": "rollup -c -w"
   },
   "repository": {
@@ -35,5 +35,7 @@
     "rollup-plugin-serve": "^0.6.0",
     "rollup-plugin-uglify": "^6.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "raf": "^3.4.0"
+  }
 }
