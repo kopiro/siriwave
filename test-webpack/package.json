@@ -1,0 +1,25 @@
+{
+	"name": "siriwave-test-webpack",
+	"version": "1.0.0",
+	"private": true,
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"build": "webpack",
+		"start": "webpack-dev-server",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"express": "^4.16.4",
+		"webpack": "^4.20.2",
+		"webpack-cli": "^3.1.2",
+		"webpack-dev-middleware": "^3.4.0",
+		"webpack-dev-server": "^3.1.9"
+	},
+	"dependencies": {
+		"parallelshell": "^3.0.2",
+		"siriwave": "file:.."
+	}
+}
