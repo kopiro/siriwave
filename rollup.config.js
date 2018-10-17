@@ -28,24 +28,24 @@ if (process.env.NODE_ENV !== 'production') {
 export default [{
 		input: 'src/siriwave.js',
 		output: {
-			file: pkg.browser,
-			name: pkg.library,
-			format: 'iife'
+			file: pkg.unpkg,
+			name: pkg.amdName,
+			format: 'umd'
 		},
 		plugins: [
 			resolve(),
 			commonjs(),
 			babel({
 				exclude: 'node_modules/**'
-			})
+			}),
 		].concat(additional_plugins)
 	},
 	{
 		input: 'src/siriwave.js',
 		output: {
-			file: pkg.browser.replace('.js', '.min.js'),
-			name: pkg.library,
-			format: 'iife'
+			file: pkg.unpkg.replace('.js', '.min.js'),
+			name: pkg.amdName,
+			format: 'umd'
 		},
 		plugins: [
 			resolve(),
@@ -60,7 +60,7 @@ export default [{
 		input: 'src/siriwave.js',
 		output: [{
 			file: pkg.module,
-			format: 'es'
+			format: 'esm'
 		}],
 		plugins: [
 			babel({
