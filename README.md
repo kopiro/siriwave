@@ -16,13 +16,15 @@ The "Apple Siri" wave replicated in pure Javascript using the Canvas API.
 
 ## Usage
 
-Download the dist file under **./dist/siriwave.min.js**,
+To use in the classic way, download the dist file under **./dist/siriwave.min.js**,
 or use the CDN one **https://unpkg.com/siriwave/dist/siriwave.min.js**
 and include in your web page as a script.
 
 ```html
 <script src="https://unpkg.com/siriwave/dist/siriwave.js"></script>
 ```
+
+Otherwise, the build is ready to import via `npm i siriwave`.
 
 Create a div container and instantiate a SiriWave object
 
