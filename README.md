@@ -1,8 +1,16 @@
 # SiriWave
 
-Have you ever thought on how to get the Siri wave effect on your website or mobile app?
+The "Apple Siri" wave replicated in pure Javascript using the Canvas API.
 
-SiriWave is a library that _easily_ allows you to get this effect.
+[![npm version](https://badge.fury.io/js/siriwave.svg)](https://badge.fury.io/js/siriwave)
+
+### Classic style
+
+<img src="classic.gif" />
+
+### iOS 9+ style
+
+<img src="ios9.gif" />
 
 ### [Live example](http://kopiro.github.io/siriwave)
 
