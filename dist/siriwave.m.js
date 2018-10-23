@@ -105,9 +105,9 @@ function () {
     this.ctrl = opt.ctrl;
     this.definition = opt.definition;
     this.GRAPH_X = 4;
-    this.AMPLITUDE_FACTOR = 1;
-    this.SPEED_FACTOR = 3;
-    this.DEAD_PX = 2;
+    this.AMPLITUDE_FACTOR = 2;
+    this.SPEED_FACTOR = 2;
+    this.DEAD_PX = 1;
     this.NOOFCURVES_RANGES = [3, 6];
     this.AMPLITUDE_RANGES = [0.1, 0.6];
     this.SPEED_RANGES = [0.6, 1];
@@ -177,7 +177,7 @@ function () {
     key: "draw",
     value: function draw() {
       var ctx = this.ctrl.ctx;
-      ctx.globalAlpha = 1;
+      ctx.globalAlpha = 0.5;
       ctx.globalCompositeOperation = "lighter";
 
       if (this.definition.supportLine) {
@@ -226,11 +226,7 @@ function () {
         ctx.lineTo(this.xBasePoint - this.MAX_WIDTH_EACH_CURVE_PX, this.ctrl.heightMax + 0);
         ctx.closePath();
         var grad = ctx.createLinearGradient(this.xBasePoint - this.MAX_WIDTH_EACH_CURVE_PX, 0, this.xBasePoint + this.MAX_WIDTH_EACH_CURVE_PX, this.ctrl.heightMax);
-        grad.addColorStop(0, "rgba(" + this.definition.color + ",0.9)");
-        grad.addColorStop(0.4, "rgba(" + this.definition.color + ", 0.4)");
-        grad.addColorStop(0.6, "rgba(" + this.definition.color + ", 0.4)");
-        grad.addColorStop(1, "rgba(" + this.definition.color + ",0.9)");
-        ctx.fillStyle = grad;
+        ctx.fillStyle = "rgba(" + this.definition.color + ", 1)";
         ctx.fill();
       }
     }
@@ -240,15 +236,6 @@ function () {
       return [{
         color: "255,255,255",
         supportLine: true
-      }, {
-        // blue
-        color: "12, 107, 192"
-      }, {
-        // red
-        color: "135, 46, 76"
-      }, {
-        // green
-        color: "73, 226, 158"
       }, {
         // blue
         color: "12, 107, 192"
