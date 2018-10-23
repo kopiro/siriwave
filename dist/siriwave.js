@@ -1,3 +1,5 @@
+
+(function(l, i, v, e) { v = l.createElement(i); v.async = 1; v.src = '//' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; e = l.getElementsByTagName(i)[0]; e.parentNode.insertBefore(v, e)})(document, 'script');
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
@@ -97,6 +99,11 @@
     return Curve;
   }();
 
+  function lerp(v0, v1, t) {
+      return v0*(1-t)+v1*t
+  }
+  var lerp_1 = lerp;
+
   var iOS9Curve =
   /*#__PURE__*/
   function () {
@@ -107,71 +114,129 @@
 
       this.ctrl = opt.ctrl;
       this.definition = opt.definition;
-      this.phase = 0;
-      this.AMPLITUDE_RANGE = [0.1, 1];
-      this.WIDTH_RANGE = [0.1, 0.3];
+      this.GRAPH_X = 4;
+      this.AMPLITUDE_FACTOR = 2;
+      this.SPEED_FACTOR = 2;
+      this.DEAD_PX = 1;
+      this.NOOFCURVES_RANGES = [3, 6];
+      this.AMPLITUDE_RANGES = [0.1, 0.6];
+      this.SPEED_RANGES = [0.6, 1];
+      this.OFFSET_RANGES = [-this.GRAPH_X / 2, this.GRAPH_X / 2];
+      this.PARAMS_RANGES = [1, 2]; // The padding (left and right) to use when drawing waves
+
+      this.PADDING_PX = 0.1 * this.ctrl.width;
+      this.MAX_WIDTH_PX = this.ctrl.width - this.PADDING_PX * 2;
+      this.MAX_WIDTH_EACH_CURVE_PX = this.MAX_WIDTH_PX * 0.7;
+      this.xBasePoint = this.ctrl.width / 2 + ((Math.random() * 2 | 0) === 1 ? 1 : -1) * (Math.random() * this.PADDING_PX);
 
       this._respawn();
     }
 
     _createClass(iOS9Curve, [{
+      key: "_getRandomRange",
+      value: function _getRandomRange(e) {
+        return e[0] + Math.random() * (e[1] - e[0]);
+      }
+    }, {
+      key: "_respawnSingle",
+      value: function _respawnSingle(ci) {
+        this.phases[ci] = 0;
+        this.offsets[ci] = this._getRandomRange(this.OFFSET_RANGES);
+        this.speeds[ci] = this._getRandomRange(this.SPEED_RANGES);
+        this.amplitudes[ci] = this._getRandomRange(this.AMPLITUDE_RANGES);
+        this.params[ci] = this._getRandomRange(this.PARAMS_RANGES);
+      }
+    }, {
       key: "_respawn",
       value: function _respawn() {
-        // Generate a random seed
-        this.seed = Math.random(); // Generate random properties for this wave
+        this.spawnAt = Date.now();
+        this.noOfCurves = this.NOOFCURVES_RANGES[Math.random() * this.NOOFCURVES_RANGES | 0];
+        this.phases = new Array(this.noOfCurves);
+        this.offsets = new Array(this.noOfCurves);
+        this.speeds = new Array(this.noOfCurves);
+        this.amplitudes = new Array(this.noOfCurves);
+        this.params = new Array(this.noOfCurves);
 
-        this.amplitude = this.AMPLITUDE_RANGE[0] + Math.random() * (this.AMPLITUDE_RANGE[1] - this.AMPLITUDE_RANGE[0]);
-        this.width = this.ctrl.width * (this.WIDTH_RANGE[0] + Math.random() * (this.WIDTH_RANGE[1] - this.WIDTH_RANGE[0])); // Generate a random number to determine the wave class
-
-        this.openClass = 2 + (Math.random() * 3 | 0);
+        for (var ci = 0; ci < this.noOfCurves; ci++) {
+          this._respawnSingle(ci);
+        }
       }
     }, {
       key: "_ypos",
       value: function _ypos(i) {
-        var y = 1 * // Actual real Y in the SIN function
-        Math.abs(Math.sin(this.phase)) * // Amplitude of the original controller
-        this.ctrl.amplitude * // Amplitude of current wave
-        this.amplitude * // Maximum height for the complete wave
-        this.ctrl.heightMax * // Class of the wave (small to big)
-        Math.pow(1 / (1 + Math.pow(this.openClass * i, 2)), 2); // If we reach a minimum threshold to consider this wave "dead", 
-        // respawn with other properties
+        var y = 0;
 
-        if (Math.abs(y) < this.ctrl.DEAD_THRESHOLD) {
-          this._respawn();
-        }
+        for (var ci = 0; ci < this.noOfCurves; ci++) {
+          var x = i + this.offsets[ci];
+          y += Math.abs( // Actual real Y in the SIN function
+          Math.sin(this.phases[ci]) * // Amplitude of current wave
+          this.amplitudes[ci] * // Class of the wave
+          Math.pow(1 / (1 + Math.pow(this.params[ci] * x, 2)), 2));
+        } // Divide for NoOfCurves so that y <= 1
 
-        return y;
+
+        y = y / this.noOfCurves;
+        return this.AMPLITUDE_FACTOR * this.ctrl.heightMax * this.ctrl.amplitude * y;
+      }
+    }, {
+      key: "_xpos",
+      value: function _xpos(i) {
+        return i / this.GRAPH_X * this.MAX_WIDTH_EACH_CURVE_PX;
       }
     }, {
       key: "draw",
       value: function draw() {
-        this.phase += this.ctrl.speed * (1 - 0.5 * Math.sin(this.seed * Math.PI)); // TODO:  we have to ensure that same colors are not near
+        var ctx = this.ctrl.ctx;
+        ctx.globalAlpha = 0.5;
+        ctx.globalCompositeOperation = "lighter";
 
-        var xBase = 2 * this.width + (-this.width + this.seed * (2 * this.width));
-        var yBase = this.ctrl.heightMax;
-        var x, y;
-        var height = Math.abs(this._ypos(0));
-        var xInit = xBase + -this.ctrl.MAX_X * this.width;
-        var ctx = this.ctrl.ctx; // Write two opposite waves
+        if (this.definition.supportLine) {
+          var coo = [0, this.ctrl.heightMax, this.ctrl.width, 1];
+          var gradient = ctx.createLinearGradient.apply(ctx, coo);
+          gradient.addColorStop(0, "transparent");
+          gradient.addColorStop(0.1, "rgba(255,255,255,.5)");
+          gradient.addColorStop(1 - 0.1 - 0.1, "rgba(255,255,255,.5)");
+          gradient.addColorStop(1, "transparent");
+          ctx.fillStyle = gradient;
+          ctx.fillRect.apply(ctx, coo);
+          return;
+        }
 
-        var _arr = [-1, 1];
+        for (var ci = 0; ci < this.noOfCurves; ci++) {
+          this.phases[ci] += this.SPEED_FACTOR * this.ctrl.speed * this.speeds[ci] * Math.random();
+        }
+
+        var maxY = this._ypos(0);
+
+        if (maxY < this.DEAD_PX && this.prevMaxY > maxY) {
+          this.prevMaxY = maxY;
+
+          this._respawn();
+
+          return;
+        }
+
+        this.prevMaxY = maxY; // Write two opposite waves
+
+        var _arr = [1, -1];
 
         for (var _i = 0; _i < _arr.length; _i++) {
           var sign = _arr[_i];
           ctx.beginPath(); // Cycle the graph from -X to +X every PX_DEPTH and draw the line
 
-          for (var i = -this.ctrl.MAX_X; i <= this.ctrl.MAX_X; i += this.ctrl.opt.pixelDepth) {
-            x = xBase + i * this.width;
-            y = yBase + sign * this._ypos(i);
-            ctx.lineTo(x, y);
-          }
+          for (var i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
+            var x = this._xpos(i);
 
-          var gradient = ctx.createRadialGradient(xBase, yBase, height * 1.15, xBase, yBase, height * 0.3);
-          gradient.addColorStop(0, 'rgba(' + this.definition.color + ', 0.8)');
-          gradient.addColorStop(1, 'rgba(' + this.definition.color + ', 0.2)');
-          ctx.fillStyle = gradient;
-          ctx.lineTo(xInit, yBase);
+            var y = sign * this._ypos(i);
+
+            ctx.lineTo(this.xBasePoint + x, this.ctrl.heightMax + y);
+          } // Ensure path is fully closed
+
+
+          ctx.lineTo(this.xBasePoint - this.MAX_WIDTH_EACH_CURVE_PX, this.ctrl.heightMax + 0);
           ctx.closePath();
+          var grad = ctx.createLinearGradient(this.xBasePoint - this.MAX_WIDTH_EACH_CURVE_PX, 0, this.xBasePoint + this.MAX_WIDTH_EACH_CURVE_PX, this.ctrl.heightMax);
+          ctx.fillStyle = "rgba(" + this.definition.color + ", 1)";
           ctx.fill();
         }
       }
@@ -179,11 +244,17 @@
       key: "getDefinition",
       value: function getDefinition() {
         return [{
-          color: '32,133,252'
+          color: "255,255,255",
+          supportLine: true
         }, {
-          color: '94,252,169'
+          // blue
+          color: "12, 107, 192"
         }, {
-          color: '253,71,103'
+          // red
+          color: "135, 46, 76"
+        }, {
+          // green
+          color: "73, 226, 158"
         }];
       }
     }]);
@@ -233,7 +304,7 @@
 
   }).call(commonjsGlobal);
 
-
+  //# sourceMappingURL=performance-now.js.map
   });
 
   var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -313,11 +384,6 @@
   raf_1.cancel = cancel;
   raf_1.polyfill = polyfill;
 
-  function lerp(v0, v1, t) {
-      return v0*(1-t)+v1*t
-  }
-  var lerp_1 = lerp;
-
   var SiriWave =
   /*#__PURE__*/
   function () {
@@ -366,11 +432,6 @@
        */
 
       this.MAX_X = 2;
-      /**
-       * A really small value to consider a wave "dead" (used in iOS9)
-       */
-
-      this.DEAD_THRESHOLD = 0.05;
       /**
        * Phase of the wave (passed to Math.sin function)
        */
@@ -448,7 +509,6 @@
       this.curves = []; // Instantiate all curves based on the style
 
       if (this.opt.style === 'ios9') {
-        var numberOfCurvesPerDef = 2;
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
@@ -456,13 +516,10 @@
         try {
           for (var _iterator = iOS9Curve.getDefinition()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var def = _step.value;
-
-            for (var j = 0; j < numberOfCurvesPerDef; j++) {
-              this.curves.push(new iOS9Curve({
-                ctrl: this,
-                definition: def
-              }));
-            }
+            this.curves.push(new iOS9Curve({
+              ctrl: this,
+              definition: def
+            }));
           }
         } catch (err) {
           _didIteratorError = true;

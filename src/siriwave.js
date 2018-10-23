@@ -49,11 +49,6 @@ export default class SiriWave {
 		this.MAX_X = 2;
 
 		/**
-		 * A really small value to consider a wave "dead" (used in iOS9)
-		 */
-		this.DEAD_THRESHOLD = 0.05;
-
-		/**
 		 * Phase of the wave (passed to Math.sin function)
 		 */
 		this.phase = 0;
@@ -131,14 +126,11 @@ export default class SiriWave {
 
 		// Instantiate all curves based on the style
 		if (this.opt.style === 'ios9') {
-			const numberOfCurvesPerDef = 2;
 			for (let def of iOS9Curve.getDefinition()) {
-				for (let j = 0; j < numberOfCurvesPerDef; j++) {
-					this.curves.push(new iOS9Curve({
-						ctrl: this,
-						definition: def
-					}));
-				}
+				this.curves.push(new iOS9Curve({
+					ctrl: this,
+					definition: def
+				}));
 			}
 		} else {
 			for (let def of Curve.getDefinition()) {
