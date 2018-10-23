@@ -1,9 +1,9 @@
 <html>
 
 <head>
-   <title>SiriWave</title>
-   <style>
-      body {
+	<title>SiriWave</title>
+	<style>
+		body {
          background: #000;
          padding: 20px;
          margin: 0;
@@ -16,8 +16,9 @@
       #container-9 {
          width: 600px;
          height: 300px;
-         background: #000;
-         border: 1px solid rgba(255, 255, 255, .1);
+			background: url("back.png") center no-repeat;
+			background-size: cover;
+			padding: 5px;
          margin: 20px;
          margin: 0 auto;
       }
@@ -41,7 +42,7 @@
          width: 300px;
       }
    </style>
-   <script src="./dist/siriwave.js"></script>
+	<script src="./dist/siriwave.js"></script>
 </head>
 
 <h1>SiriWave</h1>
@@ -51,40 +52,40 @@
 <div id="container-9"></div>
 
 <div id="controls">
-   <div>
-      <label for="ctrl-speed">Speed - <b id="ctrl-show-speed"></b></label>
-      <input type="range" min="0" max="2" step="0.1" id="ctrl-speed" />
-   </div>
-   <div>
-      <label for="ctrl-amplitude">Amplitude - <b id="ctrl-show-amplitude"></b></label>
-      <input type="range" min="0" max="1" step="0.1" id="ctrl-amplitude" />
-   </div>
+	<div>
+		<label for="ctrl-speed">Speed - <b id="ctrl-show-speed"></b></label>
+		<input type="range" min="0" max="2" step="0.1" id="ctrl-speed" />
+	</div>
+	<div>
+		<label for="ctrl-amplitude">Amplitude - <b id="ctrl-show-amplitude"></b></label>
+		<input type="range" min="0" max="1" step="0.1" id="ctrl-amplitude" />
+	</div>
 </div>
 
 <script>
-   var SW = new SiriWave({
-      container: document.getElementById('container'),
-      autostart: true,
-   });
-   var SW9 = new SiriWave({
-      style: 'ios9',
-      container: document.getElementById('container-9'),
-      autostart: true,
-   });
-   var SWs = [SW, SW9];
+	var SW = new SiriWave({
+		container: document.getElementById('container'),
+		autostart: true,
+	});
+	var SW9 = new SiriWave({
+		style: 'ios9',
+		container: document.getElementById('container-9'),
+		autostart: true,
+	});
+	var SWs = [SW, SW9];
 </script>
 
 <script>
-   for (let e of ['speed', 'amplitude']) {
-      let ctrl = document.querySelector('#ctrl-' + e);
-      let show = document.querySelector('#ctrl-show-' + e);
-      ctrl.value = SWs[0][e];
-      show.innerText = ctrl.value;
-      ctrl.addEventListener('change', () => {
-         show.innerText = ctrl.value;
-         for (let sw of SWs) sw.set(e, ctrl.value);
-      });
-   }
+	for (let e of ['speed', 'amplitude']) {
+		let ctrl = document.querySelector('#ctrl-' + e);
+		let show = document.querySelector('#ctrl-show-' + e);
+		ctrl.value = SWs[0][e];
+		show.innerText = ctrl.value;
+		ctrl.addEventListener('change', () => {
+			show.innerText = ctrl.value;
+			for (let sw of SWs) sw.set(e, ctrl.value);
+		});
+	}
 </script>
 
 </html>
