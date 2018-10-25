@@ -106,17 +106,17 @@ function () {
 
     this.ctrl = opt.ctrl;
     this.definition = opt.definition;
-    this.GRAPH_X = 10;
+    this.GRAPH_X = 6;
     this.AMPLITUDE_FACTOR = 0.5;
-    this.SPEED_FACTOR = 2;
+    this.SPEED_FACTOR = 1;
     this.DEAD_PX = 2;
     this.ATT_FACTOR = 4;
     this.DESPAWN_FACTOR = 0.02;
-    this.NOOFCURVES_RANGES = [2, 5];
+    this.NOOFCURVES_RANGES = [5, 10];
     this.AMPLITUDE_RANGES = [0.6, 1];
-    this.OFFSET_RANGES = [-this.GRAPH_X / 2, this.GRAPH_X / 2];
+    this.OFFSET_RANGES = [-this.GRAPH_X / 4, this.GRAPH_X / 4];
     this.WIDTH_RANGES = [0.5, 1];
-    this.SPEED_RANGES = [0.5, 1];
+    this.SPEED_RANGES = [1, 1];
     this.DESPAWN_TIMEOUT_RANGES = [500, 2000]; // The padding (left and right) to use when drawing waves
 
     this.PADDING_PX = 0.1 * this.ctrl.width;
@@ -232,7 +232,7 @@ function () {
         }
 
         this.amplitudes[ci] = Math.min(Math.max(this.amplitudes[ci], 0), this.finalAmplitudes[ci]);
-        this.phases[ci] = (this.phases[ci] + this.ctrl.speed * this.speeds[ci] * this.SPEED_FACTOR * Math.random()) % (2 * Math.PI);
+        this.phases[ci] = (this.phases[ci] + this.ctrl.speed * this.speeds[ci] * this.SPEED_FACTOR) % (2 * Math.PI);
       }
 
       var maxY = 0; // Write two opposite waves
@@ -273,13 +273,13 @@ function () {
         supportLine: true
       }, {
         // blue
-        color: "12, 107, 192"
+        color: "15, 82, 169"
       }, {
         // red
-        color: "135, 46, 76"
+        color: "173, 57, 76"
       }, {
         // green
-        color: "73, 226, 158"
+        color: "48, 220, 155"
       }];
     }
   }]);
