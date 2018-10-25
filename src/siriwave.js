@@ -44,11 +44,6 @@ export default class SiriWave {
 		}, opt);
 
 		/**
-		 * Max X coordinate to draw the graph
-		 */
-		this.MAX_X = 2;
-
-		/**
 		 * Phase of the wave (passed to Math.sin function)
 		 */
 		this.phase = 0;
