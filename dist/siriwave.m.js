@@ -272,7 +272,7 @@ function () {
    * @param {Number} [opt.height=null] Height of the canvas. Calculated by default.
    * @param {Boolean} [opt.autostart=false] Decide wether start the animation on boot.
    * @param {Number} [opt.pixelDepth=0.02] Number of step (in pixels) used when drawed on canvas.
-   * @param {Number} [opt.lerpSpeed=0.01] Lerp speed to interpolate properties.
+   * @param {Number} [opt.lerpSpeed=0.1] Lerp speed to interpolate properties.
    */
   function SiriWave() {
     var opt = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -284,7 +284,7 @@ function () {
     this.opt = Object.assign({
       style: 'ios',
       ratio: window.devicePixelRatio || 1,
-      speed: 0.1,
+      speed: 0.2,
       amplitude: 1,
       frequency: 6,
       color: '#fff',
@@ -295,7 +295,7 @@ function () {
       height: window.getComputedStyle(this.container).height.replace('px', ''),
       autostart: false,
       pixelDepth: 0.02,
-      lerpSpeed: 0.01
+      lerpSpeed: 0.1
     }, opt);
     /**
      * Phase of the wave (passed to Math.sin function)
@@ -531,7 +531,7 @@ function () {
 
       this._draw();
 
-      this.phase = (this.phase + Math.PI * this.speed) % (2 * Math.PI);
+      this.phase = (this.phase + Math.PI / 2 * this.speed) % (2 * Math.PI);
       raf(this._startDrawCycle.bind(this), 20);
     }
     /* API */
