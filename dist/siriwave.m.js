@@ -32,6 +32,8 @@ function () {
     this.ctrl = opt.ctrl;
     this.definition = opt.definition;
     this.ATT_FACTOR = 4;
+    this.GRAPH_X = 2;
+    this.AMPLITUDE_FACTOR = 0.6;
   }
 
   _createClass(Curve, [{
@@ -42,12 +44,12 @@ function () {
   }, {
     key: "_xpos",
     value: function _xpos(i) {
-      return this.ctrl.width / 2 + i * (this.ctrl.width / 4);
+      return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
     }
   }, {
     key: "_ypos",
     value: function _ypos(i) {
-      return this.ctrl.heightMax + this._globalAttFn(i) * (this.ctrl.heightMax * this.ctrl.amplitude / this.definition.attenuation) * Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase);
+      return this.AMPLITUDE_FACTOR * (this._globalAttFn(i) * (this.ctrl.heightMax * this.ctrl.amplitude) * (1 / this.definition.attenuation) * Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase));
     }
   }, {
     key: "draw",
@@ -58,8 +60,8 @@ function () {
       ctx.strokeStyle = 'rgba(' + this.ctrl.color + ',' + this.definition.opacity + ')';
       ctx.lineWidth = this.definition.lineWidth; // Cycle the graph from -X to +X every PX_DEPTH and draw the line
 
-      for (var i = -this.ctrl.MAX_X; i <= this.ctrl.MAX_X; i += this.ctrl.opt.pixelDepth) {
-        ctx.lineTo(this._xpos(i), this._ypos(i));
+      for (var i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
+        ctx.lineTo(this._xpos(i), this.ctrl.heightMax + this._ypos(i));
       }
 
       ctx.stroke();
@@ -295,11 +297,6 @@ function () {
       pixelDepth: 0.02,
       lerpSpeed: 0.01
     }, opt);
-    /**
-     * Max X coordinate to draw the graph
-     */
-
-    this.MAX_X = 2;
     /**
      * Phase of the wave (passed to Math.sin function)
      */
