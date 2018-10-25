@@ -1,6 +1,6 @@
 {
 	"name": "siriwave",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"description": "The Siri wave replicated in a JS library.",
 	"module": "dist/siriwave.m.js",
 	"jsnext:main": "dist/siriwave.m.js",
