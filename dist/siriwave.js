@@ -1,3 +1,5 @@
+
+(function(l, i, v, e) { v = l.createElement(i); v.async = 1; v.src = '//' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; e = l.getElementsByTagName(i)[0]; e.parentNode.insertBefore(v, e)})(document, 'script');
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
@@ -116,7 +118,7 @@
       this.definition = opt.definition;
       this.GRAPH_X = 4;
       this.AMPLITUDE_FACTOR = 2;
-      this.SPEED_FACTOR = 2;
+      this.SPEED_FACTOR = 1;
       this.DEAD_PX = 1;
       this.NOOFCURVES_RANGES = [3, 6];
       this.AMPLITUDE_RANGES = [0.1, 0.6];
