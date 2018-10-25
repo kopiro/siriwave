@@ -7,7 +7,7 @@ export default class iOS9Curve {
 
 		this.GRAPH_X = 4;
 		this.AMPLITUDE_FACTOR = 2;
-		this.SPEED_FACTOR = 2;
+		this.SPEED_FACTOR = 1;
 		this.DEAD_PX = 1;
 
 		this.NOOFCURVES_RANGES = [3, 6];
