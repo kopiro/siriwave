@@ -2,6 +2,8 @@
 
 The "Apple Siri" wave replicated in pure Javascript using the Canvas API.
 
+Read blog post [here](https://developers.caffeina.com/how-i-built-siriwavejs-library-maths-and-code-behind-6971497ae5c1)
+
 [![npm version](https://badge.fury.io/js/siriwave.svg)](https://badge.fury.io/js/siriwave)
 
 ### Classic style
@@ -24,7 +26,9 @@ and include in your web page as a script.
 <script src="https://unpkg.com/siriwave/dist/siriwave.js"></script>
 ```
 
-Otherwise, the build is ready to import via `npm i siriwave`.
+Otherwise, the build is ready to import as ESM module via `npm i siriwave`.
+
+## Instantitate
 
 Create a div container and instantiate a SiriWave object
 
@@ -41,56 +45,19 @@ var siriWave = new SiriWave({
 
 ## Constructor options
 
-### `container` (DOMElement)
-
-The DOM container where the DOM canvas element will be added.
-
-### `[style]` (String, default: 'ios')
-
-The style of the wave.
-
-- `default` - Original Siri style
-- `ios9` - Style used in iOS9+
-
-### `[ratio]` (Number)
-
-Ratio of the display to use. Calculated by default.
-
-### `[speed]` (Number, from `0` to `1`, default: `0.2`)
-
-The speed of the animation.
-
-### `[amplitude]` (Number, from `0` to `1`, default: `1`)
-
-The amplitude of the complete wave.
-
-### `[frequency]` (Number, from `0` to `N`, default: `6`)
-
-The frequency for the complete wave (how many waves).
-
-**Not available in iOS9 Style**
-
-### `[color]` (String, Color, default: `#fff`)
-
-The color of the wave, in hexadecimal form (`#336699`, `#FF0`)
-
-**Not available in iOS9 Style**
-
-### `[cover]` (Boolean, default: `false`)
-
-The `canvas` covers the entire width or height of the container.
-
-### `[autostart]` (Boolean, default: `false`)
-
-Decide wether start the animation on boot.
-
-### `[pixelDepth]` (Number, default: `0.02`)
-
-Number of step (in pixels) used when drawed on canvas.
-
-### `[lerpSpeed]` (Number, default: `0.01`)
-
-Lerp speed to interpolate properties.
+| Key        | Type          | Description                                                            | Default    | Required |
+| ---------- | ------------- | ---------------------------------------------------------------------- | ---------- | -------- |
+| container  | DOMElement    | The DOM container where the DOM canvas element will be added.          | null       | yes      |
+| style      | "ios", "ios9" | The style of the wave.                                                 | "ios"      | no       |
+| ratio      | Number        | Ratio of the display to use. Calculated by default.                    | calculated | no       |
+| speed      | Number        | The speed of the animation.                                            | 0.2        | no       |
+| amplitude  | Number        | The amplitude of the complete wave-form.                               | 1          | no       |
+| frequency  | Number        | The frequency of the complete wave-form. Only available in style "ios" | 6          | no       |
+| color      | String        | Color of the wave. Only available in style "ios"                       | "#fff"     | no       |
+| cover      | Bool          | The `canvas` covers the entire width or height of the container        | false      | no       |
+| autostart  | Bool          | Decide wether start the animation on boot.                             | false      | no       |
+| pixelDepth | Number        | Number of step (in pixels) used when drawed on canvas.                 | 0.02       | no       |
+| lerpSpeed  | Number        | Lerp speed to interpolate properties.                                  | 0.01       | no       |
 
 ## API
 
@@ -110,11 +77,7 @@ Set the new value of speed (animated)
 
 Set the new value of amplitude (animated)
 
-## Projects/examples that uses this script
+## Grapher plots
 
-- [The Capitol - The Official Government of Panem (Hunger Games Mockingjay Part 1 website)](http://www.thecapitol.pn/)
-- [http://blog.kidliaa.com/demo/siri%20wave/](http://blog.kidliaa.com/demo/siri%20wave/)
-
-## Some math
-
-![image](https://cloud.githubusercontent.com/assets/839700/3263201/224d98ec-f26f-11e3-971c-1e87f66a212f.JPG)
+- [GCX default](default.gcx)
+- [GCX iOS 9](ios9.gcx)
