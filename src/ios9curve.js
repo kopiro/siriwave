@@ -6,17 +6,17 @@ export default class iOS9Curve {
 		this.definition = opt.definition;
 
 		this.GRAPH_X = 6;
-		this.AMPLITUDE_FACTOR = 0.5;
+		this.AMPLITUDE_FACTOR = 1.5;
 		this.SPEED_FACTOR = 1;
 		this.DEAD_PX = 2;
 		this.ATT_FACTOR = 4;
 
 		this.DESPAWN_FACTOR = 0.02;
 
-		this.NOOFCURVES_RANGES = [5, 10];
+		this.NOOFCURVES_RANGES = [3, 5];
 		this.AMPLITUDE_RANGES = [0.6, 1];
-		this.OFFSET_RANGES = [-this.GRAPH_X / 4, this.GRAPH_X / 4];
-		this.WIDTH_RANGES = [0.5, 1];
+		this.OFFSET_RANGES = [0.8, 1];
+		this.WIDTH_RANGES = [0.4, 1];
 		this.SPEED_RANGES = [1, 1];
 		this.DESPAWN_TIMEOUT_RANGES = [500, 2000];
 
@@ -73,7 +73,7 @@ export default class iOS9Curve {
 	}
 
 	_sin(x, phase) {
-		return Math.sin(x - phase);
+		return Math.sin(0.5 * x - phase);
 	}
 
 	_grad(x, a, b) {
@@ -85,7 +85,7 @@ export default class iOS9Curve {
 		let y = 0;
 
 		for (let ci = 0; ci < this.noOfCurves; ci++) {
-			const t = this.offsets[ci];
+			const t = (-this.GRAPH_X / 1) + ((ci / this.noOfCurves) * 2 * this.GRAPH_X * this.offsets[ci]);
 			const k = 1 / this.widths[ci];
 			const x = (i * k) - t;
 
@@ -97,7 +97,7 @@ export default class iOS9Curve {
 		}
 
 		// Divide for NoOfCurves so that y <= 1
-		return y / this.noOfCurves;
+		return (y / this.noOfCurves);
 	}
 
 	_ypos(i) {
@@ -105,7 +105,8 @@ export default class iOS9Curve {
 			this.AMPLITUDE_FACTOR *
 			this.ctrl.heightMax *
 			this.ctrl.amplitude *
-			this._yRelativePos(i)
+			this._yRelativePos(i) *
+			this._globalAttFn(i)
 		);
 	}
 
@@ -115,7 +116,7 @@ export default class iOS9Curve {
 
 	_drawSupportLine(ctx) {
 		const coo = [0, this.ctrl.heightMax, this.ctrl.width, 1];
-		var gradient = ctx.createLinearGradient.apply(ctx, coo);
+		const gradient = ctx.createLinearGradient.apply(ctx, coo);
 		gradient.addColorStop(0, 'transparent');
 		gradient.addColorStop(0.1, 'rgba(255,255,255,.5)');
 		gradient.addColorStop(1 - 0.1 - 0.1, 'rgba(255,255,255,.5)');
@@ -128,10 +129,11 @@ export default class iOS9Curve {
 	draw() {
 		const ctx = this.ctrl.ctx;
 
-		ctx.globalAlpha = 0.75;
+		ctx.globalAlpha = 0.7;
 		ctx.globalCompositeOperation = 'lighter';
 
 		if (this.definition.supportLine) {
+			// Draw the support line
 			return this._drawSupportLine(ctx);
 		}
 
@@ -151,24 +153,26 @@ export default class iOS9Curve {
 		for (let sign of [1, -1]) {
 			ctx.beginPath();
 
-			// Cycle the graph from -X to +X every PX_DEPTH and draw the line
 			for (
 				let i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth
 			) {
 				const x = this._xpos(i);
-				const y = sign * this._ypos(i);
+				const y = this._ypos(i);
+				ctx.lineTo(x, this.ctrl.heightMax - sign * y);
+
 				maxY = Math.max(maxY, y);
-				ctx.lineTo(x, this.ctrl.heightMax + y);
 			}
 
+			ctx.lineTo(0, this.ctrl.heightMax);
 			ctx.closePath();
-			ctx.fillStyle = 'rgba(' + this.definition.color + ', 1)';
 
+
+			ctx.fillStyle = 'rgba(' + this.definition.color + ', 1)';
+			ctx.strokeStyle = 'rgba(' + this.definition.color + ', 1)';
 			ctx.fill();
 		}
 
 		if (maxY < this.DEAD_PX && this.prevMaxY > maxY) {
-			console.log('respawn');
 			this._respawn();
 		}
 
