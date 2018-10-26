@@ -1,5 +1,3 @@
-
-(function(l, i, v, e) { v = l.createElement(i); v.async = 1; v.src = '//' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; e = l.getElementsByTagName(i)[0]; e.parentNode.insertBefore(v, e)})(document, 'script');
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
@@ -116,23 +114,18 @@
 
       this.ctrl = opt.ctrl;
       this.definition = opt.definition;
-      this.GRAPH_X = 6;
-      this.AMPLITUDE_FACTOR = 1.5;
+      this.GRAPH_X = 25;
+      this.AMPLITUDE_FACTOR = 0.8;
       this.SPEED_FACTOR = 1;
       this.DEAD_PX = 2;
       this.ATT_FACTOR = 4;
       this.DESPAWN_FACTOR = 0.02;
-      this.NOOFCURVES_RANGES = [3, 5];
-      this.AMPLITUDE_RANGES = [0.6, 1];
-      this.OFFSET_RANGES = [0.8, 1];
-      this.WIDTH_RANGES = [0.4, 1];
-      this.SPEED_RANGES = [1, 1];
-      this.DESPAWN_TIMEOUT_RANGES = [500, 2000]; // The padding (left and right) to use when drawing waves
-
-      this.PADDING_PX = 0.1 * this.ctrl.width;
-      this.MAX_WIDTH_PX = this.ctrl.width - this.PADDING_PX * 2;
-      this.MAX_WIDTH_EACH_CURVE_PX = this.MAX_WIDTH_PX * 0.7;
-      this.xBasePoint = this.ctrl.width / 2 + this._getRandomRange([-this.PADDING_PX, this.PADDING_PX]);
+      this.NOOFCURVES_RANGES = [2, 5];
+      this.AMPLITUDE_RANGES = [0.3, 1];
+      this.OFFSET_RANGES = [-3, 3];
+      this.WIDTH_RANGES = [1, 3];
+      this.SPEED_RANGES = [0.5, 1];
+      this.DESPAWN_TIMEOUT_RANGES = [500, 2000];
 
       this._respawn();
     }
@@ -152,12 +145,13 @@
         this.speeds[ci] = this._getRandomRange(this.SPEED_RANGES);
         this.finalAmplitudes[ci] = this._getRandomRange(this.AMPLITUDE_RANGES);
         this.widths[ci] = this._getRandomRange(this.WIDTH_RANGES);
+        this.verses[ci] = this._getRandomRange([-1, 1]);
       }
     }, {
       key: "_respawn",
       value: function _respawn() {
         this.spawnAt = Date.now();
-        this.noOfCurves = this.NOOFCURVES_RANGES[Math.random() * this.NOOFCURVES_RANGES | 0];
+        this.noOfCurves = Math.floor(this._getRandomRange(this.NOOFCURVES_RANGES));
         this.phases = new Array(this.noOfCurves);
         this.offsets = new Array(this.noOfCurves);
         this.speeds = new Array(this.noOfCurves);
@@ -165,6 +159,7 @@
         this.widths = new Array(this.noOfCurves);
         this.amplitudes = new Array(this.noOfCurves);
         this.despawnTimeouts = new Array(this.noOfCurves);
+        this.verses = new Array(this.noOfCurves);
 
         for (var ci = 0; ci < this.noOfCurves; ci++) {
           this._respawnSingle(ci);
@@ -178,7 +173,7 @@
     }, {
       key: "_sin",
       value: function _sin(x, phase) {
-        return Math.sin(0.5 * x - phase);
+        return Math.sin(x - phase);
       }
     }, {
       key: "_grad",
@@ -192,10 +187,13 @@
         var y = 0;
 
         for (var ci = 0; ci < this.noOfCurves; ci++) {
-          var t = -this.GRAPH_X / 1 + ci / this.noOfCurves * 2 * this.GRAPH_X * this.offsets[ci];
+          // Generate a static T so that each curve is distant from each oterh
+          var t = 4 * (-1 + ci / (this.noOfCurves - 1) * 2); // but add a dynamic offset
+
+          t += this.offsets[ci];
           var k = 1 / this.widths[ci];
           var x = i * k - t;
-          y += Math.abs(this.amplitudes[ci] * this._sin(x, this.phases[ci]) * this._globalAttFn(x));
+          y += Math.abs(this.amplitudes[ci] * this._sin(this.verses[ci] * x, this.phases[ci]) * this._globalAttFn(x));
         } // Divide for NoOfCurves so that y <= 1
 
 
@@ -204,12 +202,12 @@
     }, {
       key: "_ypos",
       value: function _ypos(i) {
-        return this.AMPLITUDE_FACTOR * this.ctrl.heightMax * this.ctrl.amplitude * this._yRelativePos(i) * this._globalAttFn(i);
+        return this.AMPLITUDE_FACTOR * this.ctrl.heightMax * this.ctrl.amplitude * this._yRelativePos(i) * this._globalAttFn(i / this.GRAPH_X * 2);
       }
     }, {
       key: "_xpos",
       value: function _xpos(i) {
-        return this.xBasePoint + i / this.GRAPH_X * this.MAX_WIDTH_EACH_CURVE_PX;
+        return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
       }
     }, {
       key: "_drawSupportLine",
@@ -246,7 +244,7 @@
           this.phases[ci] = (this.phases[ci] + this.ctrl.speed * this.speeds[ci] * this.SPEED_FACTOR) % (2 * Math.PI);
         }
 
-        var maxY = 0; // Write two opposite waves
+        var maxY = -Infinity;
 
         var _arr = [1, -1];
 
@@ -263,7 +261,6 @@
             maxY = Math.max(maxY, y);
           }
 
-          ctx.lineTo(0, this.ctrl.heightMax);
           ctx.closePath();
           ctx.fillStyle = 'rgba(' + this.definition.color + ', 1)';
           ctx.strokeStyle = 'rgba(' + this.definition.color + ', 1)';
@@ -340,7 +337,7 @@
 
   }).call(commonjsGlobal);
 
-  //# sourceMappingURL=performance-now.js.map
+
   });
 
   var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -454,8 +451,6 @@
         amplitude: 1,
         frequency: 6,
         color: '#fff',
-        speedInterpolationSpeed: 0.05,
-        amplitudeInterpolationSpeed: 0.005,
         cover: false,
         width: window.getComputedStyle(this.container).width.replace('px', ''),
         height: window.getComputedStyle(this.container).height.replace('px', ''),

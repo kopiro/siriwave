@@ -33,8 +33,6 @@ export default class SiriWave {
 			amplitude: 1,
 			frequency: 6,
 			color: '#fff',
-			speedInterpolationSpeed: 0.05,
-			amplitudeInterpolationSpeed: 0.005,
 			cover: false,
 			width: window.getComputedStyle(this.container).width.replace('px', ''),
 			height: window.getComputedStyle(this.container).height.replace('px', ''),
