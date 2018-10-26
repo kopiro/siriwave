@@ -5,27 +5,20 @@ export default class iOS9Curve {
 		this.ctrl = opt.ctrl;
 		this.definition = opt.definition;
 
-		this.GRAPH_X = 6;
-		this.AMPLITUDE_FACTOR = 1.5;
+		this.GRAPH_X = 25;
+		this.AMPLITUDE_FACTOR = 0.8;
 		this.SPEED_FACTOR = 1;
 		this.DEAD_PX = 2;
 		this.ATT_FACTOR = 4;
 
 		this.DESPAWN_FACTOR = 0.02;
 
-		this.NOOFCURVES_RANGES = [3, 5];
-		this.AMPLITUDE_RANGES = [0.6, 1];
-		this.OFFSET_RANGES = [0.8, 1];
-		this.WIDTH_RANGES = [0.4, 1];
-		this.SPEED_RANGES = [1, 1];
+		this.NOOFCURVES_RANGES = [2, 5];
+		this.AMPLITUDE_RANGES = [0.3, 1];
+		this.OFFSET_RANGES = [-3, 3];
+		this.WIDTH_RANGES = [1, 3];
+		this.SPEED_RANGES = [0.5, 1];
 		this.DESPAWN_TIMEOUT_RANGES = [500, 2000];
-
-		// The padding (left and right) to use when drawing waves
-		this.PADDING_PX = 0.1 * this.ctrl.width;
-		this.MAX_WIDTH_PX = this.ctrl.width - this.PADDING_PX * 2;
-		this.MAX_WIDTH_EACH_CURVE_PX = this.MAX_WIDTH_PX * 0.7;
-
-		this.xBasePoint = (this.ctrl.width / 2) + this._getRandomRange([-this.PADDING_PX, this.PADDING_PX]);
 
 		this._respawn();
 	}
@@ -43,14 +36,13 @@ export default class iOS9Curve {
 		this.speeds[ci] = this._getRandomRange(this.SPEED_RANGES);
 		this.finalAmplitudes[ci] = this._getRandomRange(this.AMPLITUDE_RANGES);
 		this.widths[ci] = this._getRandomRange(this.WIDTH_RANGES);
+		this.verses[ci] = this._getRandomRange([-1, 1]);
 	}
 
 	_respawn() {
 		this.spawnAt = Date.now();
 
-		this.noOfCurves = this.NOOFCURVES_RANGES[
-			(Math.random() * this.NOOFCURVES_RANGES) | 0
-		];
+		this.noOfCurves = Math.floor(this._getRandomRange(this.NOOFCURVES_RANGES));
 
 		this.phases = new Array(this.noOfCurves);
 		this.offsets = new Array(this.noOfCurves);
@@ -59,6 +51,7 @@ export default class iOS9Curve {
 		this.widths = new Array(this.noOfCurves);
 		this.amplitudes = new Array(this.noOfCurves);
 		this.despawnTimeouts = new Array(this.noOfCurves);
+		this.verses = new Array(this.noOfCurves);
 
 		for (let ci = 0; ci < this.noOfCurves; ci++) {
 			this._respawnSingle(ci);
@@ -73,7 +66,7 @@ export default class iOS9Curve {
 	}
 
 	_sin(x, phase) {
-		return Math.sin(0.5 * x - phase);
+		return Math.sin(x - phase);
 	}
 
 	_grad(x, a, b) {
@@ -85,13 +78,17 @@ export default class iOS9Curve {
 		let y = 0;
 
 		for (let ci = 0; ci < this.noOfCurves; ci++) {
-			const t = (-this.GRAPH_X / 1) + ((ci / this.noOfCurves) * 2 * this.GRAPH_X * this.offsets[ci]);
+			// Generate a static T so that each curve is distant from each oterh
+			let t = 4 * (-1 + (ci / (this.noOfCurves - 1) * 2));
+			// but add a dynamic offset
+			t += this.offsets[ci];
+
 			const k = 1 / this.widths[ci];
 			const x = (i * k) - t;
 
 			y += Math.abs(
 				this.amplitudes[ci] *
-				this._sin(x, this.phases[ci]) *
+				this._sin(this.verses[ci] * x, this.phases[ci]) *
 				this._globalAttFn(x)
 			);
 		}
@@ -106,12 +103,12 @@ export default class iOS9Curve {
 			this.ctrl.heightMax *
 			this.ctrl.amplitude *
 			this._yRelativePos(i) *
-			this._globalAttFn(i)
+			this._globalAttFn(i / this.GRAPH_X * 2)
 		);
 	}
 
 	_xpos(i) {
-		return this.xBasePoint + (i / this.GRAPH_X) * this.MAX_WIDTH_EACH_CURVE_PX;
+		return (this.ctrl.width) * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
 	}
 
 	_drawSupportLine(ctx) {
@@ -143,11 +140,13 @@ export default class iOS9Curve {
 			} else {
 				this.amplitudes[ci] += this.DESPAWN_FACTOR;
 			}
+
 			this.amplitudes[ci] = Math.min(Math.max(this.amplitudes[ci], 0), this.finalAmplitudes[ci]);
 			this.phases[ci] = (this.phases[ci] + this.ctrl.speed * this.speeds[ci] * this.SPEED_FACTOR) % (2 * Math.PI);
 		}
 
-		let maxY = 0;
+		let maxY = -Infinity;
+		let minX = +Infinity;
 
 		// Write two opposite waves
 		for (let sign of [1, -1]) {
@@ -160,12 +159,11 @@ export default class iOS9Curve {
 				const y = this._ypos(i);
 				ctx.lineTo(x, this.ctrl.heightMax - sign * y);
 
+				minX = Math.min(minX, x);
 				maxY = Math.max(maxY, y);
 			}
 
-			ctx.lineTo(0, this.ctrl.heightMax);
 			ctx.closePath();
-
 
 			ctx.fillStyle = 'rgba(' + this.definition.color + ', 1)';
 			ctx.strokeStyle = 'rgba(' + this.definition.color + ', 1)';
