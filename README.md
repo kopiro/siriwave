@@ -2,7 +2,9 @@
 
 The "Apple Siri" wave replicated in pure Javascript using the Canvas API.
 
-Read blog post [here](https://developers.caffeina.com/how-i-built-siriwavejs-library-maths-and-code-behind-6971497ae5c1)
+[Read blog post here](https://developers.caffeina.com/how-i-built-siriwavejs-library-maths-and-code-behind-6971497ae5c1)
+
+[View live example](http://kopiro.github.io/siriwave)
 
 [![npm version](https://badge.fury.io/js/siriwave.svg)](https://badge.fury.io/js/siriwave)
 
@@ -13,8 +15,6 @@ Read blog post [here](https://developers.caffeina.com/how-i-built-siriwavejs-lib
 ### iOS 9+ style
 
 <img src="ios9.gif" />
-
-### [Live example](http://kopiro.github.io/siriwave)
 
 ## Usage
 
