@@ -79,7 +79,7 @@ export default class SiriWave {
 		/**
 		 * Color of the wave (used in Classic iOS)
 		 */
-		this.color = this._hex2rgb(this.opt.color);
+		this.color = 'rgb(' + this._hex2rgb(this.opt.color) + ')';
 
 		/**
 		 * An object containing controller variables that need to be interpolated 
@@ -168,6 +168,9 @@ export default class SiriWave {
 	 */
 	_lerp(propertyStr) {
 		this[propertyStr] = lerp(this[propertyStr], this.interpolation[propertyStr], this.opt.lerpSpeed);
+		if (this[propertyStr] == this.interpolation[propertyStr]) {
+			this.interpolation[propertyStr] = null;
+		}
 		return this[propertyStr];
 	}
 
@@ -201,8 +204,8 @@ export default class SiriWave {
 		this._clear();
 
 		// Interpolate values
-		this._lerp('amplitude');
-		this._lerp('speed');
+		if (this.interpolation.amplitude) this._lerp('amplitude');
+		if (this.interpolation.speed) this._lerp('speed');
 
 		this._draw();
 		this.phase = (this.phase + (Math.PI / 2) * this.speed) % (2 * Math.PI);

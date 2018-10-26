@@ -37,7 +37,9 @@ export default class Curve {
 
 		ctx.moveTo(0, 0);
 		ctx.beginPath();
-		ctx.strokeStyle = 'rgba(' + this.ctrl.color + ',' + this.definition.opacity + ')';
+
+		const color = this.ctrl.color.replace(/rgb\(/g, '').replace(/\)/g, '');
+		ctx.strokeStyle = 'rgba(' + color + ',' + this.definition.opacity + ')';
 		ctx.lineWidth = this.definition.lineWidth;
 
 		// Cycle the graph from -X to +X every PX_DEPTH and draw the line

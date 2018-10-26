@@ -57,7 +57,8 @@ function () {
       var ctx = this.ctrl.ctx;
       ctx.moveTo(0, 0);
       ctx.beginPath();
-      ctx.strokeStyle = 'rgba(' + this.ctrl.color + ',' + this.definition.opacity + ')';
+      var color = this.ctrl.color.replace(/rgb\(/g, '').replace(/\)/g, '');
+      ctx.strokeStyle = 'rgba(' + color + ',' + this.definition.opacity + ')';
       ctx.lineWidth = this.definition.lineWidth; // Cycle the graph from -X to +X every PX_DEPTH and draw the line
 
       for (var i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
@@ -367,7 +368,7 @@ function () {
      * Color of the wave (used in Classic iOS)
      */
 
-    this.color = this._hex2rgb(this.opt.color);
+    this.color = 'rgb(' + this._hex2rgb(this.opt.color) + ')';
     /**
      * An object containing controller variables that need to be interpolated 
      * to an another value before to be actually changed
@@ -496,6 +497,11 @@ function () {
     key: "_lerp",
     value: function _lerp(propertyStr) {
       this[propertyStr] = lerp(this[propertyStr], this.interpolation[propertyStr], this.opt.lerpSpeed);
+
+      if (this[propertyStr] == this.interpolation[propertyStr]) {
+        this.interpolation[propertyStr] = null;
+      }
+
       return this[propertyStr];
     }
     /**
@@ -556,9 +562,8 @@ function () {
       this._clear(); // Interpolate values
 
 
-      this._lerp('amplitude');
-
-      this._lerp('speed');
+      if (this.interpolation.amplitude) this._lerp('amplitude');
+      if (this.interpolation.speed) this._lerp('speed');
 
       this._draw();
 

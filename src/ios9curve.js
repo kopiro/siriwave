@@ -108,7 +108,8 @@ export default class iOS9Curve {
 	}
 
 	_xpos(i) {
-		return (this.ctrl.width) * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
+		return (this.ctrl.width) *
+			((i + this.GRAPH_X) / (this.GRAPH_X * 2));
 	}
 
 	_drawSupportLine(ctx) {
