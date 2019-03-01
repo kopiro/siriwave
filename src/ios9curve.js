@@ -178,8 +178,9 @@ export default class iOS9Curve {
 		this.prevMaxY = maxY;
 	}
 
-	static getDefinition() {
-		return [{
+	static getDefinition(waveColors) {
+		return Object.assign(
+			[{
 				color: "255,255,255",
 				supportLine: true
 			},
@@ -194,8 +195,7 @@ export default class iOS9Curve {
 			{
 				// green
 				color: "48, 220, 155"
-			}
-
-		];
+			}], waveColors
+		);
 	}
 }
