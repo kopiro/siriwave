@@ -1,3 +1,5 @@
+
+(function(l, i, v, e) { v = l.createElement(i); v.async = 1; v.src = '//' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; e = l.getElementsByTagName(i)[0]; e.parentNode.insertBefore(v, e)})(document, 'script');
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
@@ -25,276 +27,6 @@
     if (staticProps) _defineProperties(Constructor, staticProps);
     return Constructor;
   }
-
-  var Curve =
-  /*#__PURE__*/
-  function () {
-    function Curve(opt) {
-      _classCallCheck(this, Curve);
-
-      this.ctrl = opt.ctrl;
-      this.definition = opt.definition;
-      this.ATT_FACTOR = 4;
-      this.GRAPH_X = 2;
-      this.AMPLITUDE_FACTOR = 0.6;
-    }
-
-    _createClass(Curve, [{
-      key: "_globalAttFn",
-      value: function _globalAttFn(x) {
-        return Math.pow(this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, this.ATT_FACTOR)), this.ATT_FACTOR);
-      }
-    }, {
-      key: "_xpos",
-      value: function _xpos(i) {
-        return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
-      }
-    }, {
-      key: "_ypos",
-      value: function _ypos(i) {
-        return this.AMPLITUDE_FACTOR * (this._globalAttFn(i) * (this.ctrl.heightMax * this.ctrl.amplitude) * (1 / this.definition.attenuation) * Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase));
-      }
-    }, {
-      key: "draw",
-      value: function draw() {
-        var ctx = this.ctrl.ctx;
-        ctx.moveTo(0, 0);
-        ctx.beginPath();
-        var color = this.ctrl.color.replace(/rgb\(/g, '').replace(/\)/g, '');
-        ctx.strokeStyle = 'rgba(' + color + ',' + this.definition.opacity + ')';
-        ctx.lineWidth = this.definition.lineWidth; // Cycle the graph from -X to +X every PX_DEPTH and draw the line
-
-        for (var i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
-          ctx.lineTo(this._xpos(i), this.ctrl.heightMax + this._ypos(i));
-        }
-
-        ctx.stroke();
-      }
-    }], [{
-      key: "getDefinition",
-      value: function getDefinition() {
-        return [{
-          attenuation: -2,
-          lineWidth: 1,
-          opacity: 0.1
-        }, {
-          attenuation: -6,
-          lineWidth: 1,
-          opacity: 0.2
-        }, {
-          attenuation: 4,
-          lineWidth: 1,
-          opacity: 0.4
-        }, {
-          attenuation: 2,
-          lineWidth: 1,
-          opacity: 0.6
-        }, {
-          attenuation: 1,
-          lineWidth: 1.5,
-          opacity: 1
-        }];
-      }
-    }]);
-
-    return Curve;
-  }();
-
-  function lerp(v0, v1, t) {
-      return v0*(1-t)+v1*t
-  }
-  var lerp_1 = lerp;
-
-  var iOS9Curve =
-  /*#__PURE__*/
-  function () {
-    function iOS9Curve() {
-      var opt = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-      _classCallCheck(this, iOS9Curve);
-
-      this.ctrl = opt.ctrl;
-      this.definition = opt.definition;
-      this.GRAPH_X = 25;
-      this.AMPLITUDE_FACTOR = 0.8;
-      this.SPEED_FACTOR = 1;
-      this.DEAD_PX = 2;
-      this.ATT_FACTOR = 4;
-      this.DESPAWN_FACTOR = 0.02;
-      this.NOOFCURVES_RANGES = [2, 5];
-      this.AMPLITUDE_RANGES = [0.3, 1];
-      this.OFFSET_RANGES = [-3, 3];
-      this.WIDTH_RANGES = [1, 3];
-      this.SPEED_RANGES = [0.5, 1];
-      this.DESPAWN_TIMEOUT_RANGES = [500, 2000];
-
-      this._respawn();
-    }
-
-    _createClass(iOS9Curve, [{
-      key: "_getRandomRange",
-      value: function _getRandomRange(e) {
-        return e[0] + Math.random() * (e[1] - e[0]);
-      }
-    }, {
-      key: "_respawnSingle",
-      value: function _respawnSingle(ci) {
-        this.phases[ci] = 0;
-        this.amplitudes[ci] = 0;
-        this.despawnTimeouts[ci] = this._getRandomRange(this.DESPAWN_TIMEOUT_RANGES);
-        this.offsets[ci] = this._getRandomRange(this.OFFSET_RANGES);
-        this.speeds[ci] = this._getRandomRange(this.SPEED_RANGES);
-        this.finalAmplitudes[ci] = this._getRandomRange(this.AMPLITUDE_RANGES);
-        this.widths[ci] = this._getRandomRange(this.WIDTH_RANGES);
-        this.verses[ci] = this._getRandomRange([-1, 1]);
-      }
-    }, {
-      key: "_respawn",
-      value: function _respawn() {
-        this.spawnAt = Date.now();
-        this.noOfCurves = Math.floor(this._getRandomRange(this.NOOFCURVES_RANGES));
-        this.phases = new Array(this.noOfCurves);
-        this.offsets = new Array(this.noOfCurves);
-        this.speeds = new Array(this.noOfCurves);
-        this.finalAmplitudes = new Array(this.noOfCurves);
-        this.widths = new Array(this.noOfCurves);
-        this.amplitudes = new Array(this.noOfCurves);
-        this.despawnTimeouts = new Array(this.noOfCurves);
-        this.verses = new Array(this.noOfCurves);
-
-        for (var ci = 0; ci < this.noOfCurves; ci++) {
-          this._respawnSingle(ci);
-        }
-      }
-    }, {
-      key: "_globalAttFn",
-      value: function _globalAttFn(x) {
-        return Math.pow(this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, 2)), this.ATT_FACTOR);
-      }
-    }, {
-      key: "_sin",
-      value: function _sin(x, phase) {
-        return Math.sin(x - phase);
-      }
-    }, {
-      key: "_grad",
-      value: function _grad(x, a, b) {
-        if (x > a && x < b) return 1;
-        return 1;
-      }
-    }, {
-      key: "_yRelativePos",
-      value: function _yRelativePos(i) {
-        var y = 0;
-
-        for (var ci = 0; ci < this.noOfCurves; ci++) {
-          // Generate a static T so that each curve is distant from each oterh
-          var t = 4 * (-1 + ci / (this.noOfCurves - 1) * 2); // but add a dynamic offset
-
-          t += this.offsets[ci];
-          var k = 1 / this.widths[ci];
-          var x = i * k - t;
-          y += Math.abs(this.amplitudes[ci] * this._sin(this.verses[ci] * x, this.phases[ci]) * this._globalAttFn(x));
-        } // Divide for NoOfCurves so that y <= 1
-
-
-        return y / this.noOfCurves;
-      }
-    }, {
-      key: "_ypos",
-      value: function _ypos(i) {
-        return this.AMPLITUDE_FACTOR * this.ctrl.heightMax * this.ctrl.amplitude * this._yRelativePos(i) * this._globalAttFn(i / this.GRAPH_X * 2);
-      }
-    }, {
-      key: "_xpos",
-      value: function _xpos(i) {
-        return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
-      }
-    }, {
-      key: "_drawSupportLine",
-      value: function _drawSupportLine(ctx) {
-        var coo = [0, this.ctrl.heightMax, this.ctrl.width, 1];
-        var gradient = ctx.createLinearGradient.apply(ctx, coo);
-        gradient.addColorStop(0, 'transparent');
-        gradient.addColorStop(0.1, 'rgba(255,255,255,.5)');
-        gradient.addColorStop(1 - 0.1 - 0.1, 'rgba(255,255,255,.5)');
-        gradient.addColorStop(1, 'transparent');
-        ctx.fillStyle = gradient;
-        ctx.fillRect.apply(ctx, coo);
-      }
-    }, {
-      key: "draw",
-      value: function draw() {
-        var ctx = this.ctrl.ctx;
-        ctx.globalAlpha = 0.7;
-        ctx.globalCompositeOperation = 'lighter';
-
-        if (this.definition.supportLine) {
-          // Draw the support line
-          return this._drawSupportLine(ctx);
-        }
-
-        for (var ci = 0; ci < this.noOfCurves; ci++) {
-          if (this.spawnAt + this.despawnTimeouts[ci] <= Date.now()) {
-            this.amplitudes[ci] -= this.DESPAWN_FACTOR;
-          } else {
-            this.amplitudes[ci] += this.DESPAWN_FACTOR;
-          }
-
-          this.amplitudes[ci] = Math.min(Math.max(this.amplitudes[ci], 0), this.finalAmplitudes[ci]);
-          this.phases[ci] = (this.phases[ci] + this.ctrl.speed * this.speeds[ci] * this.SPEED_FACTOR) % (2 * Math.PI);
-        }
-
-        var maxY = -Infinity;
-
-        var _arr = [1, -1];
-
-        for (var _i = 0; _i < _arr.length; _i++) {
-          var sign = _arr[_i];
-          ctx.beginPath();
-
-          for (var i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
-            var x = this._xpos(i);
-
-            var y = this._ypos(i);
-
-            ctx.lineTo(x, this.ctrl.heightMax - sign * y);
-            maxY = Math.max(maxY, y);
-          }
-
-          ctx.closePath();
-          ctx.fillStyle = 'rgba(' + this.definition.color + ', 1)';
-          ctx.strokeStyle = 'rgba(' + this.definition.color + ', 1)';
-          ctx.fill();
-        }
-
-        if (maxY < this.DEAD_PX && this.prevMaxY > maxY) {
-          this._respawn();
-        }
-
-        this.prevMaxY = maxY;
-      }
-    }], [{
-      key: "getDefinition",
-      value: function getDefinition() {
-        return [{
-          color: "255,255,255",
-          supportLine: true
-        }, {
-          // blue
-          color: "15, 82, 169"
-        }, {
-          // red
-          color: "173, 57, 76"
-        }, {
-          // green
-          color: "48, 220, 155"
-        }];
-      }
-    }]);
-
-    return iOS9Curve;
-  }();
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -338,7 +70,7 @@
 
   }).call(commonjsGlobal);
 
-
+  //# sourceMappingURL=performance-now.js.map
   });
 
   var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -418,12 +150,282 @@
   raf_1.cancel = cancel;
   raf_1.polyfill = polyfill;
 
+  function lerp(v0, v1, t) {
+      return v0*(1-t)+v1*t
+  }
+  var lerp_1 = lerp;
+
+  var Curve =
+  /*#__PURE__*/
+  function () {
+    function Curve(opt) {
+      _classCallCheck(this, Curve);
+
+      this.ctrl = opt.ctrl;
+      this.definition = opt.definition;
+      this.ATT_FACTOR = 4;
+      this.GRAPH_X = 2;
+      this.AMPLITUDE_FACTOR = 0.6;
+    }
+
+    _createClass(Curve, [{
+      key: "globalAttFn",
+      value: function globalAttFn(x) {
+        return Math.pow(this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, this.ATT_FACTOR)), this.ATT_FACTOR);
+      }
+    }, {
+      key: "_xpos",
+      value: function _xpos(i) {
+        return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
+      }
+    }, {
+      key: "_ypos",
+      value: function _ypos(i) {
+        return this.AMPLITUDE_FACTOR * (this.globalAttFn(i) * (this.ctrl.heightMax * this.ctrl.amplitude) * (1 / this.definition.attenuation) * Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase));
+      }
+    }, {
+      key: "draw",
+      value: function draw() {
+        var ctx = this.ctrl.ctx;
+        ctx.moveTo(0, 0);
+        ctx.beginPath();
+        var color = this.ctrl.color.replace(/rgb\(/g, '').replace(/\)/g, '');
+        ctx.strokeStyle = "rgba(".concat(color, ",").concat(this.definition.opacity, ")");
+        ctx.lineWidth = this.definition.lineWidth; // Cycle the graph from -X to +X every PX_DEPTH and draw the line
+
+        for (var i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
+          ctx.lineTo(this._xpos(i), this.ctrl.heightMax + this._ypos(i));
+        }
+
+        ctx.stroke();
+      }
+    }], [{
+      key: "getDefinition",
+      value: function getDefinition() {
+        return [{
+          attenuation: -2,
+          lineWidth: 1,
+          opacity: 0.1
+        }, {
+          attenuation: -6,
+          lineWidth: 1,
+          opacity: 0.2
+        }, {
+          attenuation: 4,
+          lineWidth: 1,
+          opacity: 0.4
+        }, {
+          attenuation: 2,
+          lineWidth: 1,
+          opacity: 0.6
+        }, {
+          attenuation: 1,
+          lineWidth: 1.5,
+          opacity: 1
+        }];
+      }
+    }]);
+
+    return Curve;
+  }();
+
+  var iOS9Curve =
+  /*#__PURE__*/
+  function () {
+    function iOS9Curve() {
+      var opt = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      _classCallCheck(this, iOS9Curve);
+
+      this.ctrl = opt.ctrl;
+      this.definition = opt.definition;
+      this.GRAPH_X = 25;
+      this.AMPLITUDE_FACTOR = 0.8;
+      this.SPEED_FACTOR = 1;
+      this.DEAD_PX = 2;
+      this.ATT_FACTOR = 4;
+      this.DESPAWN_FACTOR = 0.02;
+      this.NOOFCURVES_RANGES = [2, 5];
+      this.AMPLITUDE_RANGES = [0.3, 1];
+      this.OFFSET_RANGES = [-3, 3];
+      this.WIDTH_RANGES = [1, 3];
+      this.SPEED_RANGES = [0.5, 1];
+      this.DESPAWN_TIMEOUT_RANGES = [500, 2000];
+      this.respawn();
+    }
+
+    _createClass(iOS9Curve, [{
+      key: "getRandomRange",
+      value: function getRandomRange(e) {
+        return e[0] + Math.random() * (e[1] - e[0]);
+      }
+    }, {
+      key: "respawnSingle",
+      value: function respawnSingle(ci) {
+        this.phases[ci] = 0;
+        this.amplitudes[ci] = 0;
+        this.despawnTimeouts[ci] = this.getRandomRange(this.DESPAWN_TIMEOUT_RANGES);
+        this.offsets[ci] = this.getRandomRange(this.OFFSET_RANGES);
+        this.speeds[ci] = this.getRandomRange(this.SPEED_RANGES);
+        this.finalAmplitudes[ci] = this.getRandomRange(this.AMPLITUDE_RANGES);
+        this.widths[ci] = this.getRandomRange(this.WIDTH_RANGES);
+        this.verses[ci] = this.getRandomRange([-1, 1]);
+      }
+    }, {
+      key: "respawn",
+      value: function respawn() {
+        this.spawnAt = Date.now();
+        this.noOfCurves = Math.floor(this.getRandomRange(this.NOOFCURVES_RANGES));
+        this.phases = new Array(this.noOfCurves);
+        this.offsets = new Array(this.noOfCurves);
+        this.speeds = new Array(this.noOfCurves);
+        this.finalAmplitudes = new Array(this.noOfCurves);
+        this.widths = new Array(this.noOfCurves);
+        this.amplitudes = new Array(this.noOfCurves);
+        this.despawnTimeouts = new Array(this.noOfCurves);
+        this.verses = new Array(this.noOfCurves);
+
+        for (var ci = 0; ci < this.noOfCurves; ci++) {
+          this.respawnSingle(ci);
+        }
+      }
+    }, {
+      key: "globalAttFn",
+      value: function globalAttFn(x) {
+        return Math.pow(this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, 2)), this.ATT_FACTOR);
+      }
+    }, {
+      key: "sin",
+      value: function sin(x, phase) {
+        return Math.sin(x - phase);
+      }
+    }, {
+      key: "_grad",
+      value: function _grad(x, a, b) {
+        if (x > a && x < b) return 1;
+        return 1;
+      }
+    }, {
+      key: "yRelativePos",
+      value: function yRelativePos(i) {
+        var y = 0;
+
+        for (var ci = 0; ci < this.noOfCurves; ci++) {
+          // Generate a static T so that each curve is distant from each oterh
+          var t = 4 * (-1 + ci / (this.noOfCurves - 1) * 2); // but add a dynamic offset
+
+          t += this.offsets[ci];
+          var k = 1 / this.widths[ci];
+          var x = i * k - t;
+          y += Math.abs(this.amplitudes[ci] * this.sin(this.verses[ci] * x, this.phases[ci]) * this.globalAttFn(x));
+        } // Divide for NoOfCurves so that y <= 1
+
+
+        return y / this.noOfCurves;
+      }
+    }, {
+      key: "_ypos",
+      value: function _ypos(i) {
+        return this.AMPLITUDE_FACTOR * this.ctrl.heightMax * this.ctrl.amplitude * this.yRelativePos(i) * this.globalAttFn(i / this.GRAPH_X * 2);
+      }
+    }, {
+      key: "_xpos",
+      value: function _xpos(i) {
+        return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
+      }
+    }, {
+      key: "drawSupportLine",
+      value: function drawSupportLine(ctx) {
+        var coo = [0, this.ctrl.heightMax, this.ctrl.width, 1];
+        var gradient = ctx.createLinearGradient.apply(ctx, coo);
+        gradient.addColorStop(0, 'transparent');
+        gradient.addColorStop(0.1, 'rgba(255,255,255,.5)');
+        gradient.addColorStop(1 - 0.1 - 0.1, 'rgba(255,255,255,.5)');
+        gradient.addColorStop(1, 'transparent');
+        ctx.fillStyle = gradient;
+        ctx.fillRect.apply(ctx, coo);
+      }
+    }, {
+      key: "draw",
+      value: function draw() {
+        var ctx = this.ctrl.ctx;
+        ctx.globalAlpha = 0.7;
+        ctx.globalCompositeOperation = 'lighter';
+
+        if (this.definition.supportLine) {
+          // Draw the support line
+          return this.drawSupportLine(ctx);
+        }
+
+        for (var ci = 0; ci < this.noOfCurves; ci++) {
+          if (this.spawnAt + this.despawnTimeouts[ci] <= Date.now()) {
+            this.amplitudes[ci] -= this.DESPAWN_FACTOR;
+          } else {
+            this.amplitudes[ci] += this.DESPAWN_FACTOR;
+          }
+
+          this.amplitudes[ci] = Math.min(Math.max(this.amplitudes[ci], 0), this.finalAmplitudes[ci]);
+          this.phases[ci] = (this.phases[ci] + this.ctrl.speed * this.speeds[ci] * this.SPEED_FACTOR) % (2 * Math.PI);
+        }
+
+        var maxY = -Infinity;
+
+        var _arr = [1, -1];
+
+        for (var _i = 0; _i < _arr.length; _i++) {
+          var sign = _arr[_i];
+          ctx.beginPath();
+
+          for (var i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
+            var x = this._xpos(i);
+
+            var y = this._ypos(i);
+
+            ctx.lineTo(x, this.ctrl.heightMax - sign * y);
+            maxY = Math.max(maxY, y);
+          }
+
+          ctx.closePath();
+          ctx.fillStyle = "rgba(".concat(this.definition.color, ", 1)");
+          ctx.strokeStyle = "rgba(".concat(this.definition.color, ", 1)");
+          ctx.fill();
+        }
+
+        if (maxY < this.DEAD_PX && this.prevMaxY > maxY) {
+          this.respawn();
+        }
+
+        this.prevMaxY = maxY;
+        return null;
+      }
+    }], [{
+      key: "getDefinition",
+      value: function getDefinition(waveColors) {
+        return Object.assign([{
+          color: '255,255,255',
+          supportLine: true
+        }, {
+          // blue
+          color: '15, 82, 169'
+        }, {
+          // red
+          color: '173, 57, 76'
+        }, {
+          // green
+          color: '48, 220, 155'
+        }], waveColors);
+      }
+    }]);
+
+    return iOS9Curve;
+  }();
+
   var SiriWave =
   /*#__PURE__*/
   function () {
     /**
      * Build the SiriWave
-     * @param {Object} opt 
+     * @param {Object} opt
      * @param {DOMElement} [opt.container=document.body] The DOM container where the DOM canvas element will be added
      * @param {String} [opt.style='ios'] The style of the wave: `ios` or `ios9`
      * @param {Number} [opt.ratio=null] Ratio of the display to use. Calculated by default.
@@ -498,9 +500,9 @@
        * Color of the wave (used in Classic iOS)
        */
 
-      this.color = 'rgb(' + this._hex2rgb(this.opt.color) + ')';
+      this.color = "rgb(".concat(this.hex2rgb(this.opt.color), ")");
       /**
-       * An object containing controller variables that need to be interpolated 
+       * An object containing controller variables that need to be interpolated
        * to an another value before to be actually changed
        */
 
@@ -525,8 +527,8 @@
       if (this.opt.cover === true) {
         this.canvas.style.width = this.canvas.style.height = '100%';
       } else {
-        this.canvas.style.width = this.width / this.opt.ratio + 'px';
-        this.canvas.style.height = this.height / this.opt.ratio + 'px';
+        this.canvas.style.width = "".concat(this.width / this.opt.ratio, "px");
+        this.canvas.style.height = "".concat(this.height / this.opt.ratio, "px");
       }
       /**
        * Curves objects to animate
@@ -541,7 +543,7 @@
         var _iteratorError = undefined;
 
         try {
-          for (var _iterator = iOS9Curve.getDefinition()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          for (var _iterator = iOS9Curve.getDefinition(this.opt.waveColors || [])[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var def = _step.value;
             this.curves.push(new iOS9Curve({
               ctrl: this,
@@ -607,14 +609,14 @@
 
 
     _createClass(SiriWave, [{
-      key: "_hex2rgb",
-      value: function _hex2rgb(hex) {
+      key: "hex2rgb",
+      value: function hex2rgb(hex) {
         var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
         hex = hex.replace(shorthandRegex, function (m, r, g, b) {
           return r + r + g + g + b + b;
         });
         var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? parseInt(result[1], 16).toString() + ',' + parseInt(result[2], 16).toString() + ',' + parseInt(result[3], 16).toString() : null;
+        return result ? "".concat(parseInt(result[1], 16).toString(), ",").concat(parseInt(result[2], 16).toString(), ",").concat(parseInt(result[3], 16).toString()) : null;
       }
       /**
        * Interpolate a property to the value found in $.interpolation
@@ -624,11 +626,11 @@
        */
 
     }, {
-      key: "_lerp",
-      value: function _lerp(propertyStr) {
+      key: "lerp",
+      value: function lerp(propertyStr) {
         this[propertyStr] = lerp_1(this[propertyStr], this.interpolation[propertyStr], this.opt.lerpSpeed);
 
-        if (this[propertyStr] == this.interpolation[propertyStr]) {
+        if (this[propertyStr] - this.interpolation[propertyStr] === 0) {
           this.interpolation[propertyStr] = null;
         }
 
@@ -685,20 +687,20 @@
        */
 
     }, {
-      key: "_startDrawCycle",
-      value: function _startDrawCycle() {
+      key: "startDrawCycle",
+      value: function startDrawCycle() {
         if (this.run === false) return;
 
         this._clear(); // Interpolate values
 
 
-        if (this.interpolation.amplitude) this._lerp('amplitude');
-        if (this.interpolation.speed) this._lerp('speed');
+        if (this.interpolation.amplitude !== null) this.lerp('amplitude');
+        if (this.interpolation.speed !== null) this.lerp('speed');
 
         this._draw();
 
         this.phase = (this.phase + Math.PI / 2 * this.speed) % (2 * Math.PI);
-        raf_1(this._startDrawCycle.bind(this), 20);
+        raf_1(this.startDrawCycle.bind(this), 20);
       }
       /* API */
 
@@ -712,8 +714,7 @@
       value: function start() {
         this.phase = 0;
         this.run = true;
-
-        this._startDrawCycle();
+        this.startDrawCycle();
       }
       /**
        * Stop the animation

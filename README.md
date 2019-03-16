@@ -28,6 +28,10 @@ and include in your web page as a script.
 
 Otherwise, the build is ready to import as ESM module via `npm i siriwave`.
 
+```js
+import SiriWave from 'siriwave';
+```
+
 ## Instantitate
 
 Create a div container and instantiate a SiriWave object

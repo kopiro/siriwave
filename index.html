@@ -1,126 +1,131 @@
+<!DOCTYPE html>
 <html>
-
-<head>
-	<title>Siriwave</title>
-	<meta charset="utf-8" />
-	<style>
-		body {
-			padding: 60px 20px;
-         margin: 0;
-         color: #fff;
-			font-weight: 100;
-         font-family: "SF Pro Display","Helvetica Neue","Helvetica","Arial",sans-serif;
-         text-align: center;
-		}
-
-		h1, h2, h3, h4 {
-			letter-spacing: -.009em;
-			line-height: 1.0625;
-			font-weight: 600;
-		}
-		
-		h1 {
-			font-size: 64px;
-			margin-bottom: 0;
-		}
-
-		h2 {
-			font-size: 32px;
-		}
-
-		p {
-			font-size: 21px;
-			line-height: 1.38105;
-			font-weight: 400;
-		}
-
-		a {
-			color: #fff;
-		}
-
-		#background {
-			background: #000 url("https://www.valuewalk.com/wp-content/uploads/2018/06/mojave_dynamic_1.jpeg") center no-repeat;
-			background-size: cover;
-			-webkit-filter: blur(10px);
-			position: fixed;
-			z-index: -1;
-			top: -40px;
-			left: -40px;
-			right: -40px;
-			bottom: -40px;
+  <head>
+    <title>Siriwave</title>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        padding: 60px 20px;
+        margin: 0;
+        color: #fff;
+        font-weight: 100;
+        font-family: "SF Pro Display", "Helvetica Neue", "Helvetica", "Arial",
+          sans-serif;
+        text-align: center;
       }
-		#background:after {
-			content: '';
-			background: rgba(0,0,0,.5);
-			position: fixed;
-			z-index: 0;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-		}
+
+      h1,
+      h2,
+      h3,
+      h4 {
+        letter-spacing: -0.009em;
+        line-height: 1.0625;
+        font-weight: 600;
+      }
+
+      h1 {
+        font-size: 64px;
+        margin-bottom: 0;
+      }
+
+      h2 {
+        font-size: 32px;
+      }
+
+      p {
+        font-size: 21px;
+        line-height: 1.38105;
+        font-weight: 400;
+      }
+
+      a {
+        color: #fff;
+      }
+
+      #background {
+        background: #000
+          url("https://www.valuewalk.com/wp-content/uploads/2018/06/mojave_dynamic_1.jpeg")
+          center no-repeat;
+        background-size: cover;
+        -webkit-filter: blur(10px);
+        position: fixed;
+        z-index: -1;
+        top: -40px;
+        left: -40px;
+        right: -40px;
+        bottom: -40px;
+      }
+      #background:after {
+        content: "";
+        background: rgba(0, 0, 0, 0.5);
+        position: fixed;
+        z-index: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
 
       #container,
       #container-9 {
-         width: 600px;
-         height: 300px;
-			background-size: cover;
-         margin: 20px;
-         margin: 0 auto;
-			border: 1px dashed rgba(255,255,255,.4);
+        width: 600px;
+        height: 300px;
+        background-size: cover;
+        margin: 20px;
+        margin: 0 auto;
+        border: 1px dashed rgba(255, 255, 255, 0.4);
       }
 
-		footer {
-			max-width: 400px;
-			padding-top: 20px;
-			border-top: 1px solid rgba(255,255,255,.4);
-			margin: 40px auto 20px auto;
-			font-size: 16px;
-			font-weight: 400;
-			color: #ccc;
-		}
-   </style>
-	<script src="dist/siriwave.js"></script>
-	<script type="text/javascript" src="dat.gui.js"></script>
+      footer {
+        max-width: 400px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.4);
+        margin: 40px auto 20px auto;
+        font-size: 16px;
+        font-weight: 400;
+        color: #ccc;
+      }
+    </style>
+    <script src="dist/siriwave.js"></script>
+    <script type="text/javascript" src="dat.gui.js"></script>
+  </head>
 
-</head>
+  <h1>SiriwaveJS</h1>
+  <p>The Apple® Siri wave-form<br />replicated in a JS library.</p>
 
-<h1>SiriwaveJS</h1>
-<p>The Apple® Siri wave-form<br>replicated in a JS library.</p>
+  <div id="background"></div>
 
-<div id="background"></div>
+  <h2>Classic</h2>
+  <div id="container"></div>
 
-<h2>Classic</h2>
-<div id="container"></div>
+  <h2>iOS9+</h2>
+  <div id="container-9"></div>
 
-<h2>iOS9+</h2>
-<div id="container-9"></div>
+  <footer>
+    Installation guide and source code available
+    <a href="https://github.com/kopiro/siriwave">here</a>.
+  </footer>
 
-<footer>
-	Installation guide and source code available <a href="https://github.com/kopiro/siriwave">here</a>.
-</footer>
+  <script>
+    var SW = new SiriWave({
+      container: document.getElementById("container"),
+      autostart: true
+    });
+    var SW9 = new SiriWave({
+      style: "ios9",
+      container: document.getElementById("container-9"),
+      autostart: true
+    });
 
-<script>
-	var SW = new SiriWave({
-		container: document.getElementById('container'),
-		autostart: true,
-	});
-	var SW9 = new SiriWave({
-		style: 'ios9',
-		container: document.getElementById('container-9'),
-		autostart: true,
-	});
+    window.onload = function() {
+      var gui = new dat.GUI();
+      gui.add(SW, "speed", 0, 1);
+      gui.add(SW, "amplitude", 0, 3);
+      gui.addColor(SW, "color");
 
-	window.onload = function () {
-		var gui = new dat.GUI();
-		gui.add(SW, 'speed', 0, 1);
-		gui.add(SW, 'amplitude', 0, 3);
-		gui.addColor(SW, 'color');
-
-		var gui9 = new dat.GUI();
-		gui9.add(SW9, 'speed', 0, 1);
-		gui9.add(SW9, 'amplitude', 0, 3);
-	};
-</script>
-
+      var gui9 = new dat.GUI();
+      gui9.add(SW9, "speed", 0, 1);
+      gui9.add(SW9, "amplitude", 0, 3);
+    };
+  </script>
 </html>
