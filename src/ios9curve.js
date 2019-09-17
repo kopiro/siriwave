@@ -57,7 +57,10 @@ export default class iOS9Curve {
   }
 
   globalAttFn(x) {
-    return Math.pow(this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, 2)), this.ATT_FACTOR);
+    return Math.pow(
+      this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, 2)),
+      this.ATT_FACTOR,
+    );
   }
 
   sin(x, phase) {
@@ -82,7 +85,9 @@ export default class iOS9Curve {
       const x = i * k - t;
 
       y += Math.abs(
-        this.amplitudes[ci] * this.sin(this.verses[ci] * x, this.phases[ci]) * this.globalAttFn(x),
+        this.amplitudes[ci]
+          * this.sin(this.verses[ci] * x, this.phases[ci])
+          * this.globalAttFn(x),
       );
     }
 
@@ -134,8 +139,13 @@ export default class iOS9Curve {
         this.amplitudes[ci] += this.DESPAWN_FACTOR;
       }
 
-      this.amplitudes[ci] = Math.min(Math.max(this.amplitudes[ci], 0), this.finalAmplitudes[ci]);
-      this.phases[ci] = (this.phases[ci] + this.ctrl.speed * this.speeds[ci] * this.SPEED_FACTOR) % (2 * Math.PI);
+      this.amplitudes[ci] = Math.min(
+        Math.max(this.amplitudes[ci], 0),
+        this.finalAmplitudes[ci],
+      );
+      this.phases[ci] =        (this.phases[ci]
+          + this.ctrl.speed * this.speeds[ci] * this.SPEED_FACTOR)
+        % (2 * Math.PI);
     }
 
     let maxY = -Infinity;
@@ -145,7 +155,11 @@ export default class iOS9Curve {
     for (const sign of [1, -1]) {
       ctx.beginPath();
 
-      for (let i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
+      for (
+        let i = -this.GRAPH_X;
+        i <= this.GRAPH_X;
+        i += this.ctrl.opt.pixelDepth
+      ) {
         const x = this._xpos(i);
         const y = this._ypos(i);
         ctx.lineTo(x, this.ctrl.heightMax - sign * y);

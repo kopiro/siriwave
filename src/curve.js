@@ -40,7 +40,11 @@ export default class Curve {
     ctx.lineWidth = this.definition.lineWidth;
 
     // Cycle the graph from -X to +X every PX_DEPTH and draw the line
-    for (let i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
+    for (
+      let i = -this.GRAPH_X;
+      i <= this.GRAPH_X;
+      i += this.ctrl.opt.pixelDepth
+    ) {
       ctx.lineTo(this._xpos(i), this.ctrl.heightMax + this._ypos(i));
     }
 
