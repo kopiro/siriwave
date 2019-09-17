@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    siriwave: './src/siriwave.ts',
+    siriwave: './src/Siriwave.ts',
     test: './src/test.ts',
   },
   module: {

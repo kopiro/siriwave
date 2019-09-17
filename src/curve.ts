@@ -1,3 +1,6 @@
+import ISiriwave from './ISiriwave';
+import ICurveDefinition from './ICurveDefinition';
+
 export default class Curve {
   ctrl: any;
   definition: any;
@@ -6,23 +9,23 @@ export default class Curve {
   GRAPH_X = 2;
   AMPLITUDE_FACTOR = 0.6;
 
-  constructor(opt: any) {
-    this.ctrl = opt.ctrl;
-    this.definition = opt.definition;
+  constructor(ctrl: ISiriwave, definition: ICurveDefinition) {
+    this.ctrl = ctrl;
+    this.definition = definition;
   }
 
-  globalAttFn(x) {
+  globalAttFn(x: number) {
     return Math.pow(
       this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, this.ATT_FACTOR)),
       this.ATT_FACTOR
     );
   }
 
-  _xpos(i) {
+  _xpos(i: number) {
     return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
   }
 
-  _ypos(i) {
+  _ypos(i: number) {
     return (
       this.AMPLITUDE_FACTOR *
       (this.globalAttFn(i) *
@@ -54,7 +57,7 @@ export default class Curve {
     ctx.stroke();
   }
 
-  static getDefinition() {
+  static getDefinition(): ICurveDefinition[] {
     return [
       {
         attenuation: -2,

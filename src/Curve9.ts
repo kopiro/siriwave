@@ -1,14 +1,19 @@
-export default class iOS9Curve {
-  ctrl: any;
-  definition: any;
-  phases: any;
-  amplitudes: any;
-  despawnTimeouts: any;
-  offsets: any;
-  speeds: any;
-  finalAmplitudes: any;
-  widths: any;
-  verses: any;
+import ISiriWave from './ISiriWave';
+import ICurve9Definition from './ICurve9Definition';
+
+export default class Curve9 {
+  ctrl: ISiriWave;
+  definition: ICurve9Definition;
+
+  phases: number[];
+  amplitudes: number[];
+  despawnTimeouts: number[];
+  offsets: number[];
+  speeds: number[];
+  finalAmplitudes: number[];
+  widths: number[];
+  verses: number[];
+
   spawnAt: number;
   noOfCurves: number;
   prevMaxY: number;
@@ -25,20 +30,20 @@ export default class iOS9Curve {
   WIDTH_RANGES = [1, 3];
   SPEED_RANGES = [0.5, 1];
   DESPAWN_TIMEOUT_RANGES = [500, 2000];
-  NOOFCURVES_RANGES: any;
+  NOOFCURVES_RANGES: [2, 4];
 
-  constructor(opt: any) {
-    this.ctrl = opt.ctrl;
-    this.definition = opt.definition;
+  constructor(ctrl: ISiriWave, definition: ICurve9Definition) {
+    this.ctrl = ctrl;
+    this.definition = definition;
 
     this.respawn();
   }
 
-  getRandomRange(e) {
+  getRandomRange(e: number[]) {
     return e[0] + Math.random() * (e[1] - e[0]);
   }
 
-  respawnSingle(ci) {
+  respawnSingle(ci: number) {
     this.phases[ci] = 0;
     this.amplitudes[ci] = 0;
 
@@ -69,23 +74,23 @@ export default class iOS9Curve {
     }
   }
 
-  globalAttFn(x) {
+  globalAttFn(x: number) {
     return Math.pow(
       this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, 2)),
       this.ATT_FACTOR
     );
   }
 
-  sin(x, phase) {
+  sin(x: number, phase: number) {
     return Math.sin(x - phase);
   }
 
-  _grad(x, a, b) {
+  _grad(x: number, a: number, b: number) {
     if (x > a && x < b) return 1;
     return 1;
   }
 
-  yRelativePos(i) {
+  yRelativePos(i: number) {
     let y = 0;
 
     for (let ci = 0; ci < this.noOfCurves; ci++) {
@@ -108,7 +113,7 @@ export default class iOS9Curve {
     return y / this.noOfCurves;
   }
 
-  _ypos(i) {
+  _ypos(i: number) {
     return (
       this.AMPLITUDE_FACTOR *
       this.ctrl.heightMax *
@@ -118,11 +123,11 @@ export default class iOS9Curve {
     );
   }
 
-  _xpos(i) {
+  _xpos(i: number) {
     return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
   }
 
-  drawSupportLine(ctx) {
+  drawSupportLine(ctx: any) {
     const coo = [0, this.ctrl.heightMax, this.ctrl.width, 1];
     const gradient = ctx.createLinearGradient.apply(ctx, coo);
     gradient.addColorStop(0, 'transparent');
@@ -198,7 +203,7 @@ export default class iOS9Curve {
     return null;
   }
 
-  static getDefinition(waveColors) {
+  static getDefinition(waveColors: ICurve9Definition[]): ICurve9Definition[] {
     return Object.assign(
       [
         {

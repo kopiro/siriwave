@@ -1,9 +1,10 @@
+import ISiriwave from './ISiriwave';
 import raf from 'raf';
 import lerp from 'lerp';
-import Curve from './curve';
-import iOS9Curve from './ios9curve';
+import Curve from './Curve';
+import Curve9 from './Curve9';
 
-export default class SiriWave {
+export default class SiriWave implements ISiriwave {
   container: Element;
   opt: any;
   phase: number;
@@ -17,7 +18,7 @@ export default class SiriWave {
   interpolation: any;
   canvas: any;
   ctx: any;
-  curves: any;
+  curves: any[];
 
   /**
    * Build the SiriWave
@@ -138,9 +139,9 @@ export default class SiriWave {
 
     // Instantiate all curves based on the style
     if (this.opt.style === 'ios9') {
-      for (const def of iOS9Curve.getDefinition(this.opt.waveColors || [])) {
+      for (const def of Curve9.getDefinition(this.opt.waveColors || [])) {
         this.curves.push(
-          new iOS9Curve({
+          new Curve9({
             ctrl: this,
             definition: def
           })
@@ -148,12 +149,7 @@ export default class SiriWave {
       }
     } else {
       for (const def of Curve.getDefinition()) {
-        this.curves.push(
-          new Curve({
-            ctrl: this,
-            definition: def
-          })
-        );
+        this.curves.push(new Curve(this, def));
       }
     }
 
