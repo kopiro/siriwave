@@ -1,17 +1,20 @@
 export default class Curve {
-  constructor(opt) {
+  ctrl: any;
+  definition: any;
+
+  ATT_FACTOR = 4;
+  GRAPH_X = 2;
+  AMPLITUDE_FACTOR = 0.6;
+
+  constructor(opt: any) {
     this.ctrl = opt.ctrl;
     this.definition = opt.definition;
-
-    this.ATT_FACTOR = 4;
-    this.GRAPH_X = 2;
-    this.AMPLITUDE_FACTOR = 0.6;
   }
 
   globalAttFn(x) {
     return Math.pow(
       this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, this.ATT_FACTOR)),
-      this.ATT_FACTOR,
+      this.ATT_FACTOR
     );
   }
 
@@ -21,11 +24,11 @@ export default class Curve {
 
   _ypos(i) {
     return (
-      this.AMPLITUDE_FACTOR
-      * (this.globalAttFn(i)
-        * (this.ctrl.heightMax * this.ctrl.amplitude)
-        * (1 / this.definition.attenuation)
-        * Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase))
+      this.AMPLITUDE_FACTOR *
+      (this.globalAttFn(i) *
+        (this.ctrl.heightMax * this.ctrl.amplitude) *
+        (1 / this.definition.attenuation) *
+        Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase))
     );
   }
 
@@ -56,28 +59,28 @@ export default class Curve {
       {
         attenuation: -2,
         lineWidth: 1,
-        opacity: 0.1,
+        opacity: 0.1
       },
       {
         attenuation: -6,
         lineWidth: 1,
-        opacity: 0.2,
+        opacity: 0.2
       },
       {
         attenuation: 4,
         lineWidth: 1,
-        opacity: 0.4,
+        opacity: 0.4
       },
       {
         attenuation: 2,
         lineWidth: 1,
-        opacity: 0.6,
+        opacity: 0.6
       },
       {
         attenuation: 1,
         lineWidth: 1.5,
-        opacity: 1,
-      },
+        opacity: 1
+      }
     ];
   }
 }

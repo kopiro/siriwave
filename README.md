@@ -10,11 +10,11 @@ The "Apple Siri" wave replicated in pure Javascript using the Canvas API.
 
 ### Classic style
 
-<img src="classic.gif" />
+<img src="docs/classic.gif" />
 
 ### iOS 9+ style
 
-<img src="ios9.gif" />
+<img src="docs/ios9.gif" />
 
 ## Usage
 
@@ -39,11 +39,11 @@ Create a div container and instantiate a SiriWave object
 ```html
 <div id="siri-container"></div>
 <script>
-var siriWave = new SiriWave({
-	container: document.getElementById('siri-container'),
-	width: 640,
-	height: 200,
-});
+  var siriWave = new SiriWave({
+    container: document.getElementById('siri-container'),
+    width: 640,
+    height: 200
+  });
 </script>
 ```
 
@@ -83,5 +83,5 @@ Set the new value of amplitude (animated)
 
 ## Grapher plots
 
-- [GCX default](default.gcx)
-- [GCX iOS 9](ios9.gcx)
+- [GCX default](gcx/default.gcx)
+- [GCX iOS 9](gcx/ios9.gcx)

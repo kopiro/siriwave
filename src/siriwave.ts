@@ -4,6 +4,21 @@ import Curve from './curve';
 import iOS9Curve from './ios9curve';
 
 export default class SiriWave {
+  container: Element;
+  opt: any;
+  phase: number;
+  run: boolean;
+  speed: number;
+  amplitude: number;
+  width: number;
+  height: number;
+  heightMax: number;
+  color: string;
+  interpolation: any;
+  canvas: any;
+  ctx: any;
+  curves: any;
+
   /**
    * Build the SiriWave
    * @param {Object} opt
@@ -21,7 +36,7 @@ export default class SiriWave {
    * @param {Number} [opt.pixelDepth=0.02] Number of step (in pixels) used when drawed on canvas.
    * @param {Number} [opt.lerpSpeed=0.1] Lerp speed to interpolate properties.
    */
-  constructor(opt = {}) {
+  constructor(opt: any) {
     this.container = opt.container || document.body;
 
     // In this.opt you could find definitive opt with defaults values
@@ -40,9 +55,9 @@ export default class SiriWave {
           .height.replace('px', ''),
         autostart: false,
         pixelDepth: 0.02,
-        lerpSpeed: 0.1,
+        lerpSpeed: 0.1
       },
-      opt,
+      opt
     );
 
     /**
@@ -91,7 +106,7 @@ export default class SiriWave {
      */
     this.interpolation = {
       speed: this.speed,
-      amplitude: this.amplitude,
+      amplitude: this.amplitude
     };
 
     /**
@@ -127,8 +142,8 @@ export default class SiriWave {
         this.curves.push(
           new iOS9Curve({
             ctrl: this,
-            definition: def,
-          }),
+            definition: def
+          })
         );
       }
     } else {
@@ -136,8 +151,8 @@ export default class SiriWave {
         this.curves.push(
           new Curve({
             ctrl: this,
-            definition: def,
-          }),
+            definition: def
+          })
         );
       }
     }
@@ -163,9 +178,9 @@ export default class SiriWave {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? `${parseInt(result[1], 16).toString()},${parseInt(
-        result[2],
-        16,
-      ).toString()},${parseInt(result[3], 16).toString()}`
+          result[2],
+          16
+        ).toString()},${parseInt(result[3], 16).toString()}`
       : null;
   }
 
@@ -179,7 +194,7 @@ export default class SiriWave {
     this[propertyStr] = lerp(
       this[propertyStr],
       this.interpolation[propertyStr],
-      this.opt.lerpSpeed,
+      this.opt.lerpSpeed
     );
     if (this[propertyStr] - this.interpolation[propertyStr] === 0) {
       this.interpolation[propertyStr] = null;
@@ -223,7 +238,7 @@ export default class SiriWave {
     this._draw();
     this.phase = (this.phase + (Math.PI / 2) * this.speed) % (2 * Math.PI);
 
-    raf(this.startDrawCycle.bind(this), 20);
+    raf(this.startDrawCycle.bind(this));
   }
 
   /* API */

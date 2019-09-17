@@ -1,22 +1,35 @@
 export default class iOS9Curve {
-  constructor(opt = {}) {
+  ctrl: any;
+  definition: any;
+  phases: any;
+  amplitudes: any;
+  despawnTimeouts: any;
+  offsets: any;
+  speeds: any;
+  finalAmplitudes: any;
+  widths: any;
+  verses: any;
+  spawnAt: number;
+  noOfCurves: number;
+  prevMaxY: number;
+
+  GRAPH_X = 25;
+  AMPLITUDE_FACTOR = 0.8;
+  SPEED_FACTOR = 1;
+  DEAD_PX = 2;
+  ATT_FACTOR = 4;
+  DESPAWN_FACTOR = 0.02;
+  FCURVES_RANGES = [2, 5];
+  AMPLITUDE_RANGES = [0.3, 1];
+  OFFSET_RANGES = [-3, 3];
+  WIDTH_RANGES = [1, 3];
+  SPEED_RANGES = [0.5, 1];
+  DESPAWN_TIMEOUT_RANGES = [500, 2000];
+  NOOFCURVES_RANGES: any;
+
+  constructor(opt: any) {
     this.ctrl = opt.ctrl;
     this.definition = opt.definition;
-
-    this.GRAPH_X = 25;
-    this.AMPLITUDE_FACTOR = 0.8;
-    this.SPEED_FACTOR = 1;
-    this.DEAD_PX = 2;
-    this.ATT_FACTOR = 4;
-
-    this.DESPAWN_FACTOR = 0.02;
-
-    this.NOOFCURVES_RANGES = [2, 5];
-    this.AMPLITUDE_RANGES = [0.3, 1];
-    this.OFFSET_RANGES = [-3, 3];
-    this.WIDTH_RANGES = [1, 3];
-    this.SPEED_RANGES = [0.5, 1];
-    this.DESPAWN_TIMEOUT_RANGES = [500, 2000];
 
     this.respawn();
   }
@@ -59,7 +72,7 @@ export default class iOS9Curve {
   globalAttFn(x) {
     return Math.pow(
       this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, 2)),
-      this.ATT_FACTOR,
+      this.ATT_FACTOR
     );
   }
 
@@ -85,9 +98,9 @@ export default class iOS9Curve {
       const x = i * k - t;
 
       y += Math.abs(
-        this.amplitudes[ci]
-          * this.sin(this.verses[ci] * x, this.phases[ci])
-          * this.globalAttFn(x),
+        this.amplitudes[ci] *
+          this.sin(this.verses[ci] * x, this.phases[ci]) *
+          this.globalAttFn(x)
       );
     }
 
@@ -97,11 +110,11 @@ export default class iOS9Curve {
 
   _ypos(i) {
     return (
-      this.AMPLITUDE_FACTOR
-      * this.ctrl.heightMax
-      * this.ctrl.amplitude
-      * this.yRelativePos(i)
-      * this.globalAttFn((i / this.GRAPH_X) * 2)
+      this.AMPLITUDE_FACTOR *
+      this.ctrl.heightMax *
+      this.ctrl.amplitude *
+      this.yRelativePos(i) *
+      this.globalAttFn((i / this.GRAPH_X) * 2)
     );
   }
 
@@ -141,11 +154,12 @@ export default class iOS9Curve {
 
       this.amplitudes[ci] = Math.min(
         Math.max(this.amplitudes[ci], 0),
-        this.finalAmplitudes[ci],
+        this.finalAmplitudes[ci]
       );
-      this.phases[ci] =        (this.phases[ci]
-          + this.ctrl.speed * this.speeds[ci] * this.SPEED_FACTOR)
-        % (2 * Math.PI);
+      this.phases[ci] =
+        (this.phases[ci] +
+          this.ctrl.speed * this.speeds[ci] * this.SPEED_FACTOR) %
+        (2 * Math.PI);
     }
 
     let maxY = -Infinity;
@@ -189,22 +203,22 @@ export default class iOS9Curve {
       [
         {
           color: '255,255,255',
-          supportLine: true,
+          supportLine: true
         },
         {
           // blue
-          color: '15, 82, 169',
+          color: '15, 82, 169'
         },
         {
           // red
-          color: '173, 57, 76',
+          color: '173, 57, 76'
         },
         {
           // green
-          color: '48, 220, 155',
-        },
+          color: '48, 220, 155'
+        }
       ],
-      waveColors,
+      waveColors
     );
   }
 }

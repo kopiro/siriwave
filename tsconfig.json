@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "module": "es6",
+    "target": "es5"
+  }
+}
