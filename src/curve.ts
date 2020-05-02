@@ -1,22 +1,27 @@
-export class Curve {
-  constructor(opt) {
-    this.ctrl = opt.ctrl;
-    this.definition = opt.definition;
+import SiriWaveController from "./siriwave";
+import { ICurveDefinition, ICurve } from "./types";
 
-    this.ATT_FACTOR = 4;
-    this.GRAPH_X = 2;
-    this.AMPLITUDE_FACTOR = 0.6;
+export class Curve implements ICurve {
+  ctrl: SiriWaveController;
+  definition: ICurveDefinition;
+  ATT_FACTOR = 4;
+  GRAPH_X = 2;
+  AMPLITUDE_FACTOR = 0.6;
+
+  constructor(ctrl: SiriWaveController, definition: ICurveDefinition) {
+    this.ctrl = ctrl;
+    this.definition = definition;
   }
 
-  globalAttFn(x) {
+  globalAttFn(x: number): number {
     return Math.pow(this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, this.ATT_FACTOR)), this.ATT_FACTOR);
   }
 
-  _xpos(i) {
+  _xpos(i: number): number {
     return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
   }
 
-  _ypos(i) {
+  _ypos(i: number): number {
     return (
       this.AMPLITUDE_FACTOR *
       (this.globalAttFn(i) *
@@ -26,7 +31,7 @@ export class Curve {
     );
   }
 
-  draw() {
+  draw(): void {
     const { ctx } = this.ctrl;
 
     ctx.moveTo(0, 0);
@@ -44,7 +49,7 @@ export class Curve {
     ctx.stroke();
   }
 
-  static getDefinition() {
+  static getDefinition(): ICurveDefinition[] {
     return [
       {
         attenuation: -2,

@@ -1,78 +1,50 @@
-import babel from "@rollup/plugin-babel";
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
+import typescript from "rollup-plugin-typescript2";
 import { terser } from "rollup-plugin-terser";
 
 import livereload from "rollup-plugin-livereload";
 import serve from "rollup-plugin-serve";
 
 import pkg from "./package.json";
+const INPUT = "src/siriwave.ts";
 
-const devPlugins = [];
+const plugins = [
+  typescript({
+    typescript: require("typescript"),
+  }),
+];
 
 if (process.env.NODE_ENV === "development") {
-  devPlugins.push(
+  plugins.push(
     serve({
-      open: true,
+      open: 1,
       contentBase: ".",
     }),
   );
-  devPlugins.push(
+  plugins.push(
     livereload({
       watch: "dist",
     }),
   );
 }
 
-const INPUT = "src/siriwave.js";
-
-export default [
-  // browser-friendly UMD build
-  {
+export default [false, true].reduce((carry, min) => {
+  carry.push({
     input: INPUT,
     output: {
-      name: "SiriWave",
-      file: pkg.browser,
+      name: pkg.umdName,
+      file: min ? pkg.browser.replace(".js", ".min.js") : pkg.browser,
       format: "umd",
     },
-    plugins: [
-      resolve(),
-      commonjs(),
-      babel({
-        exclude: ["node_modules/**"],
-      }),
-    ].concat(devPlugins),
-  },
-  // browser-friendly UMD minified build
-  {
+    plugins: [...plugins, ...(min ? [terser()] : [])],
+  });
+  carry.push({
     input: INPUT,
     output: {
-      name: "SiriWave",
-      file: pkg.browser.replace(".js", ".min.js"),
-      format: "umd",
+      file: min ? pkg.module.replace(".js", ".min.js") : pkg.module,
+      format: "es",
     },
-    plugins: [
-      resolve(),
-      commonjs(),
-      babel({
-        exclude: ["node_modules/**"],
-      }),
-      terser(),
-    ],
-  },
-
-  // ES/CJS builds
-  {
-    input: INPUT,
     external: [...Object.keys(pkg.dependencies)],
-    output: [
-      { file: pkg.main, format: "cjs" },
-      { file: pkg.module, format: "es" },
-    ],
-    plugins: [
-      babel({
-        exclude: ["node_modules/**"],
-      }),
-    ],
-  },
-];
+    plugins: [...plugins, ...(min ? [terser()] : [])],
+  });
+  return carry;
+}, []);
