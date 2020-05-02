@@ -27,24 +27,27 @@ if (process.env.NODE_ENV === "development") {
   );
 }
 
-export default [false, true].reduce((carry, min) => {
-  carry.push({
-    input: INPUT,
-    output: {
-      name: pkg.umdName,
-      file: min ? pkg.browser.replace(".js", ".min.js") : pkg.browser,
-      format: "umd",
-    },
-    plugins: [...plugins, ...(min ? [terser()] : [])],
-  });
-  carry.push({
-    input: INPUT,
-    output: {
-      file: min ? pkg.module.replace(".js", ".min.js") : pkg.module,
-      format: "es",
-    },
-    external: [...Object.keys(pkg.dependencies)],
-    plugins: [...plugins, ...(min ? [terser()] : [])],
-  });
-  return carry;
-}, []);
+export default [false, true].reduce(
+  (carry, min) =>
+    carry.concat([
+      {
+        input: INPUT,
+        output: {
+          name: pkg.umdName,
+          file: min ? pkg.browser.replace(".js", ".min.js") : pkg.browser,
+          format: "umd",
+        },
+        plugins: [...plugins, ...(min ? [terser()] : [])],
+      },
+      {
+        input: INPUT,
+        output: {
+          file: min ? pkg.module.replace(".js", ".min.js") : pkg.module,
+          format: "es",
+        },
+        external: [...Object.keys(pkg.dependencies)],
+        plugins: [...plugins, ...(min ? [terser()] : [])],
+      },
+    ]),
+  [],
+);
