@@ -1,56 +1,50 @@
-import lerp from "lerp";
 import { Curve } from "./curve";
 import { iOS9Curve } from "./ios9curve";
+import { Options, ICurve, CurveStyle, ICurveDefinition } from "./types";
 
-export default class SiriWave {
-  /**
-   * Build the SiriWave
-   * @param {Object} opt
-   * @param {DOMElement} [opt.container=document.body] The DOM container where the DOM canvas element will be added
-   * @param {String} [opt.style='ios'] The style of the wave: `ios` or `ios9`
-   * @param {Number} [opt.ratio=null] Ratio of the display to use. Calculated by default.
-   * @param {Number} [opt.speed=0.2] The speed of the animation.
-   * @param {Number} [opt.amplitude=1] The amplitude of the complete wave.
-   * @param {Number} [opt.frequency=6] The frequency for the complete wave (how many waves). - Not available in iOS9 Style
-   * @param {String} [opt.color='#fff'] The color of the wave, in hexadecimal form (`#336699`, `#FF0`). - Not available in iOS9 Style
-   * @param {Boolean} [opt.cover=false] The `canvas` covers the entire width or height of the container.
-   * @param {Number} [opt.width=null] Width of the canvas. Calculated by default.
-   * @param {Number} [opt.height=null] Height of the canvas. Calculated by default.
-   * @param {Boolean} [opt.autostart=false] Decide wether start the animation on boot.
-   * @param {Number} [opt.pixelDepth=0.02] Number of step (in pixels) used when drawed on canvas.
-   * @param {Number} [opt.lerpSpeed=0.1] Lerp speed to interpolate properties.
-   */
-  constructor(opt = {}) {
-    this.container = opt.container || document.body;
+export default class SiriWaveController {
+  opt: Options;
 
-    // In this.opt you could find definitive opt with defaults values
-    this.opt = Object.assign(
-      {
-        style: "ios",
-        ratio: window.devicePixelRatio || 1,
-        speed: 0.2,
-        amplitude: 1,
-        frequency: 6,
-        color: "#fff",
-        cover: false,
-        width: window.getComputedStyle(this.container).width.replace("px", ""),
-        height: window.getComputedStyle(this.container).height.replace("px", ""),
-        autostart: false,
-        pixelDepth: 0.02,
-        lerpSpeed: 0.1,
-      },
-      opt,
-    );
+  // Phase of the wave (passed to Math.sin function)
+  phase: number = 0;
+  // Boolean value indicating the the animation is running
+  run: boolean = false;
+  // Curves objects to animate
+  curves: ICurve[] = [];
 
-    /**
-     * Phase of the wave (passed to Math.sin function)
-     */
-    this.phase = 0;
+  speed: number;
+  amplitude: number;
+  width: number;
+  height: number;
+  heightMax: number;
+  color: string;
+  interpolation: {
+    speed: number;
+    amplitude: number;
+  };
 
-    /**
-     * Boolean value indicating the the animation is running
-     */
-    this.run = false;
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+
+  constructor({ container, ...rest }: Options) {
+    const csStyle = window.getComputedStyle(container);
+
+    this.opt = {
+      container,
+      style: CurveStyle.ios,
+      ratio: window.devicePixelRatio || 1,
+      speed: 0.2,
+      amplitude: 1,
+      frequency: 6,
+      color: "#fff",
+      cover: false,
+      width: parseInt(csStyle.width.replace("px", ""), 10),
+      height: parseInt(csStyle.height.replace("px", ""), 10),
+      autostart: true,
+      pixelDepth: 0.02,
+      lerpSpeed: 0.1,
+      ...rest,
+    };
 
     /**
      * Actual speed of the animation. Is not safe to change this value directly, use `setSpeed` instead.
@@ -113,48 +107,31 @@ export default class SiriWave {
       this.canvas.style.height = `${this.height / this.opt.ratio}px`;
     }
 
-    /**
-     * Curves objects to animate
-     */
-    this.curves = [];
-
     // Instantiate all curves based on the style
-    if (this.opt.style === "ios9") {
-      for (const def of iOS9Curve.getDefinition(this.opt.waveColors || [])) {
-        this.curves.push(
-          new iOS9Curve({
-            ctrl: this,
-            definition: def,
-          }),
-        );
-      }
-    } else {
-      for (const def of Curve.getDefinition()) {
-        this.curves.push(
-          new Curve({
-            ctrl: this,
-            definition: def,
-          }),
-        );
-      }
+    switch (this.opt.style) {
+      case CurveStyle.ios:
+      default:
+        this.curves = (this.opt.curveDefinition || iOS9Curve.getDefinition()).map((def) => new iOS9Curve(this, def));
+        break;
+
+      case CurveStyle.ios9:
+        this.curves = (this.opt.curveDefinition || Curve.getDefinition()).map((def) => new Curve(this, def));
+        break;
     }
 
     // Attach to the container
-    this.container.appendChild(this.canvas);
+    this.opt.container.appendChild(this.canvas);
 
     // Start the animation
-    if (opt.autostart) {
+    if (this.opt.autostart) {
       this.start();
     }
   }
 
   /**
    * Convert an HEX color to RGB
-   * @param {String} hex
-   * @returns RGB value that could be used
-   * @memberof SiriWave
    */
-  hex2rgb(hex) {
+  hex2rgb(hex: string): string | null {
     const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
     hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -166,14 +143,15 @@ export default class SiriWave {
       : null;
   }
 
+  intLerp(v0: number, v1: number, t: number): number {
+    return v0 * (1 - t) + v1 * t;
+  }
+
   /**
-   * Interpolate a property to the value found in $.interpolation
-   * @param {String} propertyStr
-   * @returns
-   * @memberof SiriWave
+   * Interpolate a property to the value found in this.interpolation
    */
-  lerp(propertyStr) {
-    this[propertyStr] = lerp(this[propertyStr], this.interpolation[propertyStr], this.opt.lerpSpeed);
+  lerp(propertyStr: "amplitude" | "speed"): number {
+    this[propertyStr] = this.intLerp(this[propertyStr], this.interpolation[propertyStr], this.opt.lerpSpeed);
     if (this[propertyStr] - this.interpolation[propertyStr] === 0) {
       this.interpolation[propertyStr] = null;
     }
@@ -182,7 +160,6 @@ export default class SiriWave {
 
   /**
    * Clear the canvas
-   * @memberof SiriWave
    */
   _clear() {
     this.ctx.globalCompositeOperation = "destination-out";
@@ -192,21 +169,18 @@ export default class SiriWave {
 
   /**
    * Draw all curves
-   * @memberof SiriWave
    */
   _draw() {
-    for (const curve of this.curves) {
-      curve.draw();
-    }
+    this.curves.forEach((curve) => curve.draw());
   }
 
   /**
    * Clear the space, interpolate values, calculate new steps and draws
    * @returns
-   * @memberof SiriWave
    */
   startDrawCycle() {
-    if (this.run === false) return;
+    if (!this.run) return;
+
     this._clear();
 
     // Interpolate values
@@ -227,7 +201,6 @@ export default class SiriWave {
 
   /**
    * Start the animation
-   * @memberof SiriWave
    */
   start() {
     this.phase = 0;
@@ -237,7 +210,6 @@ export default class SiriWave {
 
   /**
    * Stop the animation
-   * @memberof SiriWave
    */
   stop() {
     this.phase = 0;
@@ -246,29 +218,22 @@ export default class SiriWave {
 
   /**
    * Set a new value for a property (interpolated)
-   * @param {String} propertyStr
-   * @param {Number} v
-   * @memberof SiriWave
    */
-  set(propertyStr, v) {
-    this.interpolation[propertyStr] = Number(v);
+  set(propertyStr: "amplitude" | "speed", value: number) {
+    this.interpolation[propertyStr] = value;
   }
 
   /**
    * Set a new value for the speed property (interpolated)
-   * @param {Number} v
-   * @memberof SiriWave
    */
-  setSpeed(v) {
-    this.set("speed", v);
+  setSpeed(value: number) {
+    this.set("speed", value);
   }
 
   /**
    * Set a new value for the amplitude property (interpolated)
-   * @param {Number} v
-   * @memberof SiriWave
    */
-  setAmplitude(v) {
-    this.set("amplitude", v);
+  setAmplitude(value: number) {
+    this.set("amplitude", value);
   }
 }
