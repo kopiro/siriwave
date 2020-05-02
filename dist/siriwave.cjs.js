@@ -1,5 +1,8 @@
-import raf from 'raf';
-import _lerp from 'lerp';
+'use strict';
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var _lerp = _interopDefault(require('lerp'));
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -23,9 +26,79 @@ function _createClass(Constructor, protoProps, staticProps) {
   return Constructor;
 }
 
-var Curve =
-/*#__PURE__*/
-function () {
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+  return arr2;
+}
+
+function _createForOfIteratorHelper(o) {
+  if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+    if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) {
+      var i = 0;
+
+      var F = function () {};
+
+      return {
+        s: F,
+        n: function () {
+          if (i >= o.length) return {
+            done: true
+          };
+          return {
+            done: false,
+            value: o[i++]
+          };
+        },
+        e: function (e) {
+          throw e;
+        },
+        f: F
+      };
+    }
+
+    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  var it,
+      normalCompletion = true,
+      didErr = false,
+      err;
+  return {
+    s: function () {
+      it = o[Symbol.iterator]();
+    },
+    n: function () {
+      var step = it.next();
+      normalCompletion = step.done;
+      return step;
+    },
+    e: function (e) {
+      didErr = true;
+      err = e;
+    },
+    f: function () {
+      try {
+        if (!normalCompletion && it.return != null) it.return();
+      } finally {
+        if (didErr) throw err;
+      }
+    }
+  };
+}
+
+var Curve = /*#__PURE__*/function () {
   function Curve(opt) {
     _classCallCheck(this, Curve);
 
@@ -57,7 +130,7 @@ function () {
       var ctx = this.ctrl.ctx;
       ctx.moveTo(0, 0);
       ctx.beginPath();
-      var color = this.ctrl.color.replace(/rgb\(/g, '').replace(/\)/g, '');
+      var color = this.ctrl.color.replace(/rgb\(/g, "").replace(/\)/g, "");
       ctx.strokeStyle = "rgba(".concat(color, ",").concat(this.definition.opacity, ")");
       ctx.lineWidth = this.definition.lineWidth; // Cycle the graph from -X to +X every PX_DEPTH and draw the line
 
@@ -97,9 +170,7 @@ function () {
   return Curve;
 }();
 
-var iOS9Curve =
-/*#__PURE__*/
-function () {
+var iOS9Curve = /*#__PURE__*/function () {
   function iOS9Curve() {
     var opt = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -206,10 +277,10 @@ function () {
     value: function drawSupportLine(ctx) {
       var coo = [0, this.ctrl.heightMax, this.ctrl.width, 1];
       var gradient = ctx.createLinearGradient.apply(ctx, coo);
-      gradient.addColorStop(0, 'transparent');
-      gradient.addColorStop(0.1, 'rgba(255,255,255,.5)');
-      gradient.addColorStop(1 - 0.1 - 0.1, 'rgba(255,255,255,.5)');
-      gradient.addColorStop(1, 'transparent');
+      gradient.addColorStop(0, "transparent");
+      gradient.addColorStop(0.1, "rgba(255,255,255,.5)");
+      gradient.addColorStop(1 - 0.1 - 0.1, "rgba(255,255,255,.5)");
+      gradient.addColorStop(1, "transparent");
       ctx.fillStyle = gradient;
       ctx.fillRect.apply(ctx, coo);
     }
@@ -218,7 +289,7 @@ function () {
     value: function draw() {
       var ctx = this.ctrl.ctx;
       ctx.globalAlpha = 0.7;
-      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalCompositeOperation = "lighter";
 
       if (this.definition.supportLine) {
         // Draw the support line
@@ -238,9 +309,7 @@ function () {
 
       var maxY = -Infinity;
 
-      var _arr = [1, -1];
-
-      for (var _i = 0; _i < _arr.length; _i++) {
+      for (var _i = 0, _arr = [1, -1]; _i < _arr.length; _i++) {
         var sign = _arr[_i];
         ctx.beginPath();
 
@@ -270,17 +339,17 @@ function () {
     key: "getDefinition",
     value: function getDefinition(waveColors) {
       return Object.assign([{
-        color: '255,255,255',
+        color: "255,255,255",
         supportLine: true
       }, {
         // blue
-        color: '15, 82, 169'
+        color: "15, 82, 169"
       }, {
         // red
-        color: '173, 57, 76'
+        color: "173, 57, 76"
       }, {
         // green
-        color: '48, 220, 155'
+        color: "48, 220, 155"
       }], waveColors);
     }
   }]);
@@ -288,9 +357,7 @@ function () {
   return iOS9Curve;
 }();
 
-var SiriWave =
-/*#__PURE__*/
-function () {
+var SiriWave = /*#__PURE__*/function () {
   /**
    * Build the SiriWave
    * @param {Object} opt
@@ -316,15 +383,15 @@ function () {
     this.container = opt.container || document.body; // In this.opt you could find definitive opt with defaults values
 
     this.opt = Object.assign({
-      style: 'ios',
+      style: "ios",
       ratio: window.devicePixelRatio || 1,
       speed: 0.2,
       amplitude: 1,
       frequency: 6,
-      color: '#fff',
+      color: "#fff",
       cover: false,
-      width: window.getComputedStyle(this.container).width.replace('px', ''),
-      height: window.getComputedStyle(this.container).height.replace('px', ''),
+      width: window.getComputedStyle(this.container).width.replace("px", ""),
+      height: window.getComputedStyle(this.container).height.replace("px", ""),
       autostart: false,
       pixelDepth: 0.02,
       lerpSpeed: 0.1
@@ -382,18 +449,18 @@ function () {
      * Canvas DOM Element where curves will be drawn
      */
 
-    this.canvas = document.createElement('canvas');
+    this.canvas = document.createElement("canvas");
     /**
      * 2D Context from Canvas
      */
 
-    this.ctx = this.canvas.getContext('2d'); // Set dimensions
+    this.ctx = this.canvas.getContext("2d"); // Set dimensions
 
     this.canvas.width = this.width;
     this.canvas.height = this.height; // By covering, we ensure the canvas is in the same size of the parent
 
     if (this.opt.cover === true) {
-      this.canvas.style.width = this.canvas.style.height = '100%';
+      this.canvas.style.width = this.canvas.style.height = "100%";
     } else {
       this.canvas.style.width = "".concat(this.width / this.opt.ratio, "px");
       this.canvas.style.height = "".concat(this.height / this.opt.ratio, "px");
@@ -405,13 +472,12 @@ function () {
 
     this.curves = []; // Instantiate all curves based on the style
 
-    if (this.opt.style === 'ios9') {
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+    if (this.opt.style === "ios9") {
+      var _iterator = _createForOfIteratorHelper(iOS9Curve.getDefinition(this.opt.waveColors || [])),
+          _step;
 
       try {
-        for (var _iterator = iOS9Curve.getDefinition(this.opt.waveColors || [])[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var def = _step.value;
           this.curves.push(new iOS9Curve({
             ctrl: this,
@@ -419,26 +485,16 @@ function () {
           }));
         }
       } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
+        _iterator.e(err);
       } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
+        _iterator.f();
       }
     } else {
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
+      var _iterator2 = _createForOfIteratorHelper(Curve.getDefinition()),
+          _step2;
 
       try {
-        for (var _iterator2 = Curve.getDefinition()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
           var _def = _step2.value;
           this.curves.push(new Curve({
             ctrl: this,
@@ -446,18 +502,9 @@ function () {
           }));
         }
       } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
+        _iterator2.e(err);
       } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
+        _iterator2.f();
       }
     } // Attach to the container
 
@@ -512,9 +559,9 @@ function () {
   }, {
     key: "_clear",
     value: function _clear() {
-      this.ctx.globalCompositeOperation = 'destination-out';
+      this.ctx.globalCompositeOperation = "destination-out";
       this.ctx.fillRect(0, 0, this.width, this.height);
-      this.ctx.globalCompositeOperation = 'source-over';
+      this.ctx.globalCompositeOperation = "source-over";
     }
     /**
      * Draw all curves
@@ -524,28 +571,18 @@ function () {
   }, {
     key: "_draw",
     value: function _draw() {
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
+      var _iterator3 = _createForOfIteratorHelper(this.curves),
+          _step3;
 
       try {
-        for (var _iterator3 = this.curves[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
           var curve = _step3.value;
           curve.draw();
         }
       } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
+        _iterator3.e(err);
       } finally {
-        try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-            _iterator3.return();
-          }
-        } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
-          }
-        }
+        _iterator3.f();
       }
     }
     /**
@@ -562,13 +599,18 @@ function () {
       this._clear(); // Interpolate values
 
 
-      if (this.interpolation.amplitude !== null) this.lerp('amplitude');
-      if (this.interpolation.speed !== null) this.lerp('speed');
+      if (this.interpolation.amplitude !== null) this.lerp("amplitude");
+      if (this.interpolation.speed !== null) this.lerp("speed");
 
       this._draw();
 
       this.phase = (this.phase + Math.PI / 2 * this.speed) % (2 * Math.PI);
-      raf(this.startDrawCycle.bind(this), 20);
+
+      if (window.requestAnimationFrame) {
+        window.requestAnimationFrame(this.startDrawCycle.bind(this));
+      } else {
+        setTimeout(this.startDrawCycle.bind(this), 20);
+      }
     }
     /* API */
 
@@ -616,7 +658,7 @@ function () {
   }, {
     key: "setSpeed",
     value: function setSpeed(v) {
-      this.set('speed', v);
+      this.set("speed", v);
     }
     /**
      * Set a new value for the amplitude property (interpolated)
@@ -627,11 +669,11 @@ function () {
   }, {
     key: "setAmplitude",
     value: function setAmplitude(v) {
-      this.set('amplitude', v);
+      this.set("amplitude", v);
     }
   }]);
 
   return SiriWave;
 }();
 
-export default SiriWave;
+module.exports = SiriWave;

@@ -1,4 +1,4 @@
-export default class iOS9Curve {
+export class iOS9Curve {
   constructor(opt = {}) {
     this.ctrl = opt.ctrl;
     this.definition = opt.definition;
@@ -59,7 +59,7 @@ export default class iOS9Curve {
   globalAttFn(x) {
     return Math.pow(
       this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, 2)),
-      this.ATT_FACTOR,
+      this.ATT_FACTOR
     );
   }
 
@@ -85,9 +85,9 @@ export default class iOS9Curve {
       const x = i * k - t;
 
       y += Math.abs(
-        this.amplitudes[ci]
-          * this.sin(this.verses[ci] * x, this.phases[ci])
-          * this.globalAttFn(x),
+        this.amplitudes[ci] *
+          this.sin(this.verses[ci] * x, this.phases[ci]) *
+          this.globalAttFn(x)
       );
     }
 
@@ -97,11 +97,11 @@ export default class iOS9Curve {
 
   _ypos(i) {
     return (
-      this.AMPLITUDE_FACTOR
-      * this.ctrl.heightMax
-      * this.ctrl.amplitude
-      * this.yRelativePos(i)
-      * this.globalAttFn((i / this.GRAPH_X) * 2)
+      this.AMPLITUDE_FACTOR *
+      this.ctrl.heightMax *
+      this.ctrl.amplitude *
+      this.yRelativePos(i) *
+      this.globalAttFn((i / this.GRAPH_X) * 2)
     );
   }
 
@@ -112,10 +112,10 @@ export default class iOS9Curve {
   drawSupportLine(ctx) {
     const coo = [0, this.ctrl.heightMax, this.ctrl.width, 1];
     const gradient = ctx.createLinearGradient.apply(ctx, coo);
-    gradient.addColorStop(0, 'transparent');
-    gradient.addColorStop(0.1, 'rgba(255,255,255,.5)');
-    gradient.addColorStop(1 - 0.1 - 0.1, 'rgba(255,255,255,.5)');
-    gradient.addColorStop(1, 'transparent');
+    gradient.addColorStop(0, "transparent");
+    gradient.addColorStop(0.1, "rgba(255,255,255,.5)");
+    gradient.addColorStop(1 - 0.1 - 0.1, "rgba(255,255,255,.5)");
+    gradient.addColorStop(1, "transparent");
 
     ctx.fillStyle = gradient;
     ctx.fillRect.apply(ctx, coo);
@@ -125,7 +125,7 @@ export default class iOS9Curve {
     const { ctx } = this.ctrl;
 
     ctx.globalAlpha = 0.7;
-    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalCompositeOperation = "lighter";
 
     if (this.definition.supportLine) {
       // Draw the support line
@@ -141,11 +141,12 @@ export default class iOS9Curve {
 
       this.amplitudes[ci] = Math.min(
         Math.max(this.amplitudes[ci], 0),
-        this.finalAmplitudes[ci],
+        this.finalAmplitudes[ci]
       );
-      this.phases[ci] =        (this.phases[ci]
-          + this.ctrl.speed * this.speeds[ci] * this.SPEED_FACTOR)
-        % (2 * Math.PI);
+      this.phases[ci] =
+        (this.phases[ci] +
+          this.ctrl.speed * this.speeds[ci] * this.SPEED_FACTOR) %
+        (2 * Math.PI);
     }
 
     let maxY = -Infinity;
@@ -188,23 +189,23 @@ export default class iOS9Curve {
     return Object.assign(
       [
         {
-          color: '255,255,255',
+          color: "255,255,255",
           supportLine: true,
         },
         {
           // blue
-          color: '15, 82, 169',
+          color: "15, 82, 169",
         },
         {
           // red
-          color: '173, 57, 76',
+          color: "173, 57, 76",
         },
         {
           // green
-          color: '48, 220, 155',
+          color: "48, 220, 155",
         },
       ],
-      waveColors,
+      waveColors
     );
   }
 }

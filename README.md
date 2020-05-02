@@ -10,26 +10,26 @@ The "Apple Siri" wave replicated in pure Javascript using the Canvas API.
 
 ### Classic style
 
-<img src="classic.gif" />
+<img src="etc/classic.gif" />
 
 ### iOS 9+ style
 
-<img src="ios9.gif" />
+<img src="etc/ios9.gif" />
 
 ## Usage
 
-To use in the classic way, download the dist file under **./dist/siriwave.min.js**,
-or use the CDN one **https://unpkg.com/siriwave/dist/siriwave.min.js**
-and include in your web page as a script.
+### Browser (via CDN) usage
 
 ```html
-<script src="https://unpkg.com/siriwave/dist/siriwave.js"></script>
+<script src="https://unpkg.com/siriwave/dist/siriwave.umd.min.js"></script>
 ```
 
-Otherwise, the build is ready to import as ESM module via `npm i siriwave`.
+### ES module
+
+Install it through `npm install siriwave` or `yarn add siriwave` first:
 
 ```js
-import SiriWave from 'siriwave';
+import SiriWave from "siriwave";
 ```
 
 ## Instantitate
@@ -39,11 +39,11 @@ Create a div container and instantiate a SiriWave object
 ```html
 <div id="siri-container"></div>
 <script>
-var siriWave = new SiriWave({
-	container: document.getElementById('siri-container'),
-	width: 640,
-	height: 200,
-});
+  var siriWave = new SiriWave({
+    container: document.getElementById("siri-container"),
+    width: 640,
+    height: 200,
+  });
 </script>
 ```
 
@@ -83,5 +83,5 @@ Set the new value of amplitude (animated)
 
 ## Grapher plots
 
-- [GCX default](default.gcx)
-- [GCX iOS 9](ios9.gcx)
+- [GCX default](etc/gcx/default.gcx)
+- [GCX iOS 9](etc/gcx/ios9.gcx)

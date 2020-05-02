@@ -1,69 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Siriwave</title>
     <meta charset="utf-8" />
+    <title>Siriwave</title>
     <style>
       body {
-        padding: 60px 20px;
         margin: 0;
+        background: #000;
         color: #fff;
         font-weight: 100;
-        font-family: "SF Pro Display", "Helvetica Neue", "Helvetica", "Arial",
-          sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+          "Helvetica Neue", sans-serif;
         text-align: center;
-      }
-
-      h1,
-      h2,
-      h3,
-      h4 {
-        letter-spacing: -0.009em;
-        line-height: 1.0625;
-        font-weight: 600;
-      }
-
-      h1 {
-        font-size: 64px;
-        margin-bottom: 0;
-      }
-
-      h2 {
-        font-size: 32px;
-      }
-
-      p {
-        font-size: 21px;
-        line-height: 1.38105;
-        font-weight: 400;
       }
 
       a {
         color: #fff;
-      }
-
-      #background {
-        background: #000
-          url("https://www.valuewalk.com/wp-content/uploads/2018/06/mojave_dynamic_1.jpeg")
-          center no-repeat;
-        background-size: cover;
-        -webkit-filter: blur(10px);
-        position: fixed;
-        z-index: -1;
-        top: -40px;
-        left: -40px;
-        right: -40px;
-        bottom: -40px;
-      }
-      #background:after {
-        content: "";
-        background: rgba(0, 0, 0, 0.5);
-        position: fixed;
-        z-index: 0;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
       }
 
       #container,
@@ -77,17 +29,13 @@
       }
 
       footer {
-        max-width: 400px;
         padding-top: 20px;
+        margin-top: 20px;
         border-top: 1px solid rgba(255, 255, 255, 0.4);
-        margin: 40px auto 20px auto;
-        font-size: 16px;
-        font-weight: 400;
-        color: #ccc;
       }
     </style>
-    <script src="dist/siriwave.js"></script>
-    <script type="text/javascript" src="dat.gui.js"></script>
+    <script src="dist/siriwave.umd.js"></script>
+    <script type="text/javascript" src="etc/dat.gui.js"></script>
   </head>
 
   <h1>SiriwaveJS</h1>
@@ -95,10 +43,10 @@
 
   <div id="background"></div>
 
-  <h2>Classic</h2>
+  <h3>Classic</h3>
   <div id="container"></div>
 
-  <h2>iOS9+</h2>
+  <h3>iOS9+</h3>
   <div id="container-9"></div>
 
   <footer>
@@ -109,15 +57,15 @@
   <script>
     var SW = new SiriWave({
       container: document.getElementById("container"),
-      autostart: true
+      autostart: true,
     });
     var SW9 = new SiriWave({
       style: "ios9",
       container: document.getElementById("container-9"),
-      autostart: true
+      autostart: true,
     });
 
-    window.onload = function() {
+    window.onload = function () {
       var gui = new dat.GUI();
       gui.add(SW, "speed", 0, 1);
       gui.add(SW, "amplitude", 0, 3);

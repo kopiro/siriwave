@@ -1,7 +1,6 @@
-import raf from 'raf';
-import lerp from 'lerp';
-import Curve from './curve';
-import iOS9Curve from './ios9curve';
+import lerp from "lerp";
+import { Curve } from "./curve";
+import { iOS9Curve } from "./ios9curve";
 
 export default class SiriWave {
   /**
@@ -27,17 +26,15 @@ export default class SiriWave {
     // In this.opt you could find definitive opt with defaults values
     this.opt = Object.assign(
       {
-        style: 'ios',
+        style: "ios",
         ratio: window.devicePixelRatio || 1,
         speed: 0.2,
         amplitude: 1,
         frequency: 6,
-        color: '#fff',
+        color: "#fff",
         cover: false,
-        width: window.getComputedStyle(this.container).width.replace('px', ''),
-        height: window
-          .getComputedStyle(this.container)
-          .height.replace('px', ''),
+        width: window.getComputedStyle(this.container).width.replace("px", ""),
+        height: window.getComputedStyle(this.container).height.replace("px", ""),
         autostart: false,
         pixelDepth: 0.02,
         lerpSpeed: 0.1,
@@ -97,12 +94,12 @@ export default class SiriWave {
     /**
      * Canvas DOM Element where curves will be drawn
      */
-    this.canvas = document.createElement('canvas');
+    this.canvas = document.createElement("canvas");
 
     /**
      * 2D Context from Canvas
      */
-    this.ctx = this.canvas.getContext('2d');
+    this.ctx = this.canvas.getContext("2d");
 
     // Set dimensions
     this.canvas.width = this.width;
@@ -110,7 +107,7 @@ export default class SiriWave {
 
     // By covering, we ensure the canvas is in the same size of the parent
     if (this.opt.cover === true) {
-      this.canvas.style.width = this.canvas.style.height = '100%';
+      this.canvas.style.width = this.canvas.style.height = "100%";
     } else {
       this.canvas.style.width = `${this.width / this.opt.ratio}px`;
       this.canvas.style.height = `${this.height / this.opt.ratio}px`;
@@ -122,7 +119,7 @@ export default class SiriWave {
     this.curves = [];
 
     // Instantiate all curves based on the style
-    if (this.opt.style === 'ios9') {
+    if (this.opt.style === "ios9") {
       for (const def of iOS9Curve.getDefinition(this.opt.waveColors || [])) {
         this.curves.push(
           new iOS9Curve({
@@ -162,10 +159,10 @@ export default class SiriWave {
     hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
-      ? `${parseInt(result[1], 16).toString()},${parseInt(
-        result[2],
-        16,
-      ).toString()},${parseInt(result[3], 16).toString()}`
+      ? `${parseInt(result[1], 16).toString()},${parseInt(result[2], 16).toString()},${parseInt(
+          result[3],
+          16,
+        ).toString()}`
       : null;
   }
 
@@ -176,11 +173,7 @@ export default class SiriWave {
    * @memberof SiriWave
    */
   lerp(propertyStr) {
-    this[propertyStr] = lerp(
-      this[propertyStr],
-      this.interpolation[propertyStr],
-      this.opt.lerpSpeed,
-    );
+    this[propertyStr] = lerp(this[propertyStr], this.interpolation[propertyStr], this.opt.lerpSpeed);
     if (this[propertyStr] - this.interpolation[propertyStr] === 0) {
       this.interpolation[propertyStr] = null;
     }
@@ -192,9 +185,9 @@ export default class SiriWave {
    * @memberof SiriWave
    */
   _clear() {
-    this.ctx.globalCompositeOperation = 'destination-out';
+    this.ctx.globalCompositeOperation = "destination-out";
     this.ctx.fillRect(0, 0, this.width, this.height);
-    this.ctx.globalCompositeOperation = 'source-over';
+    this.ctx.globalCompositeOperation = "source-over";
   }
 
   /**
@@ -217,13 +210,17 @@ export default class SiriWave {
     this._clear();
 
     // Interpolate values
-    if (this.interpolation.amplitude !== null) this.lerp('amplitude');
-    if (this.interpolation.speed !== null) this.lerp('speed');
+    if (this.interpolation.amplitude !== null) this.lerp("amplitude");
+    if (this.interpolation.speed !== null) this.lerp("speed");
 
     this._draw();
     this.phase = (this.phase + (Math.PI / 2) * this.speed) % (2 * Math.PI);
 
-    raf(this.startDrawCycle.bind(this), 20);
+    if (window.requestAnimationFrame) {
+      window.requestAnimationFrame(this.startDrawCycle.bind(this));
+    } else {
+      setTimeout(this.startDrawCycle.bind(this), 20);
+    }
   }
 
   /* API */
@@ -263,7 +260,7 @@ export default class SiriWave {
    * @memberof SiriWave
    */
   setSpeed(v) {
-    this.set('speed', v);
+    this.set("speed", v);
   }
 
   /**
@@ -272,6 +269,6 @@ export default class SiriWave {
    * @memberof SiriWave
    */
   setAmplitude(v) {
-    this.set('amplitude', v);
+    this.set("amplitude", v);
   }
 }

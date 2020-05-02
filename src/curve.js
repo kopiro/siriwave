@@ -1,4 +1,4 @@
-export default class Curve {
+export class Curve {
   constructor(opt) {
     this.ctrl = opt.ctrl;
     this.definition = opt.definition;
@@ -9,10 +9,7 @@ export default class Curve {
   }
 
   globalAttFn(x) {
-    return Math.pow(
-      this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, this.ATT_FACTOR)),
-      this.ATT_FACTOR,
-    );
+    return Math.pow(this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, this.ATT_FACTOR)), this.ATT_FACTOR);
   }
 
   _xpos(i) {
@@ -21,11 +18,11 @@ export default class Curve {
 
   _ypos(i) {
     return (
-      this.AMPLITUDE_FACTOR
-      * (this.globalAttFn(i)
-        * (this.ctrl.heightMax * this.ctrl.amplitude)
-        * (1 / this.definition.attenuation)
-        * Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase))
+      this.AMPLITUDE_FACTOR *
+      (this.globalAttFn(i) *
+        (this.ctrl.heightMax * this.ctrl.amplitude) *
+        (1 / this.definition.attenuation) *
+        Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase))
     );
   }
 
@@ -35,16 +32,12 @@ export default class Curve {
     ctx.moveTo(0, 0);
     ctx.beginPath();
 
-    const color = this.ctrl.color.replace(/rgb\(/g, '').replace(/\)/g, '');
+    const color = this.ctrl.color.replace(/rgb\(/g, "").replace(/\)/g, "");
     ctx.strokeStyle = `rgba(${color},${this.definition.opacity})`;
     ctx.lineWidth = this.definition.lineWidth;
 
     // Cycle the graph from -X to +X every PX_DEPTH and draw the line
-    for (
-      let i = -this.GRAPH_X;
-      i <= this.GRAPH_X;
-      i += this.ctrl.opt.pixelDepth
-    ) {
+    for (let i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
       ctx.lineTo(this._xpos(i), this.ctrl.heightMax + this._ypos(i));
     }
 
