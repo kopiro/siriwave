@@ -1,6 +1,6 @@
 import { Curve } from "./curve";
 import { iOS9Curve } from "./ios9curve";
-import { Options, ICurve, CurveStyle, ICurveDefinition } from "./types";
+import { Options, ICurve, CurveStyle } from "./types";
 
 export default class SiriWaveController {
   opt: Options;
@@ -25,6 +25,9 @@ export default class SiriWaveController {
 
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
+
+  animationFrameId: number;
+  timeoutId: number;
 
   constructor({ container, ...rest }: Options) {
     const csStyle = window.getComputedStyle(container);
@@ -179,8 +182,6 @@ export default class SiriWaveController {
    * @returns
    */
   startDrawCycle() {
-    if (!this.run) return;
-
     this._clear();
 
     // Interpolate values
@@ -191,9 +192,9 @@ export default class SiriWaveController {
     this.phase = (this.phase + (Math.PI / 2) * this.speed) % (2 * Math.PI);
 
     if (window.requestAnimationFrame) {
-      window.requestAnimationFrame(this.startDrawCycle.bind(this));
+      this.animationFrameId = window.requestAnimationFrame(this.startDrawCycle.bind(this));
     } else {
-      setTimeout(this.startDrawCycle.bind(this), 20);
+      this.timeoutId = setTimeout(this.startDrawCycle.bind(this), 20);
     }
   }
 
@@ -204,8 +205,12 @@ export default class SiriWaveController {
    */
   start() {
     this.phase = 0;
-    this.run = true;
-    this.startDrawCycle();
+
+    // Ensure we don't re-launch the draw cycle
+    if (!this.run) {
+      this.run = true;
+      this.startDrawCycle();
+    }
   }
 
   /**
@@ -214,6 +219,10 @@ export default class SiriWaveController {
   stop() {
     this.phase = 0;
     this.run = false;
+
+    // Clear old draw cycle on stop
+    this.animationFrameId && window.cancelAnimationFrame(this.animationFrameId);
+    this.timeoutId && clearTimeout(this.timeoutId);
   }
 
   /**

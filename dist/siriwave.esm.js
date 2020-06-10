@@ -389,8 +389,6 @@ var SiriWaveController = /** @class */ (function () {
      * @returns
      */
     SiriWaveController.prototype.startDrawCycle = function () {
-        if (!this.run)
-            return;
         this._clear();
         // Interpolate values
         if (this.interpolation.amplitude !== null)
@@ -400,10 +398,10 @@ var SiriWaveController = /** @class */ (function () {
         this._draw();
         this.phase = (this.phase + (Math.PI / 2) * this.speed) % (2 * Math.PI);
         if (window.requestAnimationFrame) {
-            window.requestAnimationFrame(this.startDrawCycle.bind(this));
+            this.animationFrameId = window.requestAnimationFrame(this.startDrawCycle.bind(this));
         }
         else {
-            setTimeout(this.startDrawCycle.bind(this), 20);
+            this.timeoutId = setTimeout(this.startDrawCycle.bind(this), 20);
         }
     };
     /* API */
@@ -412,8 +410,11 @@ var SiriWaveController = /** @class */ (function () {
      */
     SiriWaveController.prototype.start = function () {
         this.phase = 0;
-        this.run = true;
-        this.startDrawCycle();
+        // Ensure we don't re-launch the draw cycle
+        if (!this.run) {
+            this.run = true;
+            this.startDrawCycle();
+        }
     };
     /**
      * Stop the animation
@@ -421,6 +422,9 @@ var SiriWaveController = /** @class */ (function () {
     SiriWaveController.prototype.stop = function () {
         this.phase = 0;
         this.run = false;
+        // Clear old draw cycle on stop
+        this.animationFrameId && window.cancelAnimationFrame(this.animationFrameId);
+        this.timeoutId && clearTimeout(this.timeoutId);
     };
     /**
      * Set a new value for a property (interpolated)
