@@ -42,7 +42,7 @@
         return t;
     }
 
-    var Curve = (function () {
+    var Curve = /** @class */ (function () {
         function Curve(ctrl, definition) {
             this.ATT_FACTOR = 4;
             this.GRAPH_X = 2;
@@ -70,6 +70,7 @@
             var color = this.ctrl.color.replace(/rgb\(/g, "").replace(/\)/g, "");
             ctx.strokeStyle = "rgba(" + color + "," + this.definition.opacity + ")";
             ctx.lineWidth = this.definition.lineWidth;
+            // Cycle the graph from -X to +X every PX_DEPTH and draw the line
             for (var i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
                 ctx.lineTo(this._xpos(i), this.ctrl.heightMax + this._ypos(i));
             }
@@ -107,7 +108,7 @@
         return Curve;
     }());
 
-    var iOS9Curve = (function () {
+    var iOS9Curve = /** @class */ (function () {
         function iOS9Curve(ctrl, definition) {
             this.GRAPH_X = 25;
             this.AMPLITUDE_FACTOR = 0.8;
@@ -170,12 +171,15 @@
         iOS9Curve.prototype.yRelativePos = function (i) {
             var y = 0;
             for (var ci = 0; ci < this.noOfCurves; ci++) {
+                // Generate a static T so that each curve is distant from each oterh
                 var t = 4 * (-1 + (ci / (this.noOfCurves - 1)) * 2);
+                // but add a dynamic offset
                 t += this.offsets[ci];
                 var k = 1 / this.widths[ci];
                 var x = i * k - t;
                 y += Math.abs(this.amplitudes[ci] * this.sin(this.verses[ci] * x, this.phases[ci]) * this.globalAttFn(x));
             }
+            // Divide for NoOfCurves so that y <= 1
             return y / this.noOfCurves;
         };
         iOS9Curve.prototype._ypos = function (i) {
@@ -204,6 +208,7 @@
             ctx.globalAlpha = 0.7;
             ctx.globalCompositeOperation = "lighter";
             if (this.definition.supportLine) {
+                // Draw the support line
                 return this.drawSupportLine();
             }
             for (var ci = 0; ci < this.noOfCurves; ci++) {
@@ -217,6 +222,7 @@
                 this.phases[ci] = (this.phases[ci] + this.ctrl.speed * this.speeds[ci] * this.SPEED_FACTOR) % (2 * Math.PI);
             }
             var maxY = -Infinity;
+            // Write two opposite waves
             for (var _i = 0, _a = [1, -1]; _i < _a.length; _i++) {
                 var sign = _a[_i];
                 ctx.beginPath();
@@ -244,12 +250,15 @@
                     supportLine: true,
                 },
                 {
+                    // blue
                     color: "15, 82, 169",
                 },
                 {
+                    // red
                     color: "173, 57, 76",
                 },
                 {
+                    // green
                     color: "48, 220, 155",
                 },
             ];
@@ -263,29 +272,62 @@
         CurveStyle["ios9"] = "ios9";
     })(CurveStyle || (CurveStyle = {}));
 
-    var SiriWaveController = (function () {
+    var SiriWaveController = /** @class */ (function () {
         function SiriWaveController(_a) {
             var _this = this;
             var container = _a.container, rest = __rest(_a, ["container"]);
+            // Phase of the wave (passed to Math.sin function)
             this.phase = 0;
+            // Boolean value indicating the the animation is running
             this.run = false;
+            // Curves objects to animate
             this.curves = [];
             var csStyle = window.getComputedStyle(container);
             this.opt = __assign({ container: container, style: CurveStyle.ios, ratio: window.devicePixelRatio || 1, speed: 0.2, amplitude: 1, frequency: 6, color: "#fff", cover: false, width: parseInt(csStyle.width.replace("px", ""), 10), height: parseInt(csStyle.height.replace("px", ""), 10), autostart: true, pixelDepth: 0.02, lerpSpeed: 0.1 }, rest);
+            /**
+             * Actual speed of the animation. Is not safe to change this value directly, use `setSpeed` instead.
+             */
             this.speed = Number(this.opt.speed);
+            /**
+             * Actual amplitude of the animation. Is not safe to change this value directly, use `setAmplitude` instead.
+             */
             this.amplitude = Number(this.opt.amplitude);
+            /**
+             * Width of the canvas multiplied by pixel ratio
+             */
             this.width = Number(this.opt.ratio * this.opt.width);
+            /**
+             * Height of the canvas multiplied by pixel ratio
+             */
             this.height = Number(this.opt.ratio * this.opt.height);
+            /**
+             * Maximum height for a single wave
+             */
             this.heightMax = Number(this.height / 2) - 6;
+            /**
+             * Color of the wave (used in Classic iOS)
+             */
             this.color = "rgb(" + this.hex2rgb(this.opt.color) + ")";
+            /**
+             * An object containing controller variables that need to be interpolated
+             * to an another value before to be actually changed
+             */
             this.interpolation = {
                 speed: this.speed,
                 amplitude: this.amplitude,
             };
+            /**
+             * Canvas DOM Element where curves will be drawn
+             */
             this.canvas = document.createElement("canvas");
+            /**
+             * 2D Context from Canvas
+             */
             this.ctx = this.canvas.getContext("2d");
+            // Set dimensions
             this.canvas.width = this.width;
             this.canvas.height = this.height;
+            // By covering, we ensure the canvas is in the same size of the parent
             if (this.opt.cover === true) {
                 this.canvas.style.width = this.canvas.style.height = "100%";
             }
@@ -293,6 +335,7 @@
                 this.canvas.style.width = this.width / this.opt.ratio + "px";
                 this.canvas.style.height = this.height / this.opt.ratio + "px";
             }
+            // Instantiate all curves based on the style
             switch (this.opt.style) {
                 case CurveStyle.ios:
                 default:
@@ -302,11 +345,16 @@
                     this.curves = (this.opt.curveDefinition || Curve.getDefinition()).map(function (def) { return new Curve(_this, def); });
                     break;
             }
+            // Attach to the container
             this.opt.container.appendChild(this.canvas);
+            // Start the animation
             if (this.opt.autostart) {
                 this.start();
             }
         }
+        /**
+         * Convert an HEX color to RGB
+         */
         SiriWaveController.prototype.hex2rgb = function (hex) {
             var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
             hex = hex.replace(shorthandRegex, function (m, r, g, b) { return r + r + g + g + b + b; });
@@ -318,6 +366,9 @@
         SiriWaveController.prototype.intLerp = function (v0, v1, t) {
             return v0 * (1 - t) + v1 * t;
         };
+        /**
+         * Interpolate a property to the value found in this.interpolation
+         */
         SiriWaveController.prototype.lerp = function (propertyStr) {
             this[propertyStr] = this.intLerp(this[propertyStr], this.interpolation[propertyStr], this.opt.lerpSpeed);
             if (this[propertyStr] - this.interpolation[propertyStr] === 0) {
@@ -325,16 +376,27 @@
             }
             return this[propertyStr];
         };
+        /**
+         * Clear the canvas
+         */
         SiriWaveController.prototype._clear = function () {
             this.ctx.globalCompositeOperation = "destination-out";
             this.ctx.fillRect(0, 0, this.width, this.height);
             this.ctx.globalCompositeOperation = "source-over";
         };
+        /**
+         * Draw all curves
+         */
         SiriWaveController.prototype._draw = function () {
             this.curves.forEach(function (curve) { return curve.draw(); });
         };
+        /**
+         * Clear the space, interpolate values, calculate new steps and draws
+         * @returns
+         */
         SiriWaveController.prototype.startDrawCycle = function () {
             this._clear();
+            // Interpolate values
             if (this.interpolation.amplitude !== null)
                 this.lerp("amplitude");
             if (this.interpolation.speed !== null)
@@ -348,25 +410,43 @@
                 this.timeoutId = setTimeout(this.startDrawCycle.bind(this), 20);
             }
         };
+        /* API */
+        /**
+         * Start the animation
+         */
         SiriWaveController.prototype.start = function () {
             this.phase = 0;
+            // Ensure we don't re-launch the draw cycle
             if (!this.run) {
                 this.run = true;
                 this.startDrawCycle();
             }
         };
+        /**
+         * Stop the animation
+         */
         SiriWaveController.prototype.stop = function () {
             this.phase = 0;
             this.run = false;
+            // Clear old draw cycle on stop
             this.animationFrameId && window.cancelAnimationFrame(this.animationFrameId);
             this.timeoutId && clearTimeout(this.timeoutId);
         };
+        /**
+         * Set a new value for a property (interpolated)
+         */
         SiriWaveController.prototype.set = function (propertyStr, value) {
             this.interpolation[propertyStr] = value;
         };
+        /**
+         * Set a new value for the speed property (interpolated)
+         */
         SiriWaveController.prototype.setSpeed = function (value) {
             this.set("speed", value);
         };
+        /**
+         * Set a new value for the amplitude property (interpolated)
+         */
         SiriWaveController.prototype.setAmplitude = function (value) {
             this.set("amplitude", value);
         };
