@@ -87,6 +87,24 @@ Set the new value of amplitude (animated)
 - [GCX default](etc/gcx/default.gcx)
 - [GCX iOS 9](etc/gcx/ios9.gcx)
 
+## Build and development
+
+If you wanna make some modifications in your local environment, use:
+
+```
+yarn dev
+```
+
+this will create a watchable build with RollupJS and automatically create a server to see your changes in the browser.
+
+To finally build all targets:
+
+```
+yarn build
+```
+
+## QA
+
 #### How do I integrate this library with a microphone user input?
 
 You can find an excellent demo [here](https://jsitor.com/PPQtOp9Yp) by @semmel

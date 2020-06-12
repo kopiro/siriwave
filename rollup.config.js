@@ -1,53 +1,52 @@
-import typescript from "rollup-plugin-typescript2";
+import typescript from "@rollup/plugin-typescript";
 import { terser } from "rollup-plugin-terser";
-
 import livereload from "rollup-plugin-livereload";
 import serve from "rollup-plugin-serve";
-
 import pkg from "./package.json";
-const INPUT = "src/siriwave.ts";
 
-const plugins = [
+const input = "./src/siriwave.ts";
+const external = Object.keys(pkg.dependencies);
+
+const commonPlugins = [
   typescript({
-    typescript: require("typescript"),
+    lib: ["es5", "es6", "ESNext", "dom"],
   }),
 ];
 
 if (process.env.NODE_ENV === "development") {
-  plugins.push(
+  commonPlugins.push(
     serve({
-      open: 1,
+      open: true,
       contentBase: ".",
     }),
   );
-  plugins.push(
+  commonPlugins.push(
     livereload({
       watch: "dist",
     }),
   );
 }
 
-export default [false, true].reduce(
-  (carry, min) =>
-    carry.concat([
-      {
-        input: INPUT,
-        output: {
-          name: pkg.umdName,
-          file: min ? pkg.browser.replace(".js", ".min.js") : pkg.browser,
-          format: "umd",
-        },
-        plugins: [...plugins, ...(min ? [terser()] : [])],
+export default [false, true].reduce((carry, min) => {
+  const plugins = [...commonPlugins, ...(min ? [terser()] : [])];
+  return carry.concat([
+    {
+      input,
+      output: {
+        name: pkg.umdName,
+        file: min ? pkg.browser.replace(".js", ".min.js") : pkg.browser,
+        format: "umd",
       },
-      {
-        input: INPUT,
-        output: {
-          file: min ? pkg.module.replace(".js", ".min.js") : pkg.module,
-          format: "es",
-        },
-        external: [...Object.keys(pkg.dependencies)],
-        plugins: [...plugins, ...(min ? [terser()] : [])],
+      plugins,
+    },
+    {
+      input,
+      output: {
+        file: min ? pkg.module.replace(".js", ".min.js") : pkg.module,
+        format: "es",
       },
-    ]),
-  [],
-);
+      external,
+      plugins,
+    },
+  ]);
+}, []);
