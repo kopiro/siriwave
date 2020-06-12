@@ -4,7 +4,7 @@ The "Apple Siri" wave replicated in pure Javascript using the Canvas API.
 
 [Read blog post here](https://developers.caffeina.com/how-i-built-siriwavejs-library-maths-and-code-behind-6971497ae5c1)
 
-[View live example](http://kopiro.github.io/siriwave)
+[Demo](http://kopiro.github.io/siriwave)
 
 [![npm version](https://badge.fury.io/js/siriwave.svg)](https://badge.fury.io/js/siriwave)
 
@@ -32,7 +32,7 @@ Install it through `npm install siriwave` or `yarn add siriwave` first:
 import SiriWave from "siriwave";
 ```
 
-## Instantitate
+## Init
 
 Create a div container and instantiate a SiriWave object
 
@@ -86,3 +86,7 @@ Set the new value of amplitude (animated)
 
 - [GCX default](etc/gcx/default.gcx)
 - [GCX iOS 9](etc/gcx/ios9.gcx)
+
+#### How do I integrate this library with a microphone user input?
+
+You can find an excellent demo [here](https://jsitor.com/PPQtOp9Yp) by @semmel
