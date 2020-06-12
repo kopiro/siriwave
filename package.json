@@ -2,11 +2,13 @@
   "name": "siriwave",
   "version": "2.0.0",
   "description": "The Siri wave replicated in a JS library.",
-  "module": "dist/siriwave.esm.js",
-  "main": "dist/siriwave.esm.js",
-  "browser": "dist/siriwave.umd.js",
+  "module": "./dist/siriwave.esm.js",
+  "main": "./dist/siriwave.esm.js",
+  "browser": "./dist/siriwave.umd.js",
   "umdName": "SiriWave",
   "scripts": {
+    "test": "echo 'OK'",
+    "ci": "yarn build",
     "build": "NODE_ENV=production rollup -c",
     "dev": "NODE_ENV=development rollup -c -w"
   },
@@ -26,6 +28,7 @@
   },
   "homepage": "https://github.com/kopiro/siriwave#readme",
   "devDependencies": {
+    "@rollup/plugin-typescript": "^4.1.2",
     "eslint": "^6.8.0",
     "eslint-plugin-prettier": "^3.1.3",
     "prettier": "^2.0.5",
@@ -33,8 +36,8 @@
     "rollup-plugin-livereload": "^1.3.0",
     "rollup-plugin-serve": "^1.0.1",
     "rollup-plugin-terser": "^5.3.0",
-    "rollup-plugin-typescript2": "^0.27.0",
-    "typescript": "^3.8.3"
+    "tslib": "^2.0.0",
+    "typescript": "^3.9.5"
   },
   "dependencies": {}
 }
