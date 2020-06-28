@@ -1,8 +1,7 @@
-import SiriWaveController from "./siriwave";
-import { ICurveDefinition, ICurve } from "./types";
+import SiriWave, { ICurveDefinition, ICurve } from "./index";
 
 export class iOS9Curve implements ICurve {
-  ctrl: SiriWaveController;
+  ctrl: SiriWave;
   definition: ICurveDefinition;
 
   spawnAt: number;
@@ -33,7 +32,7 @@ export class iOS9Curve implements ICurve {
   SPEED_RANGES: [number, number] = [0.5, 1];
   DESPAWN_TIMEOUT_RANGES: [number, number] = [500, 2000];
 
-  constructor(ctrl: SiriWaveController, definition: ICurveDefinition) {
+  constructor(ctrl: SiriWave, definition: ICurveDefinition) {
     this.ctrl = ctrl;
     this.definition = definition;
 

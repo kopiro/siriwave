@@ -1,14 +1,12 @@
-import SiriWaveController from "./siriwave";
-import { ICurveDefinition, ICurve } from "./types";
-
+import SiriWave, { ICurveDefinition, ICurve } from "./index";
 export class Curve implements ICurve {
-  ctrl: SiriWaveController;
+  ctrl: SiriWave;
   definition: ICurveDefinition;
   ATT_FACTOR = 4;
   GRAPH_X = 2;
   AMPLITUDE_FACTOR = 0.6;
 
-  constructor(ctrl: SiriWaveController, definition: ICurveDefinition) {
+  constructor(ctrl: SiriWave, definition: ICurveDefinition) {
     this.ctrl = ctrl;
     this.definition = definition;
   }

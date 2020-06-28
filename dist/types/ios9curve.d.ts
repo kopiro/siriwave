@@ -1,7 +1,6 @@
-import SiriWaveController from "./siriwave";
-import { ICurveDefinition, ICurve } from "./types";
+import SiriWave, { ICurveDefinition, ICurve } from "./index";
 export declare class iOS9Curve implements ICurve {
-    ctrl: SiriWaveController;
+    ctrl: SiriWave;
     definition: ICurveDefinition;
     spawnAt: number;
     noOfCurves: number;
@@ -26,7 +25,7 @@ export declare class iOS9Curve implements ICurve {
     WIDTH_RANGES: [number, number];
     SPEED_RANGES: [number, number];
     DESPAWN_TIMEOUT_RANGES: [number, number];
-    constructor(ctrl: SiriWaveController, definition: ICurveDefinition);
+    constructor(ctrl: SiriWave, definition: ICurveDefinition);
     getRandomRange(e: [number, number]): number;
     respawnSingle(ci: number): void;
     getEmptyArray(count: number): number[];

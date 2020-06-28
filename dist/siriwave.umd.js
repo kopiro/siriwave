@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global = global || self, global.SiriWave = factory());
-}(this, (function () { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+    typeof define === 'function' && define.amd ? define(['exports'], factory) :
+    (global = global || self, factory(global.SiriWave = {}));
+}(this, (function (exports) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -266,14 +266,12 @@
         return iOS9Curve;
     }());
 
-    var CurveStyle;
     (function (CurveStyle) {
         CurveStyle["ios"] = "ios";
         CurveStyle["ios9"] = "ios9";
-    })(CurveStyle || (CurveStyle = {}));
-
-    var SiriWaveController = /** @class */ (function () {
-        function SiriWaveController(_a) {
+    })(exports.CurveStyle || (exports.CurveStyle = {}));
+    var SiriWave = /** @class */ (function () {
+        function SiriWave(_a) {
             var _this = this;
             var container = _a.container, rest = __rest(_a, ["container"]);
             // Phase of the wave (passed to Math.sin function)
@@ -283,7 +281,7 @@
             // Curves objects to animate
             this.curves = [];
             var csStyle = window.getComputedStyle(container);
-            this.opt = __assign({ container: container, style: CurveStyle.ios, ratio: window.devicePixelRatio || 1, speed: 0.2, amplitude: 1, frequency: 6, color: "#fff", cover: false, width: parseInt(csStyle.width.replace("px", ""), 10), height: parseInt(csStyle.height.replace("px", ""), 10), autostart: true, pixelDepth: 0.02, lerpSpeed: 0.1 }, rest);
+            this.opt = __assign({ container: container, style: exports.CurveStyle.ios, ratio: window.devicePixelRatio || 1, speed: 0.2, amplitude: 1, frequency: 6, color: "#fff", cover: false, width: parseInt(csStyle.width.replace("px", ""), 10), height: parseInt(csStyle.height.replace("px", ""), 10), autostart: true, pixelDepth: 0.02, lerpSpeed: 0.1 }, rest);
             /**
              * Actual speed of the animation. Is not safe to change this value directly, use `setSpeed` instead.
              */
@@ -337,11 +335,11 @@
             }
             // Instantiate all curves based on the style
             switch (this.opt.style) {
-                case CurveStyle.ios:
+                case exports.CurveStyle.ios:
                 default:
                     this.curves = (this.opt.curveDefinition || iOS9Curve.getDefinition()).map(function (def) { return new iOS9Curve(_this, def); });
                     break;
-                case CurveStyle.ios9:
+                case exports.CurveStyle.ios9:
                     this.curves = (this.opt.curveDefinition || Curve.getDefinition()).map(function (def) { return new Curve(_this, def); });
                     break;
             }
@@ -355,7 +353,7 @@
         /**
          * Convert an HEX color to RGB
          */
-        SiriWaveController.prototype.hex2rgb = function (hex) {
+        SiriWave.prototype.hex2rgb = function (hex) {
             var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
             hex = hex.replace(shorthandRegex, function (m, r, g, b) { return r + r + g + g + b + b; });
             var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -363,13 +361,13 @@
                 ? parseInt(result[1], 16).toString() + "," + parseInt(result[2], 16).toString() + "," + parseInt(result[3], 16).toString()
                 : null;
         };
-        SiriWaveController.prototype.intLerp = function (v0, v1, t) {
+        SiriWave.prototype.intLerp = function (v0, v1, t) {
             return v0 * (1 - t) + v1 * t;
         };
         /**
          * Interpolate a property to the value found in this.interpolation
          */
-        SiriWaveController.prototype.lerp = function (propertyStr) {
+        SiriWave.prototype.lerp = function (propertyStr) {
             this[propertyStr] = this.intLerp(this[propertyStr], this.interpolation[propertyStr], this.opt.lerpSpeed);
             if (this[propertyStr] - this.interpolation[propertyStr] === 0) {
                 this.interpolation[propertyStr] = null;
@@ -379,7 +377,7 @@
         /**
          * Clear the canvas
          */
-        SiriWaveController.prototype._clear = function () {
+        SiriWave.prototype._clear = function () {
             this.ctx.globalCompositeOperation = "destination-out";
             this.ctx.fillRect(0, 0, this.width, this.height);
             this.ctx.globalCompositeOperation = "source-over";
@@ -387,14 +385,14 @@
         /**
          * Draw all curves
          */
-        SiriWaveController.prototype._draw = function () {
+        SiriWave.prototype._draw = function () {
             this.curves.forEach(function (curve) { return curve.draw(); });
         };
         /**
          * Clear the space, interpolate values, calculate new steps and draws
          * @returns
          */
-        SiriWaveController.prototype.startDrawCycle = function () {
+        SiriWave.prototype.startDrawCycle = function () {
             this._clear();
             // Interpolate values
             if (this.interpolation.amplitude !== null)
@@ -414,7 +412,7 @@
         /**
          * Start the animation
          */
-        SiriWaveController.prototype.start = function () {
+        SiriWave.prototype.start = function () {
             this.phase = 0;
             // Ensure we don't re-launch the draw cycle
             if (!this.run) {
@@ -425,7 +423,7 @@
         /**
          * Stop the animation
          */
-        SiriWaveController.prototype.stop = function () {
+        SiriWave.prototype.stop = function () {
             this.phase = 0;
             this.run = false;
             // Clear old draw cycle on stop
@@ -435,24 +433,26 @@
         /**
          * Set a new value for a property (interpolated)
          */
-        SiriWaveController.prototype.set = function (propertyStr, value) {
+        SiriWave.prototype.set = function (propertyStr, value) {
             this.interpolation[propertyStr] = value;
         };
         /**
          * Set a new value for the speed property (interpolated)
          */
-        SiriWaveController.prototype.setSpeed = function (value) {
+        SiriWave.prototype.setSpeed = function (value) {
             this.set("speed", value);
         };
         /**
          * Set a new value for the amplitude property (interpolated)
          */
-        SiriWaveController.prototype.setAmplitude = function (value) {
+        SiriWave.prototype.setAmplitude = function (value) {
             this.set("amplitude", value);
         };
-        return SiriWaveController;
+        return SiriWave;
     }());
 
-    return SiriWaveController;
+    exports.default = SiriWave;
+
+    Object.defineProperty(exports, '__esModule', { value: true });
 
 })));

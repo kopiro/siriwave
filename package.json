@@ -5,12 +5,12 @@
   "module": "./dist/siriwave.esm.js",
   "main": "./dist/siriwave.esm.js",
   "browser": "./dist/siriwave.umd.js",
-  "umdName": "SiriWave",
   "types": "./dist/types",
+  "umdName": "SiriWave",
   "scripts": {
     "test": "echo 'OK'",
     "ci": "yarn build",
-    "build:declaration": "tsc --outDir ./dist/types --declaration && rm -rf ./dist/types/*.js",
+    "build:declaration": "rm -rf ./dist/types && tsc --outDir ./dist/types --declaration && rm -rf ./dist/types/*.js",
     "build": "yarn build:declaration && NODE_ENV=production rollup -c",
     "dev": "NODE_ENV=development rollup -c -w"
   },

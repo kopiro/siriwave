@@ -4,7 +4,7 @@ import livereload from "rollup-plugin-livereload";
 import serve from "rollup-plugin-serve";
 import pkg from "./package.json";
 
-const input = "./src/siriwave.ts";
+const input = "./src/index.ts";
 const external = Object.keys(pkg.dependencies);
 
 const commonPlugins = [
