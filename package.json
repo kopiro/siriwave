@@ -7,6 +7,10 @@
   "browser": "./dist/siriwave.umd.js",
   "types": "./dist/types",
   "umdName": "SiriWave",
+  "files": [
+    "./dist",
+    "./src"
+  ],
   "scripts": {
     "test": "echo 'OK'",
     "ci": "yarn build",
