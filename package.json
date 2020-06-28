@@ -12,7 +12,8 @@
     "ci": "yarn build",
     "build:declaration": "rm -rf ./dist/types && tsc --outDir ./dist/types --declaration && rm -rf ./dist/types/*.js",
     "build": "yarn build:declaration && NODE_ENV=production rollup -c",
-    "dev": "NODE_ENV=development rollup -c -w"
+    "dev": "NODE_ENV=development rollup -c -w",
+    "prepublish": "yarn build"
   },
   "repository": {
     "type": "git",
