@@ -8,8 +8,8 @@
   "types": "./dist/types",
   "umdName": "SiriWave",
   "files": [
-    "./dist/**/*",
-    "./src/**/*"
+    "/dist",
+    "/src"
   ],
   "scripts": {
     "test": "echo 'OK'",
