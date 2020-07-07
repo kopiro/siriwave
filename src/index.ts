@@ -159,12 +159,12 @@ export default class SiriWave {
 
     // Instantiate all curves based on the style
     switch (this.opt.style) {
-      case CurveStyle.ios:
-      default:
+      case CurveStyle.ios9:
         this.curves = (this.opt.curveDefinition || iOS9Curve.getDefinition()).map((def) => new iOS9Curve(this, def));
         break;
 
-      case CurveStyle.ios9:
+      case CurveStyle.ios:
+      default:
         this.curves = (this.opt.curveDefinition || Curve.getDefinition()).map((def) => new Curve(this, def));
         break;
     }
