@@ -1,7 +1,7 @@
 import { Curve } from "./curve";
 import { iOS9Curve } from "./ios9curve";
 
-export enum CurveStyle {
+enum CurveStyle {
   "ios" = "ios",
   "ios9" = "ios9",
 }

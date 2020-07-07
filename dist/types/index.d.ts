@@ -1,4 +1,4 @@
-export declare enum CurveStyle {
+declare enum CurveStyle {
     "ios" = "ios",
     "ios9" = "ios9"
 }
@@ -91,3 +91,4 @@ export default class SiriWave {
      */
     setAmplitude(value: number): void;
 }
+export {};

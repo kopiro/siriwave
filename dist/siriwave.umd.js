@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-    typeof define === 'function' && define.amd ? define(['exports'], factory) :
-    (global = global || self, factory(global.SiriWave = {}));
-}(this, (function (exports) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global = global || self, global.SiriWave = factory());
+}(this, (function () { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -266,10 +266,11 @@
         return iOS9Curve;
     }());
 
+    var CurveStyle;
     (function (CurveStyle) {
         CurveStyle["ios"] = "ios";
         CurveStyle["ios9"] = "ios9";
-    })(exports.CurveStyle || (exports.CurveStyle = {}));
+    })(CurveStyle || (CurveStyle = {}));
     var SiriWave = /** @class */ (function () {
         function SiriWave(_a) {
             var _this = this;
@@ -281,7 +282,7 @@
             // Curves objects to animate
             this.curves = [];
             var csStyle = window.getComputedStyle(container);
-            this.opt = __assign({ container: container, style: exports.CurveStyle.ios, ratio: window.devicePixelRatio || 1, speed: 0.2, amplitude: 1, frequency: 6, color: "#fff", cover: false, width: parseInt(csStyle.width.replace("px", ""), 10), height: parseInt(csStyle.height.replace("px", ""), 10), autostart: true, pixelDepth: 0.02, lerpSpeed: 0.1 }, rest);
+            this.opt = __assign({ container: container, style: CurveStyle.ios, ratio: window.devicePixelRatio || 1, speed: 0.2, amplitude: 1, frequency: 6, color: "#fff", cover: false, width: parseInt(csStyle.width.replace("px", ""), 10), height: parseInt(csStyle.height.replace("px", ""), 10), autostart: true, pixelDepth: 0.02, lerpSpeed: 0.1 }, rest);
             /**
              * Actual speed of the animation. Is not safe to change this value directly, use `setSpeed` instead.
              */
@@ -335,11 +336,11 @@
             }
             // Instantiate all curves based on the style
             switch (this.opt.style) {
-                case exports.CurveStyle.ios:
-                default:
+                case CurveStyle.ios9:
                     this.curves = (this.opt.curveDefinition || iOS9Curve.getDefinition()).map(function (def) { return new iOS9Curve(_this, def); });
                     break;
-                case exports.CurveStyle.ios9:
+                case CurveStyle.ios:
+                default:
                     this.curves = (this.opt.curveDefinition || Curve.getDefinition()).map(function (def) { return new Curve(_this, def); });
                     break;
             }
@@ -451,8 +452,6 @@
         return SiriWave;
     }());
 
-    exports.default = SiriWave;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
+    return SiriWave;
 
 })));

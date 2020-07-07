@@ -330,11 +330,11 @@ var SiriWave = /** @class */ (function () {
         }
         // Instantiate all curves based on the style
         switch (this.opt.style) {
-            case CurveStyle.ios:
-            default:
+            case CurveStyle.ios9:
                 this.curves = (this.opt.curveDefinition || iOS9Curve.getDefinition()).map(function (def) { return new iOS9Curve(_this, def); });
                 break;
-            case CurveStyle.ios9:
+            case CurveStyle.ios:
+            default:
                 this.curves = (this.opt.curveDefinition || Curve.getDefinition()).map(function (def) { return new Curve(_this, def); });
                 break;
         }
@@ -447,4 +447,3 @@ var SiriWave = /** @class */ (function () {
 }());
 
 export default SiriWave;
-export { CurveStyle };

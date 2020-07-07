@@ -35,6 +35,7 @@ export default [false, true].reduce((carry, min) => {
       output: {
         name: pkg.umdName,
         file: min ? pkg.browser.replace(".js", ".min.js") : pkg.browser,
+        exports: "default",
         format: "umd",
       },
       plugins,
