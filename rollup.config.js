@@ -7,28 +7,25 @@ import pkg from "./package.json";
 const input = "./src/index.ts";
 const external = Object.keys(pkg.dependencies);
 
-const commonPlugins = [
-  typescript({
-    lib: ["es5", "es6", "ESNext", "dom"],
-  }),
-];
+const commonTSPluginOptions = {
+  lib: ["es5", "es6", "ESNext", "dom"]
+};
 
-if (process.env.NODE_ENV === "development") {
-  commonPlugins.push(
-    serve({
-      open: true,
-      contentBase: ".",
-    }),
-  );
-  commonPlugins.push(
-    livereload({
-      watch: "dist",
-    }),
-  );
-}
+const pluginsWRTNodeEnv = plugins =>
+  (process.env.NODE_ENV === "development") 
+    ? [...plugins, 
+      serve({
+        open: true,
+        contentBase: ".",
+      }), 
+      livereload({
+        watch: "dist",
+      })
+    ]
+    : plugins;
 
 export default [false, true].reduce((carry, min) => {
-  const plugins = [...commonPlugins, ...(min ? [terser()] : [])];
+  const plugins = pluginsWRTNodeEnv(min ? [terser()] : []);
   return carry.concat([
     {
       input,
@@ -38,7 +35,7 @@ export default [false, true].reduce((carry, min) => {
         exports: "default",
         format: "umd",
       },
-      plugins,
+      plugins: [...plugins, typescript(commonTSPluginOptions)],
     },
     {
       input,
@@ -47,7 +44,7 @@ export default [false, true].reduce((carry, min) => {
         format: "es",
       },
       external,
-      plugins,
+      plugins: [...plugins, typescript({...commonTSPluginOptions, target: "es6"})],
     },
   ]);
 }, []);
