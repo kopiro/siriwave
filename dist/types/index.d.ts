@@ -46,7 +46,7 @@ export default class SiriWave {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     animationFrameId: number;
-    timeoutId: number;
+    timeoutId: ReturnType<typeof setTimeout>;
     constructor({ container, ...rest }: Options);
     /**
      * Convert an HEX color to RGB

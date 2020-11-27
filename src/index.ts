@@ -74,7 +74,7 @@ export default class SiriWave {
   ctx: CanvasRenderingContext2D;
 
   animationFrameId: number;
-  timeoutId: number;
+  timeoutId: ReturnType<typeof setTimeout>;
 
   constructor({ container, ...rest }: Options) {
     const csStyle = window.getComputedStyle(container);
