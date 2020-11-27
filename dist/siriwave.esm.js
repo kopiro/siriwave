@@ -1,3 +1,5 @@
+
+(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -13,17 +15,6 @@ OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
 
-var __assign = function() {
-    __assign = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-
 function __rest(s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -36,41 +27,41 @@ function __rest(s, e) {
     return t;
 }
 
-var Curve = /** @class */ (function () {
-    function Curve(ctrl, definition) {
+class Curve {
+    constructor(ctrl, definition) {
         this.ATT_FACTOR = 4;
         this.GRAPH_X = 2;
         this.AMPLITUDE_FACTOR = 0.6;
         this.ctrl = ctrl;
         this.definition = definition;
     }
-    Curve.prototype.globalAttFn = function (x) {
+    globalAttFn(x) {
         return Math.pow(this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, this.ATT_FACTOR)), this.ATT_FACTOR);
-    };
-    Curve.prototype._xpos = function (i) {
+    }
+    _xpos(i) {
         return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
-    };
-    Curve.prototype._ypos = function (i) {
+    }
+    _ypos(i) {
         return (this.AMPLITUDE_FACTOR *
             (this.globalAttFn(i) *
                 (this.ctrl.heightMax * this.ctrl.amplitude) *
                 (1 / this.definition.attenuation) *
                 Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase)));
-    };
-    Curve.prototype.draw = function () {
-        var ctx = this.ctrl.ctx;
+    }
+    draw() {
+        const { ctx } = this.ctrl;
         ctx.moveTo(0, 0);
         ctx.beginPath();
-        var color = this.ctrl.color.replace(/rgb\(/g, "").replace(/\)/g, "");
-        ctx.strokeStyle = "rgba(" + color + "," + this.definition.opacity + ")";
+        const color = this.ctrl.color.replace(/rgb\(/g, "").replace(/\)/g, "");
+        ctx.strokeStyle = `rgba(${color},${this.definition.opacity})`;
         ctx.lineWidth = this.definition.lineWidth;
         // Cycle the graph from -X to +X every PX_DEPTH and draw the line
-        for (var i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
+        for (let i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
             ctx.lineTo(this._xpos(i), this.ctrl.heightMax + this._ypos(i));
         }
         ctx.stroke();
-    };
-    Curve.getDefinition = function () {
+    }
+    static getDefinition() {
         return [
             {
                 attenuation: -2,
@@ -98,12 +89,11 @@ var Curve = /** @class */ (function () {
                 opacity: 1,
             },
         ];
-    };
-    return Curve;
-}());
+    }
+}
 
-var iOS9Curve = /** @class */ (function () {
-    function iOS9Curve(ctrl, definition) {
+class iOS9Curve {
+    constructor(ctrl, definition) {
         this.GRAPH_X = 25;
         this.AMPLITUDE_FACTOR = 0.8;
         this.SPEED_FACTOR = 1;
@@ -120,10 +110,10 @@ var iOS9Curve = /** @class */ (function () {
         this.definition = definition;
         this.respawn();
     }
-    iOS9Curve.prototype.getRandomRange = function (e) {
+    getRandomRange(e) {
         return e[0] + Math.random() * (e[1] - e[0]);
-    };
-    iOS9Curve.prototype.respawnSingle = function (ci) {
+    }
+    respawnSingle(ci) {
         this.phases[ci] = 0;
         this.amplitudes[ci] = 0;
         this.despawnTimeouts[ci] = this.getRandomRange(this.DESPAWN_TIMEOUT_RANGES);
@@ -132,11 +122,11 @@ var iOS9Curve = /** @class */ (function () {
         this.finalAmplitudes[ci] = this.getRandomRange(this.AMPLITUDE_RANGES);
         this.widths[ci] = this.getRandomRange(this.WIDTH_RANGES);
         this.verses[ci] = this.getRandomRange([-1, 1]);
-    };
-    iOS9Curve.prototype.getEmptyArray = function (count) {
+    }
+    getEmptyArray(count) {
         return new Array(count);
-    };
-    iOS9Curve.prototype.respawn = function () {
+    }
+    respawn() {
         this.spawnAt = Date.now();
         this.noOfCurves = Math.floor(this.getRandomRange(this.NOOFCURVES_RANGES));
         this.phases = this.getEmptyArray(this.noOfCurves);
@@ -147,65 +137,65 @@ var iOS9Curve = /** @class */ (function () {
         this.amplitudes = this.getEmptyArray(this.noOfCurves);
         this.despawnTimeouts = this.getEmptyArray(this.noOfCurves);
         this.verses = this.getEmptyArray(this.noOfCurves);
-        for (var ci = 0; ci < this.noOfCurves; ci++) {
+        for (let ci = 0; ci < this.noOfCurves; ci++) {
             this.respawnSingle(ci);
         }
-    };
-    iOS9Curve.prototype.globalAttFn = function (x) {
+    }
+    globalAttFn(x) {
         return Math.pow(this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, 2)), this.ATT_FACTOR);
-    };
-    iOS9Curve.prototype.sin = function (x, phase) {
+    }
+    sin(x, phase) {
         return Math.sin(x - phase);
-    };
-    iOS9Curve.prototype._grad = function (x, a, b) {
+    }
+    _grad(x, a, b) {
         if (x > a && x < b)
             return 1;
         return 1;
-    };
-    iOS9Curve.prototype.yRelativePos = function (i) {
-        var y = 0;
-        for (var ci = 0; ci < this.noOfCurves; ci++) {
+    }
+    yRelativePos(i) {
+        let y = 0;
+        for (let ci = 0; ci < this.noOfCurves; ci++) {
             // Generate a static T so that each curve is distant from each oterh
-            var t = 4 * (-1 + (ci / (this.noOfCurves - 1)) * 2);
+            let t = 4 * (-1 + (ci / (this.noOfCurves - 1)) * 2);
             // but add a dynamic offset
             t += this.offsets[ci];
-            var k = 1 / this.widths[ci];
-            var x = i * k - t;
+            const k = 1 / this.widths[ci];
+            const x = i * k - t;
             y += Math.abs(this.amplitudes[ci] * this.sin(this.verses[ci] * x, this.phases[ci]) * this.globalAttFn(x));
         }
         // Divide for NoOfCurves so that y <= 1
         return y / this.noOfCurves;
-    };
-    iOS9Curve.prototype._ypos = function (i) {
+    }
+    _ypos(i) {
         return (this.AMPLITUDE_FACTOR *
             this.ctrl.heightMax *
             this.ctrl.amplitude *
             this.yRelativePos(i) *
             this.globalAttFn((i / this.GRAPH_X) * 2));
-    };
-    iOS9Curve.prototype._xpos = function (i) {
+    }
+    _xpos(i) {
         return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
-    };
-    iOS9Curve.prototype.drawSupportLine = function () {
-        var ctx = this.ctrl.ctx;
-        var coo = [0, this.ctrl.heightMax, this.ctrl.width, 1];
-        var gradient = ctx.createLinearGradient.apply(ctx, coo);
+    }
+    drawSupportLine() {
+        const { ctx } = this.ctrl;
+        const coo = [0, this.ctrl.heightMax, this.ctrl.width, 1];
+        const gradient = ctx.createLinearGradient.apply(ctx, coo);
         gradient.addColorStop(0, "transparent");
         gradient.addColorStop(0.1, "rgba(255,255,255,.5)");
         gradient.addColorStop(1 - 0.1 - 0.1, "rgba(255,255,255,.5)");
         gradient.addColorStop(1, "transparent");
         ctx.fillStyle = gradient;
         ctx.fillRect.apply(ctx, coo);
-    };
-    iOS9Curve.prototype.draw = function () {
-        var ctx = this.ctrl.ctx;
+    }
+    draw() {
+        const { ctx } = this.ctrl;
         ctx.globalAlpha = 0.7;
         ctx.globalCompositeOperation = "lighter";
         if (this.definition.supportLine) {
             // Draw the support line
             return this.drawSupportLine();
         }
-        for (var ci = 0; ci < this.noOfCurves; ci++) {
+        for (let ci = 0; ci < this.noOfCurves; ci++) {
             if (this.spawnAt + this.despawnTimeouts[ci] <= Date.now()) {
                 this.amplitudes[ci] -= this.DESPAWN_FACTOR;
             }
@@ -215,20 +205,19 @@ var iOS9Curve = /** @class */ (function () {
             this.amplitudes[ci] = Math.min(Math.max(this.amplitudes[ci], 0), this.finalAmplitudes[ci]);
             this.phases[ci] = (this.phases[ci] + this.ctrl.speed * this.speeds[ci] * this.SPEED_FACTOR) % (2 * Math.PI);
         }
-        var maxY = -Infinity;
+        let maxY = -Infinity;
         // Write two opposite waves
-        for (var _i = 0, _a = [1, -1]; _i < _a.length; _i++) {
-            var sign = _a[_i];
+        for (const sign of [1, -1]) {
             ctx.beginPath();
-            for (var i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
-                var x = this._xpos(i);
-                var y = this._ypos(i);
+            for (let i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
+                const x = this._xpos(i);
+                const y = this._ypos(i);
                 ctx.lineTo(x, this.ctrl.heightMax - sign * y);
                 maxY = Math.max(maxY, y);
             }
             ctx.closePath();
-            ctx.fillStyle = "rgba(" + this.definition.color + ", 1)";
-            ctx.strokeStyle = "rgba(" + this.definition.color + ", 1)";
+            ctx.fillStyle = `rgba(${this.definition.color}, 1)`;
+            ctx.strokeStyle = `rgba(${this.definition.color}, 1)`;
             ctx.fill();
         }
         if (maxY < this.DEAD_PX && this.prevMaxY > maxY) {
@@ -236,8 +225,8 @@ var iOS9Curve = /** @class */ (function () {
         }
         this.prevMaxY = maxY;
         return null;
-    };
-    iOS9Curve.getDefinition = function () {
+    }
+    static getDefinition() {
         return [
             {
                 color: "255,255,255",
@@ -256,27 +245,25 @@ var iOS9Curve = /** @class */ (function () {
                 color: "48, 220, 155",
             },
         ];
-    };
-    return iOS9Curve;
-}());
+    }
+}
 
 var CurveStyle;
 (function (CurveStyle) {
     CurveStyle["ios"] = "ios";
     CurveStyle["ios9"] = "ios9";
 })(CurveStyle || (CurveStyle = {}));
-var SiriWave = /** @class */ (function () {
-    function SiriWave(_a) {
-        var _this = this;
-        var container = _a.container, rest = __rest(_a, ["container"]);
+class SiriWave {
+    constructor(_a) {
+        var { container } = _a, rest = __rest(_a, ["container"]);
         // Phase of the wave (passed to Math.sin function)
         this.phase = 0;
         // Boolean value indicating the the animation is running
         this.run = false;
         // Curves objects to animate
         this.curves = [];
-        var csStyle = window.getComputedStyle(container);
-        this.opt = __assign({ container: container, style: CurveStyle.ios, ratio: window.devicePixelRatio || 1, speed: 0.2, amplitude: 1, frequency: 6, color: "#fff", cover: false, width: parseInt(csStyle.width.replace("px", ""), 10), height: parseInt(csStyle.height.replace("px", ""), 10), autostart: true, pixelDepth: 0.02, lerpSpeed: 0.1 }, rest);
+        const csStyle = window.getComputedStyle(container);
+        this.opt = Object.assign({ container, style: CurveStyle.ios, ratio: window.devicePixelRatio || 1, speed: 0.2, amplitude: 1, frequency: 6, color: "#fff", cover: false, width: parseInt(csStyle.width.replace("px", ""), 10), height: parseInt(csStyle.height.replace("px", ""), 10), autostart: true, pixelDepth: 0.02, lerpSpeed: 0.1 }, rest);
         /**
          * Actual speed of the animation. Is not safe to change this value directly, use `setSpeed` instead.
          */
@@ -300,7 +287,7 @@ var SiriWave = /** @class */ (function () {
         /**
          * Color of the wave (used in Classic iOS)
          */
-        this.color = "rgb(" + this.hex2rgb(this.opt.color) + ")";
+        this.color = `rgb(${this.hex2rgb(this.opt.color)})`;
         /**
          * An object containing controller variables that need to be interpolated
          * to an another value before to be actually changed
@@ -325,17 +312,17 @@ var SiriWave = /** @class */ (function () {
             this.canvas.style.width = this.canvas.style.height = "100%";
         }
         else {
-            this.canvas.style.width = this.width / this.opt.ratio + "px";
-            this.canvas.style.height = this.height / this.opt.ratio + "px";
+            this.canvas.style.width = `${this.width / this.opt.ratio}px`;
+            this.canvas.style.height = `${this.height / this.opt.ratio}px`;
         }
         // Instantiate all curves based on the style
         switch (this.opt.style) {
             case CurveStyle.ios9:
-                this.curves = (this.opt.curveDefinition || iOS9Curve.getDefinition()).map(function (def) { return new iOS9Curve(_this, def); });
+                this.curves = (this.opt.curveDefinition || iOS9Curve.getDefinition()).map((def) => new iOS9Curve(this, def));
                 break;
             case CurveStyle.ios:
             default:
-                this.curves = (this.opt.curveDefinition || Curve.getDefinition()).map(function (def) { return new Curve(_this, def); });
+                this.curves = (this.opt.curveDefinition || Curve.getDefinition()).map((def) => new Curve(this, def));
                 break;
         }
         // Attach to the container
@@ -348,46 +335,46 @@ var SiriWave = /** @class */ (function () {
     /**
      * Convert an HEX color to RGB
      */
-    SiriWave.prototype.hex2rgb = function (hex) {
-        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-        hex = hex.replace(shorthandRegex, function (m, r, g, b) { return r + r + g + g + b + b; });
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    hex2rgb(hex) {
+        const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+        hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result
-            ? parseInt(result[1], 16).toString() + "," + parseInt(result[2], 16).toString() + "," + parseInt(result[3], 16).toString()
+            ? `${parseInt(result[1], 16).toString()},${parseInt(result[2], 16).toString()},${parseInt(result[3], 16).toString()}`
             : null;
-    };
-    SiriWave.prototype.intLerp = function (v0, v1, t) {
+    }
+    intLerp(v0, v1, t) {
         return v0 * (1 - t) + v1 * t;
-    };
+    }
     /**
      * Interpolate a property to the value found in this.interpolation
      */
-    SiriWave.prototype.lerp = function (propertyStr) {
+    lerp(propertyStr) {
         this[propertyStr] = this.intLerp(this[propertyStr], this.interpolation[propertyStr], this.opt.lerpSpeed);
         if (this[propertyStr] - this.interpolation[propertyStr] === 0) {
             this.interpolation[propertyStr] = null;
         }
         return this[propertyStr];
-    };
+    }
     /**
      * Clear the canvas
      */
-    SiriWave.prototype._clear = function () {
+    _clear() {
         this.ctx.globalCompositeOperation = "destination-out";
         this.ctx.fillRect(0, 0, this.width, this.height);
         this.ctx.globalCompositeOperation = "source-over";
-    };
+    }
     /**
      * Draw all curves
      */
-    SiriWave.prototype._draw = function () {
-        this.curves.forEach(function (curve) { return curve.draw(); });
-    };
+    _draw() {
+        this.curves.forEach((curve) => curve.draw());
+    }
     /**
      * Clear the space, interpolate values, calculate new steps and draws
      * @returns
      */
-    SiriWave.prototype.startDrawCycle = function () {
+    startDrawCycle() {
         this._clear();
         // Interpolate values
         if (this.interpolation.amplitude !== null)
@@ -402,48 +389,47 @@ var SiriWave = /** @class */ (function () {
         else {
             this.timeoutId = setTimeout(this.startDrawCycle.bind(this), 20);
         }
-    };
+    }
     /* API */
     /**
      * Start the animation
      */
-    SiriWave.prototype.start = function () {
+    start() {
         this.phase = 0;
         // Ensure we don't re-launch the draw cycle
         if (!this.run) {
             this.run = true;
             this.startDrawCycle();
         }
-    };
+    }
     /**
      * Stop the animation
      */
-    SiriWave.prototype.stop = function () {
+    stop() {
         this.phase = 0;
         this.run = false;
         // Clear old draw cycle on stop
         this.animationFrameId && window.cancelAnimationFrame(this.animationFrameId);
         this.timeoutId && clearTimeout(this.timeoutId);
-    };
+    }
     /**
      * Set a new value for a property (interpolated)
      */
-    SiriWave.prototype.set = function (propertyStr, value) {
+    set(propertyStr, value) {
         this.interpolation[propertyStr] = value;
-    };
+    }
     /**
      * Set a new value for the speed property (interpolated)
      */
-    SiriWave.prototype.setSpeed = function (value) {
+    setSpeed(value) {
         this.set("speed", value);
-    };
+    }
     /**
      * Set a new value for the amplitude property (interpolated)
      */
-    SiriWave.prototype.setAmplitude = function (value) {
+    setAmplitude(value) {
         this.set("amplitude", value);
-    };
-    return SiriWave;
-}());
+    }
+}
 
 export default SiriWave;
