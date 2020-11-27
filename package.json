@@ -36,16 +36,17 @@
   },
   "homepage": "https://github.com/kopiro/siriwave#readme",
   "devDependencies": {
-    "@rollup/plugin-typescript": "^4.1.2",
-    "eslint": "^6.8.0",
+    "@rollup/plugin-typescript": "^6.1.0",
+    "eslint": "^7.14.0",
     "eslint-plugin-prettier": "^3.1.3",
     "prettier": "^2.0.5",
     "rollup": "^2.7.6",
-    "rollup-plugin-livereload": "^1.3.0",
-    "rollup-plugin-serve": "^1.0.1",
-    "rollup-plugin-terser": "^5.3.0",
+    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-terser": "^7.0.2",
     "tslib": "^2.0.0",
-    "typescript": "^3.9.5"
+    "typescript": "^4.1.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "rollup-plugin-serve": "^1.1.0"
+  }
 }
