@@ -1,12 +1,12 @@
-import SiriWave, { ICurveDefinition, ICurve } from "./index";
-export class Curve implements ICurve {
+import SiriWave, { IClassicCurveDefinition, ICurve } from "./index";
+export class ClassicCurve implements ICurve {
   ctrl: SiriWave;
-  definition: ICurveDefinition;
+  definition: IClassicCurveDefinition;
   ATT_FACTOR = 4;
   GRAPH_X = 2;
   AMPLITUDE_FACTOR = 0.6;
 
-  constructor(ctrl: SiriWave, definition: ICurveDefinition) {
+  constructor(ctrl: SiriWave, definition: IClassicCurveDefinition) {
     this.ctrl = ctrl;
     this.definition = definition;
   }
@@ -25,7 +25,7 @@ export class Curve implements ICurve {
       (this.globalAttFn(i) *
         (this.ctrl.heightMax * this.ctrl.amplitude) *
         (1 / this.definition.attenuation) *
-        Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase))
+        Math.sin(this.ctrl.opt.frequency! * i - this.ctrl.phase))
     );
   }
 
@@ -40,14 +40,14 @@ export class Curve implements ICurve {
     ctx.lineWidth = this.definition.lineWidth;
 
     // Cycle the graph from -X to +X every PX_DEPTH and draw the line
-    for (let i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
+    for (let i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth!) {
       ctx.lineTo(this._xpos(i), this.ctrl.heightMax + this._ypos(i));
     }
 
     ctx.stroke();
   }
 
-  static getDefinition(): ICurveDefinition[] {
+  static getDefinition(): IClassicCurveDefinition[] {
     return [
       {
         attenuation: -2,
