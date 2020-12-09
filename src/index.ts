@@ -1,5 +1,5 @@
-import { Curve } from "./curve";
-import { iOS9Curve } from "./ios9curve";
+import { ClassicCurve } from "./classic-curve";
+import { iOS9Curve } from "./ios9-curve";
 
 enum CurveStyle {
   "ios" = "ios",
@@ -37,13 +37,18 @@ export type Options = {
   curveDefinition?: ICurveDefinition[];
 };
 
-export type ICurveDefinition = {
-  attenuation?: number;
-  lineWidth?: number;
-  opacity?: number;
+export type IiOS9CurveDefinition = {
   supportLine?: boolean;
-  color?: string;
+  color: string;
 };
+
+export type IClassicCurveDefinition = {
+  attenuation: number;
+  lineWidth: number;
+  opacity: number;
+};
+
+export type ICurveDefinition = IiOS9CurveDefinition | IClassicCurveDefinition;
 
 export interface ICurve {
   draw: () => void;
@@ -66,15 +71,15 @@ export default class SiriWave {
   heightMax: number;
   color: string;
   interpolation: {
-    speed: number;
-    amplitude: number;
+    speed: number | null;
+    amplitude: number | null;
   };
 
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
 
-  animationFrameId: number;
-  timeoutId: ReturnType<typeof setTimeout>;
+  animationFrameId: number | undefined;
+  timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   constructor({ container, ...rest }: Options) {
     const csStyle = window.getComputedStyle(container);
@@ -109,12 +114,12 @@ export default class SiriWave {
     /**
      * Width of the canvas multiplied by pixel ratio
      */
-    this.width = Number(this.opt.ratio * this.opt.width);
+    this.width = Number(this.opt.ratio! * this.opt.width!);
 
     /**
      * Height of the canvas multiplied by pixel ratio
      */
-    this.height = Number(this.opt.ratio * this.opt.height);
+    this.height = Number(this.opt.ratio! * this.opt.height!);
 
     /**
      * Maximum height for a single wave
@@ -124,7 +129,7 @@ export default class SiriWave {
     /**
      * Color of the wave (used in Classic iOS)
      */
-    this.color = `rgb(${this.hex2rgb(this.opt.color)})`;
+    this.color = `rgb(${this.hex2rgb(this.opt.color!)})`;
 
     /**
      * An object containing controller variables that need to be interpolated
@@ -143,7 +148,11 @@ export default class SiriWave {
     /**
      * 2D Context from Canvas
      */
-    this.ctx = this.canvas.getContext("2d");
+    const ctx = this.canvas.getContext("2d");
+    if (ctx === null) {
+      throw new Error("Unable to create 2D Context");
+    }
+    this.ctx = ctx;
 
     // Set dimensions
     this.canvas.width = this.width;
@@ -153,19 +162,23 @@ export default class SiriWave {
     if (this.opt.cover === true) {
       this.canvas.style.width = this.canvas.style.height = "100%";
     } else {
-      this.canvas.style.width = `${this.width / this.opt.ratio}px`;
-      this.canvas.style.height = `${this.height / this.opt.ratio}px`;
+      this.canvas.style.width = `${this.width / this.opt.ratio!}px`;
+      this.canvas.style.height = `${this.height / this.opt.ratio!}px`;
     }
 
     // Instantiate all curves based on the style
     switch (this.opt.style) {
       case CurveStyle.ios9:
-        this.curves = (this.opt.curveDefinition || iOS9Curve.getDefinition()).map((def) => new iOS9Curve(this, def));
+        this.curves = ((this.opt.curveDefinition || iOS9Curve.getDefinition()) as IiOS9CurveDefinition[]).map(
+          (def) => new iOS9Curve(this, def),
+        );
         break;
 
       case CurveStyle.ios:
       default:
-        this.curves = (this.opt.curveDefinition || Curve.getDefinition()).map((def) => new Curve(this, def));
+        this.curves = ((this.opt.curveDefinition || ClassicCurve.getDefinition()) as IClassicCurveDefinition[]).map(
+          (def) => new ClassicCurve(this, def),
+        );
         break;
     }
 
@@ -200,10 +213,13 @@ export default class SiriWave {
   /**
    * Interpolate a property to the value found in this.interpolation
    */
-  lerp(propertyStr: "amplitude" | "speed"): number {
-    this[propertyStr] = this.intLerp(this[propertyStr], this.interpolation[propertyStr], this.opt.lerpSpeed);
-    if (this[propertyStr] - this.interpolation[propertyStr] === 0) {
-      this.interpolation[propertyStr] = null;
+  lerp(propertyStr: "amplitude" | "speed"): number | null {
+    const prop = this.interpolation[propertyStr];
+    if (prop !== null) {
+      this[propertyStr] = this.intLerp(this[propertyStr], prop, this.opt.lerpSpeed!);
+      if (this[propertyStr] - prop === 0) {
+        this.interpolation[propertyStr] = null;
+      }
     }
     return this[propertyStr];
   }
@@ -232,8 +248,8 @@ export default class SiriWave {
     this._clear();
 
     // Interpolate values
-    if (this.interpolation.amplitude !== null) this.lerp("amplitude");
-    if (this.interpolation.speed !== null) this.lerp("speed");
+    this.lerp("amplitude");
+    this.lerp("speed");
 
     this._draw();
     this.phase = (this.phase + (Math.PI / 2) * this.speed) % (2 * Math.PI);

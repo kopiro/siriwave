@@ -1,8 +1,8 @@
-import SiriWave, { ICurveDefinition, ICurve } from "./index";
+import SiriWave, { ICurve, IiOS9CurveDefinition } from "./index";
 
 export class iOS9Curve implements ICurve {
   ctrl: SiriWave;
-  definition: ICurveDefinition;
+  definition: IiOS9CurveDefinition;
 
   spawnAt: number;
   noOfCurves: number;
@@ -32,9 +32,22 @@ export class iOS9Curve implements ICurve {
   SPEED_RANGES: [number, number] = [0.5, 1];
   DESPAWN_TIMEOUT_RANGES: [number, number] = [500, 2000];
 
-  constructor(ctrl: SiriWave, definition: ICurveDefinition) {
+  constructor(ctrl: SiriWave, definition: IiOS9CurveDefinition) {
     this.ctrl = ctrl;
     this.definition = definition;
+
+    this.noOfCurves = 0;
+    this.spawnAt = 0;
+    this.prevMaxY = 0;
+
+    this.phases = [];
+    this.offsets = [];
+    this.speeds = [];
+    this.finalAmplitudes = [];
+    this.widths = [];
+    this.amplitudes = [];
+    this.despawnTimeouts = [];
+    this.verses = [];
 
     this.respawn();
   }
@@ -98,9 +111,9 @@ export class iOS9Curve implements ICurve {
       // Generate a static T so that each curve is distant from each oterh
       let t = 4 * (-1 + (ci / (this.noOfCurves - 1)) * 2);
       // but add a dynamic offset
-      t += this.offsets[ci];
+      t += this.offsets![ci];
 
-      const k = 1 / this.widths[ci];
+      const k = 1 / this.widths![ci];
       const x = i * k - t;
 
       y += Math.abs(this.amplitudes[ci] * this.sin(this.verses[ci] * x, this.phases[ci]) * this.globalAttFn(x));
@@ -127,7 +140,7 @@ export class iOS9Curve implements ICurve {
   drawSupportLine() {
     const { ctx } = this.ctrl;
 
-    const coo = [0, this.ctrl.heightMax, this.ctrl.width, 1];
+    const coo: [number, number, number, number] = [0, this.ctrl.heightMax, this.ctrl.width, 1];
     const gradient = ctx.createLinearGradient.apply(ctx, coo);
     gradient.addColorStop(0, "transparent");
     gradient.addColorStop(0.1, "rgba(255,255,255,.5)");
@@ -167,7 +180,7 @@ export class iOS9Curve implements ICurve {
     for (const sign of [1, -1]) {
       ctx.beginPath();
 
-      for (let i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
+      for (let i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth!) {
         const x = this._xpos(i);
         const y = this._ypos(i);
         ctx.lineTo(x, this.ctrl.heightMax - sign * y);
@@ -192,7 +205,7 @@ export class iOS9Curve implements ICurve {
     return null;
   }
 
-  static getDefinition(): ICurveDefinition[] {
+  static getDefinition(): IiOS9CurveDefinition[] {
     return [
       {
         color: "255,255,255",
