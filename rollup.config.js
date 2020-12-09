@@ -11,10 +11,30 @@ const commonTSPluginOptions = {
   lib: ["es5", "es6", "ESNext", "dom"],
 };
 
-const getPlugins = (plugins) =>
-  process.env.NODE_ENV === "development"
-    ? [
-        ...plugins,
+const umdConfig = (min, plugins = []) => ({
+  input,
+  output: {
+    name: pkg.umdName,
+    file: min ? pkg.browser.replace(".js", ".min.js") : pkg.browser,
+    exports: "default",
+    format: "umd",
+  },
+  plugins: [typescript(commonTSPluginOptions), ...(min ? [terser()] : []), ...plugins],
+});
+
+const esConfig = (min, plugins = []) => ({
+  input,
+  output: {
+    file: min ? pkg.module.replace(".js", ".min.js") : pkg.module,
+    format: "es",
+  },
+  external,
+  plugins: [typescript({ ...commonTSPluginOptions, target: "es6" }), ...(min ? [terser()] : []), ...plugins],
+});
+
+export default process.env.BUILD === "watch"
+  ? [
+      umdConfig(false, [
         serve({
           open: true,
           contentBase: ".",
@@ -22,30 +42,6 @@ const getPlugins = (plugins) =>
         livereload({
           watch: "dist",
         }),
-      ]
-    : plugins;
-
-export default [false, true].reduce((carry, min) => {
-  const plugins = getPlugins(min ? [terser()] : []);
-  return carry.concat([
-    {
-      input,
-      output: {
-        name: pkg.umdName,
-        file: min ? pkg.browser.replace(".js", ".min.js") : pkg.browser,
-        exports: "default",
-        format: "umd",
-      },
-      plugins: [typescript(commonTSPluginOptions), ...plugins],
-    },
-    {
-      input,
-      output: {
-        file: min ? pkg.module.replace(".js", ".min.js") : pkg.module,
-        format: "es",
-      },
-      external,
-      plugins: [typescript({ ...commonTSPluginOptions, target: "es6" }), ...plugins],
-    },
-  ]);
-}, []);
+      ]),
+    ]
+  : [esConfig(true), esConfig(false), umdConfig(true), umdConfig(false)];
