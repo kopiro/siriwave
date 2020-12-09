@@ -25,7 +25,7 @@ function __rest(s, e) {
     return t;
 }
 
-class Curve {
+class ClassicCurve {
     constructor(ctrl, definition) {
         this.ATT_FACTOR = 4;
         this.GRAPH_X = 2;
@@ -106,6 +106,17 @@ class iOS9Curve {
         this.DESPAWN_TIMEOUT_RANGES = [500, 2000];
         this.ctrl = ctrl;
         this.definition = definition;
+        this.noOfCurves = 0;
+        this.spawnAt = 0;
+        this.prevMaxY = 0;
+        this.phases = [];
+        this.offsets = [];
+        this.speeds = [];
+        this.finalAmplitudes = [];
+        this.widths = [];
+        this.amplitudes = [];
+        this.despawnTimeouts = [];
+        this.verses = [];
         this.respawn();
     }
     getRandomRange(e) {
@@ -301,7 +312,11 @@ class SiriWave {
         /**
          * 2D Context from Canvas
          */
-        this.ctx = this.canvas.getContext("2d");
+        const ctx = this.canvas.getContext("2d");
+        if (ctx === null) {
+            throw new Error("Unable to create 2D Context");
+        }
+        this.ctx = ctx;
         // Set dimensions
         this.canvas.width = this.width;
         this.canvas.height = this.height;
@@ -320,7 +335,7 @@ class SiriWave {
                 break;
             case CurveStyle.ios:
             default:
-                this.curves = (this.opt.curveDefinition || Curve.getDefinition()).map((def) => new Curve(this, def));
+                this.curves = (this.opt.curveDefinition || ClassicCurve.getDefinition()).map((def) => new ClassicCurve(this, def));
                 break;
         }
         // Attach to the container
@@ -348,9 +363,12 @@ class SiriWave {
      * Interpolate a property to the value found in this.interpolation
      */
     lerp(propertyStr) {
-        this[propertyStr] = this.intLerp(this[propertyStr], this.interpolation[propertyStr], this.opt.lerpSpeed);
-        if (this[propertyStr] - this.interpolation[propertyStr] === 0) {
-            this.interpolation[propertyStr] = null;
+        const prop = this.interpolation[propertyStr];
+        if (prop !== null) {
+            this[propertyStr] = this.intLerp(this[propertyStr], prop, this.opt.lerpSpeed);
+            if (this[propertyStr] - prop === 0) {
+                this.interpolation[propertyStr] = null;
+            }
         }
         return this[propertyStr];
     }
@@ -375,10 +393,8 @@ class SiriWave {
     startDrawCycle() {
         this._clear();
         // Interpolate values
-        if (this.interpolation.amplitude !== null)
-            this.lerp("amplitude");
-        if (this.interpolation.speed !== null)
-            this.lerp("speed");
+        this.lerp("amplitude");
+        this.lerp("speed");
         this._draw();
         this.phase = (this.phase + (Math.PI / 2) * this.speed) % (2 * Math.PI);
         if (window.requestAnimationFrame) {

@@ -42,28 +42,28 @@
         return t;
     }
 
-    var Curve = /** @class */ (function () {
-        function Curve(ctrl, definition) {
+    var ClassicCurve = /** @class */ (function () {
+        function ClassicCurve(ctrl, definition) {
             this.ATT_FACTOR = 4;
             this.GRAPH_X = 2;
             this.AMPLITUDE_FACTOR = 0.6;
             this.ctrl = ctrl;
             this.definition = definition;
         }
-        Curve.prototype.globalAttFn = function (x) {
+        ClassicCurve.prototype.globalAttFn = function (x) {
             return Math.pow(this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, this.ATT_FACTOR)), this.ATT_FACTOR);
         };
-        Curve.prototype._xpos = function (i) {
+        ClassicCurve.prototype._xpos = function (i) {
             return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
         };
-        Curve.prototype._ypos = function (i) {
+        ClassicCurve.prototype._ypos = function (i) {
             return (this.AMPLITUDE_FACTOR *
                 (this.globalAttFn(i) *
                     (this.ctrl.heightMax * this.ctrl.amplitude) *
                     (1 / this.definition.attenuation) *
                     Math.sin(this.ctrl.opt.frequency * i - this.ctrl.phase)));
         };
-        Curve.prototype.draw = function () {
+        ClassicCurve.prototype.draw = function () {
             var ctx = this.ctrl.ctx;
             ctx.moveTo(0, 0);
             ctx.beginPath();
@@ -76,7 +76,7 @@
             }
             ctx.stroke();
         };
-        Curve.getDefinition = function () {
+        ClassicCurve.getDefinition = function () {
             return [
                 {
                     attenuation: -2,
@@ -105,7 +105,7 @@
                 },
             ];
         };
-        return Curve;
+        return ClassicCurve;
     }());
 
     var iOS9Curve = /** @class */ (function () {
@@ -124,6 +124,17 @@
             this.DESPAWN_TIMEOUT_RANGES = [500, 2000];
             this.ctrl = ctrl;
             this.definition = definition;
+            this.noOfCurves = 0;
+            this.spawnAt = 0;
+            this.prevMaxY = 0;
+            this.phases = [];
+            this.offsets = [];
+            this.speeds = [];
+            this.finalAmplitudes = [];
+            this.widths = [];
+            this.amplitudes = [];
+            this.despawnTimeouts = [];
+            this.verses = [];
             this.respawn();
         }
         iOS9Curve.prototype.getRandomRange = function (e) {
@@ -322,7 +333,11 @@
             /**
              * 2D Context from Canvas
              */
-            this.ctx = this.canvas.getContext("2d");
+            var ctx = this.canvas.getContext("2d");
+            if (ctx === null) {
+                throw new Error("Unable to create 2D Context");
+            }
+            this.ctx = ctx;
             // Set dimensions
             this.canvas.width = this.width;
             this.canvas.height = this.height;
@@ -341,7 +356,7 @@
                     break;
                 case CurveStyle.ios:
                 default:
-                    this.curves = (this.opt.curveDefinition || Curve.getDefinition()).map(function (def) { return new Curve(_this, def); });
+                    this.curves = (this.opt.curveDefinition || ClassicCurve.getDefinition()).map(function (def) { return new ClassicCurve(_this, def); });
                     break;
             }
             // Attach to the container
@@ -369,9 +384,12 @@
          * Interpolate a property to the value found in this.interpolation
          */
         SiriWave.prototype.lerp = function (propertyStr) {
-            this[propertyStr] = this.intLerp(this[propertyStr], this.interpolation[propertyStr], this.opt.lerpSpeed);
-            if (this[propertyStr] - this.interpolation[propertyStr] === 0) {
-                this.interpolation[propertyStr] = null;
+            var prop = this.interpolation[propertyStr];
+            if (prop !== null) {
+                this[propertyStr] = this.intLerp(this[propertyStr], prop, this.opt.lerpSpeed);
+                if (this[propertyStr] - prop === 0) {
+                    this.interpolation[propertyStr] = null;
+                }
             }
             return this[propertyStr];
         };
@@ -396,10 +414,8 @@
         SiriWave.prototype.startDrawCycle = function () {
             this._clear();
             // Interpolate values
-            if (this.interpolation.amplitude !== null)
-                this.lerp("amplitude");
-            if (this.interpolation.speed !== null)
-                this.lerp("speed");
+            this.lerp("amplitude");
+            this.lerp("speed");
             this._draw();
             this.phase = (this.phase + (Math.PI / 2) * this.speed) % (2 * Math.PI);
             if (window.requestAnimationFrame) {

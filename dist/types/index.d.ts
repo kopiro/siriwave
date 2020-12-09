@@ -18,13 +18,16 @@ export declare type Options = {
     lerpSpeed?: number;
     curveDefinition?: ICurveDefinition[];
 };
-export declare type ICurveDefinition = {
-    attenuation?: number;
-    lineWidth?: number;
-    opacity?: number;
+export declare type IiOS9CurveDefinition = {
     supportLine?: boolean;
-    color?: string;
+    color: string;
 };
+export declare type IClassicCurveDefinition = {
+    attenuation: number;
+    lineWidth: number;
+    opacity: number;
+};
+export declare type ICurveDefinition = IiOS9CurveDefinition | IClassicCurveDefinition;
 export interface ICurve {
     draw: () => void;
 }
@@ -40,13 +43,13 @@ export default class SiriWave {
     heightMax: number;
     color: string;
     interpolation: {
-        speed: number;
-        amplitude: number;
+        speed: number | null;
+        amplitude: number | null;
     };
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
-    animationFrameId: number;
-    timeoutId: ReturnType<typeof setTimeout>;
+    animationFrameId: number | undefined;
+    timeoutId: ReturnType<typeof setTimeout> | undefined;
     constructor({ container, ...rest }: Options);
     /**
      * Convert an HEX color to RGB
@@ -56,7 +59,7 @@ export default class SiriWave {
     /**
      * Interpolate a property to the value found in this.interpolation
      */
-    lerp(propertyStr: "amplitude" | "speed"): number;
+    lerp(propertyStr: "amplitude" | "speed"): number | null;
     /**
      * Clear the canvas
      */
