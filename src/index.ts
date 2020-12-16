@@ -275,6 +275,10 @@ export default class SiriWave {
    * Start the animation
    */
   start() {
+    if (!this.canvas) {
+      throw new Error("This instance of SiriWave has been disposed, please create a new instance");
+    }
+
     this.phase = 0;
 
     // Ensure we don't re-launch the draw cycle
