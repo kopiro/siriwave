@@ -26,17 +26,16 @@ export declare class iOS9Curve implements ICurve {
     SPEED_RANGES: [number, number];
     DESPAWN_TIMEOUT_RANGES: [number, number];
     constructor(ctrl: SiriWave, definition: IiOS9CurveDefinition);
-    getRandomRange(e: [number, number]): number;
-    respawnSingle(ci: number): void;
-    getEmptyArray(count: number): number[];
-    respawn(): void;
-    globalAttFn(x: number): number;
-    sin(x: number, phase: number): number;
-    _grad(x: number, a: number, b: number): number;
-    yRelativePos(i: number): number;
-    _ypos(i: number): number;
-    _xpos(i: number): number;
-    drawSupportLine(): void;
+    private getRandomRange;
+    private spawnSingle;
+    private getEmptyArray;
+    private spawn;
+    private globalAttFn;
+    private sin;
+    private yRelativePos;
+    private yPos;
+    private xPos;
+    private drawSupportLine;
     draw(): void | null;
     static getDefinition(): IiOS9CurveDefinition[];
 }

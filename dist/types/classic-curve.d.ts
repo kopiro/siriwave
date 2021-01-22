@@ -6,9 +6,9 @@ export declare class ClassicCurve implements ICurve {
     GRAPH_X: number;
     AMPLITUDE_FACTOR: number;
     constructor(ctrl: SiriWave, definition: IClassicCurveDefinition);
-    globalAttFn(x: number): number;
-    _xpos(i: number): number;
-    _ypos(i: number): number;
+    private globalAttFn;
+    private xPos;
+    private yPos;
     draw(): void;
     static getDefinition(): IClassicCurveDefinition[];
 }

@@ -1,7 +1,4 @@
-declare enum CurveStyle {
-    "ios" = "ios",
-    "ios9" = "ios9"
-}
+declare type CurveStyle = "ios" | "ios9";
 export declare type Options = {
     container: HTMLElement;
     style?: CurveStyle;
@@ -46,7 +43,7 @@ export default class SiriWave {
         speed: number | null;
         amplitude: number | null;
     };
-    canvas: HTMLCanvasElement;
+    canvas: HTMLCanvasElement | null;
     ctx: CanvasRenderingContext2D;
     animationFrameId: number | undefined;
     timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -54,25 +51,25 @@ export default class SiriWave {
     /**
      * Convert an HEX color to RGB
      */
-    hex2rgb(hex: string): string | null;
-    intLerp(v0: number, v1: number, t: number): number;
+    private hex2rgb;
+    private intLerp;
     /**
      * Interpolate a property to the value found in this.interpolation
      */
-    lerp(propertyStr: "amplitude" | "speed"): number | null;
+    private lerp;
     /**
      * Clear the canvas
      */
-    _clear(): void;
+    private clear;
     /**
      * Draw all curves
      */
-    _draw(): void;
+    private draw;
     /**
      * Clear the space, interpolate values, calculate new steps and draws
      * @returns
      */
-    startDrawCycle(): void;
+    private startDrawCycle;
     /**
      * Start the animation
      */
@@ -81,6 +78,10 @@ export default class SiriWave {
      * Stop the animation
      */
     stop(): void;
+    /**
+     * Dispose
+     */
+    dispose(): void;
     /**
      * Set a new value for a property (interpolated)
      */

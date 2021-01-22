@@ -53,10 +53,10 @@
         ClassicCurve.prototype.globalAttFn = function (x) {
             return Math.pow(this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, this.ATT_FACTOR)), this.ATT_FACTOR);
         };
-        ClassicCurve.prototype._xpos = function (i) {
+        ClassicCurve.prototype.xPos = function (i) {
             return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
         };
-        ClassicCurve.prototype._ypos = function (i) {
+        ClassicCurve.prototype.yPos = function (i) {
             return (this.AMPLITUDE_FACTOR *
                 (this.globalAttFn(i) *
                     (this.ctrl.heightMax * this.ctrl.amplitude) *
@@ -72,7 +72,7 @@
             ctx.lineWidth = this.definition.lineWidth;
             // Cycle the graph from -X to +X every PX_DEPTH and draw the line
             for (var i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
-                ctx.lineTo(this._xpos(i), this.ctrl.heightMax + this._ypos(i));
+                ctx.lineTo(this.xPos(i), this.ctrl.heightMax + this.yPos(i));
             }
             ctx.stroke();
         };
@@ -135,12 +135,11 @@
             this.amplitudes = [];
             this.despawnTimeouts = [];
             this.verses = [];
-            this.respawn();
         }
         iOS9Curve.prototype.getRandomRange = function (e) {
             return e[0] + Math.random() * (e[1] - e[0]);
         };
-        iOS9Curve.prototype.respawnSingle = function (ci) {
+        iOS9Curve.prototype.spawnSingle = function (ci) {
             this.phases[ci] = 0;
             this.amplitudes[ci] = 0;
             this.despawnTimeouts[ci] = this.getRandomRange(this.DESPAWN_TIMEOUT_RANGES);
@@ -153,7 +152,7 @@
         iOS9Curve.prototype.getEmptyArray = function (count) {
             return new Array(count);
         };
-        iOS9Curve.prototype.respawn = function () {
+        iOS9Curve.prototype.spawn = function () {
             this.spawnAt = Date.now();
             this.noOfCurves = Math.floor(this.getRandomRange(this.NOOFCURVES_RANGES));
             this.phases = this.getEmptyArray(this.noOfCurves);
@@ -165,7 +164,7 @@
             this.despawnTimeouts = this.getEmptyArray(this.noOfCurves);
             this.verses = this.getEmptyArray(this.noOfCurves);
             for (var ci = 0; ci < this.noOfCurves; ci++) {
-                this.respawnSingle(ci);
+                this.spawnSingle(ci);
             }
         };
         iOS9Curve.prototype.globalAttFn = function (x) {
@@ -173,11 +172,6 @@
         };
         iOS9Curve.prototype.sin = function (x, phase) {
             return Math.sin(x - phase);
-        };
-        iOS9Curve.prototype._grad = function (x, a, b) {
-            if (x > a && x < b)
-                return 1;
-            return 1;
         };
         iOS9Curve.prototype.yRelativePos = function (i) {
             var y = 0;
@@ -193,14 +187,14 @@
             // Divide for NoOfCurves so that y <= 1
             return y / this.noOfCurves;
         };
-        iOS9Curve.prototype._ypos = function (i) {
+        iOS9Curve.prototype.yPos = function (i) {
             return (this.AMPLITUDE_FACTOR *
                 this.ctrl.heightMax *
                 this.ctrl.amplitude *
                 this.yRelativePos(i) *
                 this.globalAttFn((i / this.GRAPH_X) * 2));
         };
-        iOS9Curve.prototype._xpos = function (i) {
+        iOS9Curve.prototype.xPos = function (i) {
             return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
         };
         iOS9Curve.prototype.drawSupportLine = function () {
@@ -218,6 +212,9 @@
             var ctx = this.ctrl.ctx;
             ctx.globalAlpha = 0.7;
             ctx.globalCompositeOperation = "lighter";
+            if (this.spawnAt === 0) {
+                this.spawn();
+            }
             if (this.definition.supportLine) {
                 // Draw the support line
                 return this.drawSupportLine();
@@ -238,8 +235,8 @@
                 var sign = _a[_i];
                 ctx.beginPath();
                 for (var i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
-                    var x = this._xpos(i);
-                    var y = this._ypos(i);
+                    var x = this.xPos(i);
+                    var y = this.yPos(i);
                     ctx.lineTo(x, this.ctrl.heightMax - sign * y);
                     maxY = Math.max(maxY, y);
                 }
@@ -249,7 +246,7 @@
                 ctx.fill();
             }
             if (maxY < this.DEAD_PX && this.prevMaxY > maxY) {
-                this.respawn();
+                this.spawnAt = 0;
             }
             this.prevMaxY = maxY;
             return null;
@@ -277,11 +274,6 @@
         return iOS9Curve;
     }());
 
-    var CurveStyle;
-    (function (CurveStyle) {
-        CurveStyle["ios"] = "ios";
-        CurveStyle["ios9"] = "ios9";
-    })(CurveStyle || (CurveStyle = {}));
     var SiriWave = /** @class */ (function () {
         function SiriWave(_a) {
             var _this = this;
@@ -293,7 +285,7 @@
             // Curves objects to animate
             this.curves = [];
             var csStyle = window.getComputedStyle(container);
-            this.opt = __assign({ container: container, style: CurveStyle.ios, ratio: window.devicePixelRatio || 1, speed: 0.2, amplitude: 1, frequency: 6, color: "#fff", cover: false, width: parseInt(csStyle.width.replace("px", ""), 10), height: parseInt(csStyle.height.replace("px", ""), 10), autostart: true, pixelDepth: 0.02, lerpSpeed: 0.1 }, rest);
+            this.opt = __assign({ container: container, style: "ios", ratio: window.devicePixelRatio || 1, speed: 0.2, amplitude: 1, frequency: 6, color: "#fff", cover: false, width: parseInt(csStyle.width.replace("px", ""), 10), height: parseInt(csStyle.height.replace("px", ""), 10), autostart: true, pixelDepth: 0.02, lerpSpeed: 0.1 }, rest);
             /**
              * Actual speed of the animation. Is not safe to change this value directly, use `setSpeed` instead.
              */
@@ -351,10 +343,10 @@
             }
             // Instantiate all curves based on the style
             switch (this.opt.style) {
-                case CurveStyle.ios9:
+                case "ios9":
                     this.curves = (this.opt.curveDefinition || iOS9Curve.getDefinition()).map(function (def) { return new iOS9Curve(_this, def); });
                     break;
-                case CurveStyle.ios:
+                case "ios":
                 default:
                     this.curves = (this.opt.curveDefinition || ClassicCurve.getDefinition()).map(function (def) { return new ClassicCurve(_this, def); });
                     break;
@@ -396,7 +388,7 @@
         /**
          * Clear the canvas
          */
-        SiriWave.prototype._clear = function () {
+        SiriWave.prototype.clear = function () {
             this.ctx.globalCompositeOperation = "destination-out";
             this.ctx.fillRect(0, 0, this.width, this.height);
             this.ctx.globalCompositeOperation = "source-over";
@@ -404,7 +396,7 @@
         /**
          * Draw all curves
          */
-        SiriWave.prototype._draw = function () {
+        SiriWave.prototype.draw = function () {
             this.curves.forEach(function (curve) { return curve.draw(); });
         };
         /**
@@ -412,11 +404,11 @@
          * @returns
          */
         SiriWave.prototype.startDrawCycle = function () {
-            this._clear();
+            this.clear();
             // Interpolate values
             this.lerp("amplitude");
             this.lerp("speed");
-            this._draw();
+            this.draw();
             this.phase = (this.phase + (Math.PI / 2) * this.speed) % (2 * Math.PI);
             if (window.requestAnimationFrame) {
                 this.animationFrameId = window.requestAnimationFrame(this.startDrawCycle.bind(this));
@@ -430,6 +422,9 @@
          * Start the animation
          */
         SiriWave.prototype.start = function () {
+            if (!this.canvas) {
+                throw new Error("This instance of SiriWave has been disposed, please create a new instance");
+            }
             this.phase = 0;
             // Ensure we don't re-launch the draw cycle
             if (!this.run) {
@@ -444,8 +439,22 @@
             this.phase = 0;
             this.run = false;
             // Clear old draw cycle on stop
-            this.animationFrameId && window.cancelAnimationFrame(this.animationFrameId);
-            this.timeoutId && clearTimeout(this.timeoutId);
+            if (this.animationFrameId) {
+                window.cancelAnimationFrame(this.animationFrameId);
+            }
+            if (this.timeoutId) {
+                clearTimeout(this.timeoutId);
+            }
+        };
+        /**
+         * Dispose
+         */
+        SiriWave.prototype.dispose = function () {
+            this.stop();
+            if (this.canvas) {
+                this.canvas.remove();
+                this.canvas = null;
+            }
         };
         /**
          * Set a new value for a property (interpolated)

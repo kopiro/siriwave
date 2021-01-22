@@ -36,10 +36,10 @@ class ClassicCurve {
     globalAttFn(x) {
         return Math.pow(this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, this.ATT_FACTOR)), this.ATT_FACTOR);
     }
-    _xpos(i) {
+    xPos(i) {
         return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
     }
-    _ypos(i) {
+    yPos(i) {
         return (this.AMPLITUDE_FACTOR *
             (this.globalAttFn(i) *
                 (this.ctrl.heightMax * this.ctrl.amplitude) *
@@ -55,7 +55,7 @@ class ClassicCurve {
         ctx.lineWidth = this.definition.lineWidth;
         // Cycle the graph from -X to +X every PX_DEPTH and draw the line
         for (let i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
-            ctx.lineTo(this._xpos(i), this.ctrl.heightMax + this._ypos(i));
+            ctx.lineTo(this.xPos(i), this.ctrl.heightMax + this.yPos(i));
         }
         ctx.stroke();
     }
@@ -117,12 +117,11 @@ class iOS9Curve {
         this.amplitudes = [];
         this.despawnTimeouts = [];
         this.verses = [];
-        this.respawn();
     }
     getRandomRange(e) {
         return e[0] + Math.random() * (e[1] - e[0]);
     }
-    respawnSingle(ci) {
+    spawnSingle(ci) {
         this.phases[ci] = 0;
         this.amplitudes[ci] = 0;
         this.despawnTimeouts[ci] = this.getRandomRange(this.DESPAWN_TIMEOUT_RANGES);
@@ -135,7 +134,7 @@ class iOS9Curve {
     getEmptyArray(count) {
         return new Array(count);
     }
-    respawn() {
+    spawn() {
         this.spawnAt = Date.now();
         this.noOfCurves = Math.floor(this.getRandomRange(this.NOOFCURVES_RANGES));
         this.phases = this.getEmptyArray(this.noOfCurves);
@@ -147,7 +146,7 @@ class iOS9Curve {
         this.despawnTimeouts = this.getEmptyArray(this.noOfCurves);
         this.verses = this.getEmptyArray(this.noOfCurves);
         for (let ci = 0; ci < this.noOfCurves; ci++) {
-            this.respawnSingle(ci);
+            this.spawnSingle(ci);
         }
     }
     globalAttFn(x) {
@@ -155,11 +154,6 @@ class iOS9Curve {
     }
     sin(x, phase) {
         return Math.sin(x - phase);
-    }
-    _grad(x, a, b) {
-        if (x > a && x < b)
-            return 1;
-        return 1;
     }
     yRelativePos(i) {
         let y = 0;
@@ -175,14 +169,14 @@ class iOS9Curve {
         // Divide for NoOfCurves so that y <= 1
         return y / this.noOfCurves;
     }
-    _ypos(i) {
+    yPos(i) {
         return (this.AMPLITUDE_FACTOR *
             this.ctrl.heightMax *
             this.ctrl.amplitude *
             this.yRelativePos(i) *
             this.globalAttFn((i / this.GRAPH_X) * 2));
     }
-    _xpos(i) {
+    xPos(i) {
         return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
     }
     drawSupportLine() {
@@ -200,6 +194,9 @@ class iOS9Curve {
         const { ctx } = this.ctrl;
         ctx.globalAlpha = 0.7;
         ctx.globalCompositeOperation = "lighter";
+        if (this.spawnAt === 0) {
+            this.spawn();
+        }
         if (this.definition.supportLine) {
             // Draw the support line
             return this.drawSupportLine();
@@ -219,8 +216,8 @@ class iOS9Curve {
         for (const sign of [1, -1]) {
             ctx.beginPath();
             for (let i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
-                const x = this._xpos(i);
-                const y = this._ypos(i);
+                const x = this.xPos(i);
+                const y = this.yPos(i);
                 ctx.lineTo(x, this.ctrl.heightMax - sign * y);
                 maxY = Math.max(maxY, y);
             }
@@ -230,7 +227,7 @@ class iOS9Curve {
             ctx.fill();
         }
         if (maxY < this.DEAD_PX && this.prevMaxY > maxY) {
-            this.respawn();
+            this.spawnAt = 0;
         }
         this.prevMaxY = maxY;
         return null;
@@ -257,11 +254,6 @@ class iOS9Curve {
     }
 }
 
-var CurveStyle;
-(function (CurveStyle) {
-    CurveStyle["ios"] = "ios";
-    CurveStyle["ios9"] = "ios9";
-})(CurveStyle || (CurveStyle = {}));
 class SiriWave {
     constructor(_a) {
         var { container } = _a, rest = __rest(_a, ["container"]);
@@ -272,7 +264,7 @@ class SiriWave {
         // Curves objects to animate
         this.curves = [];
         const csStyle = window.getComputedStyle(container);
-        this.opt = Object.assign({ container, style: CurveStyle.ios, ratio: window.devicePixelRatio || 1, speed: 0.2, amplitude: 1, frequency: 6, color: "#fff", cover: false, width: parseInt(csStyle.width.replace("px", ""), 10), height: parseInt(csStyle.height.replace("px", ""), 10), autostart: true, pixelDepth: 0.02, lerpSpeed: 0.1 }, rest);
+        this.opt = Object.assign({ container, style: "ios", ratio: window.devicePixelRatio || 1, speed: 0.2, amplitude: 1, frequency: 6, color: "#fff", cover: false, width: parseInt(csStyle.width.replace("px", ""), 10), height: parseInt(csStyle.height.replace("px", ""), 10), autostart: true, pixelDepth: 0.02, lerpSpeed: 0.1 }, rest);
         /**
          * Actual speed of the animation. Is not safe to change this value directly, use `setSpeed` instead.
          */
@@ -330,10 +322,10 @@ class SiriWave {
         }
         // Instantiate all curves based on the style
         switch (this.opt.style) {
-            case CurveStyle.ios9:
+            case "ios9":
                 this.curves = (this.opt.curveDefinition || iOS9Curve.getDefinition()).map((def) => new iOS9Curve(this, def));
                 break;
-            case CurveStyle.ios:
+            case "ios":
             default:
                 this.curves = (this.opt.curveDefinition || ClassicCurve.getDefinition()).map((def) => new ClassicCurve(this, def));
                 break;
@@ -375,7 +367,7 @@ class SiriWave {
     /**
      * Clear the canvas
      */
-    _clear() {
+    clear() {
         this.ctx.globalCompositeOperation = "destination-out";
         this.ctx.fillRect(0, 0, this.width, this.height);
         this.ctx.globalCompositeOperation = "source-over";
@@ -383,7 +375,7 @@ class SiriWave {
     /**
      * Draw all curves
      */
-    _draw() {
+    draw() {
         this.curves.forEach((curve) => curve.draw());
     }
     /**
@@ -391,11 +383,11 @@ class SiriWave {
      * @returns
      */
     startDrawCycle() {
-        this._clear();
+        this.clear();
         // Interpolate values
         this.lerp("amplitude");
         this.lerp("speed");
-        this._draw();
+        this.draw();
         this.phase = (this.phase + (Math.PI / 2) * this.speed) % (2 * Math.PI);
         if (window.requestAnimationFrame) {
             this.animationFrameId = window.requestAnimationFrame(this.startDrawCycle.bind(this));
@@ -409,6 +401,9 @@ class SiriWave {
      * Start the animation
      */
     start() {
+        if (!this.canvas) {
+            throw new Error("This instance of SiriWave has been disposed, please create a new instance");
+        }
         this.phase = 0;
         // Ensure we don't re-launch the draw cycle
         if (!this.run) {
@@ -423,8 +418,22 @@ class SiriWave {
         this.phase = 0;
         this.run = false;
         // Clear old draw cycle on stop
-        this.animationFrameId && window.cancelAnimationFrame(this.animationFrameId);
-        this.timeoutId && clearTimeout(this.timeoutId);
+        if (this.animationFrameId) {
+            window.cancelAnimationFrame(this.animationFrameId);
+        }
+        if (this.timeoutId) {
+            clearTimeout(this.timeoutId);
+        }
+    }
+    /**
+     * Dispose
+     */
+    dispose() {
+        this.stop();
+        if (this.canvas) {
+            this.canvas.remove();
+            this.canvas = null;
+        }
     }
     /**
      * Set a new value for a property (interpolated)
