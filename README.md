@@ -82,6 +82,10 @@ Set the new value of speed (animated)
 
 Set the new value of amplitude (animated)
 
+#### `dispose()`
+
+Stop the animation and destroy the canvas, by removing it from the DOM.
+Subsequent `start()` calls on this SiriWave instance will fail with an exception.
 ## Grapher plots
 
 - [GCX default](etc/gcx/default.gcx)

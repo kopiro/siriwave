@@ -75,7 +75,7 @@ export default class SiriWave {
     amplitude: number | null;
   };
 
-  canvas: HTMLCanvasElement;
+  canvas: HTMLCanvasElement | null;
   ctx: CanvasRenderingContext2D;
 
   animationFrameId: number | undefined;
@@ -191,6 +191,14 @@ export default class SiriWave {
     }
   }
 
+  dispose() {
+    this.stop();
+    if (this.canvas) {
+      this.canvas.remove();
+      this.canvas = null;
+    }
+  }
+
   /**
    * Convert an HEX color to RGB
    */
@@ -267,6 +275,10 @@ export default class SiriWave {
    * Start the animation
    */
   start() {
+    if (!this.canvas) {
+      throw new Error("This instance of SiriWave has been disposed, please create a new instance");
+    }
+
     this.phase = 0;
 
     // Ensure we don't re-launch the draw cycle
@@ -284,8 +296,12 @@ export default class SiriWave {
     this.run = false;
 
     // Clear old draw cycle on stop
-    this.animationFrameId && window.cancelAnimationFrame(this.animationFrameId);
-    this.timeoutId && clearTimeout(this.timeoutId);
+    if (this.animationFrameId) {
+      window.cancelAnimationFrame(this.animationFrameId);
+    }
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
   }
 
   /**
