@@ -1,16 +1,13 @@
 import { ClassicCurve } from "./classic-curve";
 import { iOS9Curve } from "./ios9-curve";
 
-export enum CurveStyle {
-  "ios" = "ios",
-  "ios9" = "ios9",
-}
+type CurveStyle = "ios" | "ios9";
 
 export type Options = {
   // The DOM container where the DOM canvas element will be added
   container: HTMLElement;
   // The style of the wave: `ios` or `ios9`
-  style?: CurveStyle | keyof typeof CurveStyle;
+  style?: CurveStyle;
   //  Ratio of the display to use. Calculated by default.
   ratio?: number;
   // The speed of the animation.
@@ -86,7 +83,7 @@ export default class SiriWave {
 
     this.opt = {
       container,
-      style: CurveStyle.ios,
+      style: "ios",
       ratio: window.devicePixelRatio || 1,
       speed: 0.2,
       amplitude: 1,
@@ -168,13 +165,13 @@ export default class SiriWave {
 
     // Instantiate all curves based on the style
     switch (this.opt.style) {
-      case CurveStyle.ios9:
+      case "ios9":
         this.curves = ((this.opt.curveDefinition || iOS9Curve.getDefinition()) as IiOS9CurveDefinition[]).map(
           (def) => new iOS9Curve(this, def),
         );
         break;
 
-      case CurveStyle.ios:
+      case "ios":
       default:
         this.curves = ((this.opt.curveDefinition || ClassicCurve.getDefinition()) as IClassicCurveDefinition[]).map(
           (def) => new ClassicCurve(this, def),
@@ -188,14 +185,6 @@ export default class SiriWave {
     // Start the animation
     if (this.opt.autostart) {
       this.start();
-    }
-  }
-
-  dispose() {
-    this.stop();
-    if (this.canvas) {
-      this.canvas.remove();
-      this.canvas = null;
     }
   }
 
