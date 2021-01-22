@@ -1,7 +1,7 @@
 import { ClassicCurve } from "./classic-curve";
 import { iOS9Curve } from "./ios9-curve";
 
-enum CurveStyle {
+export enum CurveStyle {
   "ios" = "ios",
   "ios9" = "ios9",
 }
@@ -10,7 +10,7 @@ export type Options = {
   // The DOM container where the DOM canvas element will be added
   container: HTMLElement;
   // The style of the wave: `ios` or `ios9`
-  style?: CurveStyle;
+  style?: CurveStyle | keyof typeof CurveStyle;
   //  Ratio of the display to use. Calculated by default.
   ratio?: number;
   // The speed of the animation.
