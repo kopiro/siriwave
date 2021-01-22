@@ -1,79 +1,91 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Siriwave</title>
-    <style>
-      body {
-        margin: 0;
-        background: #000;
-        color: #fff;
-        font-weight: 100;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
-          "Helvetica Neue", sans-serif;
-        text-align: center;
-      }
 
-      a {
-        color: #fff;
-      }
+<head>
+  <meta charset="utf-8" />
+  <title>Siriwave</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      text-align: center;
+    }
 
-      #container,
-      #container-9 {
-        width: 600px;
-        height: 300px;
-        background-size: cover;
-        margin: 20px;
-        margin: 0 auto;
-        border: 1px dashed rgba(255, 255, 255, 0.4);
-      }
+    a {
+      color: #fff;
+    }
 
-      footer {
-        padding-top: 20px;
-        margin-top: 20px;
-        border-top: 1px solid rgba(255, 255, 255, 0.4);
-      }
-    </style>
-    <script src="dist/siriwave.umd.js"></script>
-    <script type="text/javascript" src="etc/dat.gui.js"></script>
-  </head>
+    #container,
+    #container-9 {
+      width: 600px;
+      height: 300px;
+      background-size: cover;
+      margin: 20px;
+      margin: 0 auto;
+      border: 1px dashed rgba(255, 255, 255, 0.4);
+    }
 
-  <h1>SiriwaveJS</h1>
-  <p>The Apple® Siri wave-form<br />replicated in a JS library.</p>
+    table {
+      width: 100%;
+      margin: 0 auto;
+    }
 
-  <div id="background"></div>
+    footer {
+      padding-top: 20px;
+      margin-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.4);
+    }
+  </style>
+  <script src="dist/siriwave.umd.js"></script>
+  <script type="text/javascript" src="etc/dat.gui.js"></script>
+</head>
 
-  <h3>Classic</h3>
-  <div id="container"></div>
+<h1>SiriwaveJS</h1>
+<p>The Apple® Siri wave-form<br />replicated in a JS library.</p>
 
-  <h3>iOS9+</h3>
-  <div id="container-9"></div>
+<div id="background"></div>
 
-  <footer>
-    Installation guide and source code available
-    <a href="https://github.com/kopiro/siriwave">here</a>.
-  </footer>
+<table>
+  <tr>
+    <td>
+      <h3>Classic</h3>
+      <div id="container"></div>
+    </td>
+    <td>
+      <h3>iOS9+</h3>
+      <div id="container-9"></div>
+    </td>
+  </tr>
+</table>
 
-  <script>
-    var SW = new SiriWave({
-      container: document.getElementById("container"),
-      autostart: true,
-    });
-    var SW9 = new SiriWave({
-      style: "ios9",
-      container: document.getElementById("container-9"),
-      autostart: true,
-    });
+<footer>
+  Installation guide and source code available
+  <a href="https://github.com/kopiro/siriwave">here</a>.
+</footer>
 
-    window.onload = function () {
-      var gui = new dat.GUI();
-      gui.add(SW, "speed", 0, 1);
-      gui.add(SW, "amplitude", 0, 3);
-      gui.addColor(SW, "color");
+<script>
+  var SW = new SiriWave({
+    container: document.getElementById("container"),
+    autostart: true,
+  });
+  var SW9 = new SiriWave({
+    style: "ios9",
+    container: document.getElementById("container-9"),
+    autostart: true,
+  });
 
-      var gui9 = new dat.GUI();
-      gui9.add(SW9, "speed", 0, 1);
-      gui9.add(SW9, "amplitude", 0, 3);
-    };
-  </script>
+  window.onload = function () {
+    var gui = new dat.GUI();
+    gui.add(SW, "speed", 0, 1);
+    gui.add(SW, "amplitude", 0, 3);
+    gui.addColor(SW, "color");
+
+    var gui9 = new dat.GUI();
+    gui9.add(SW9, "speed", 0, 1);
+    gui9.add(SW9, "amplitude", 0, 3);
+  };
+</script>
+
 </html>

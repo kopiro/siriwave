@@ -11,15 +11,15 @@ export class ClassicCurve implements ICurve {
     this.definition = definition;
   }
 
-  globalAttFn(x: number): number {
+  private globalAttFn(x: number): number {
     return Math.pow(this.ATT_FACTOR / (this.ATT_FACTOR + Math.pow(x, this.ATT_FACTOR)), this.ATT_FACTOR);
   }
 
-  _xpos(i: number): number {
+  private xPos(i: number): number {
     return this.ctrl.width * ((i + this.GRAPH_X) / (this.GRAPH_X * 2));
   }
 
-  _ypos(i: number): number {
+  private yPos(i: number): number {
     return (
       this.AMPLITUDE_FACTOR *
       (this.globalAttFn(i) *
@@ -41,7 +41,7 @@ export class ClassicCurve implements ICurve {
 
     // Cycle the graph from -X to +X every PX_DEPTH and draw the line
     for (let i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth!) {
-      ctx.lineTo(this._xpos(i), this.ctrl.heightMax + this._ypos(i));
+      ctx.lineTo(this.xPos(i), this.ctrl.heightMax + this.yPos(i));
     }
 
     ctx.stroke();

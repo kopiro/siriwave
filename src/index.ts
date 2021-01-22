@@ -194,7 +194,7 @@ export default class SiriWave {
   /**
    * Convert an HEX color to RGB
    */
-  hex2rgb(hex: string): string | null {
+  private hex2rgb(hex: string): string | null {
     const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
     hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -206,14 +206,14 @@ export default class SiriWave {
       : null;
   }
 
-  intLerp(v0: number, v1: number, t: number): number {
+  private intLerp(v0: number, v1: number, t: number): number {
     return v0 * (1 - t) + v1 * t;
   }
 
   /**
    * Interpolate a property to the value found in this.interpolation
    */
-  lerp(propertyStr: "amplitude" | "speed"): number | null {
+  private lerp(propertyStr: "amplitude" | "speed"): number | null {
     const prop = this.interpolation[propertyStr];
     if (prop !== null) {
       this[propertyStr] = this.intLerp(this[propertyStr], prop, this.opt.lerpSpeed!);
@@ -227,7 +227,7 @@ export default class SiriWave {
   /**
    * Clear the canvas
    */
-  _clear() {
+  private clear() {
     this.ctx.globalCompositeOperation = "destination-out";
     this.ctx.fillRect(0, 0, this.width, this.height);
     this.ctx.globalCompositeOperation = "source-over";
@@ -236,7 +236,7 @@ export default class SiriWave {
   /**
    * Draw all curves
    */
-  _draw() {
+  private draw() {
     this.curves.forEach((curve) => curve.draw());
   }
 
@@ -244,14 +244,14 @@ export default class SiriWave {
    * Clear the space, interpolate values, calculate new steps and draws
    * @returns
    */
-  startDrawCycle() {
-    this._clear();
+  private startDrawCycle() {
+    this.clear();
 
     // Interpolate values
     this.lerp("amplitude");
     this.lerp("speed");
 
-    this._draw();
+    this.draw();
     this.phase = (this.phase + (Math.PI / 2) * this.speed) % (2 * Math.PI);
 
     if (window.requestAnimationFrame) {
@@ -286,6 +286,17 @@ export default class SiriWave {
     // Clear old draw cycle on stop
     this.animationFrameId && window.cancelAnimationFrame(this.animationFrameId);
     this.timeoutId && clearTimeout(this.timeoutId);
+  }
+
+  /**
+   * Dispose
+   */
+  dispose() {
+    this.stop();
+    if (this.canvas) {
+      this.canvas.remove();
+      this.canvas = null;
+    }
   }
 
   /**
