@@ -6,6 +6,8 @@ The "Apple Siri" wave replicated in pure Javascript using the Canvas API.
 
 [Demo](http://kopiro.github.io/siriwave)
 
+[Codepen](https://codepen.io/kopiro/pen/oNYepEb)
+
 [![npm version](https://badge.fury.io/js/siriwave.svg)](https://badge.fury.io/js/siriwave)
 
 ### Classic style
@@ -86,6 +88,7 @@ Set the new value of amplitude (animated)
 
 Stop the animation and destroy the canvas, by removing it from the DOM.
 Subsequent `start()` calls on this SiriWave instance will fail with an exception.
+
 ## Grapher plots
 
 - [GCX default](etc/gcx/default.gcx)
