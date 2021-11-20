@@ -137,20 +137,16 @@ Subsequent `start()` calls on this SiriWave instance will fail with an exception
 
 If you wanna make some modifications in your local environment, use:
 
-````
-
+```sh
 yarn dev
-
 ```
 
 this will create a watchable build with RollupJS and automatically create a server to see your changes in the browser.
 
 To finally build all targets:
 
-```
-
+```sh
 yarn build
-
 ```
 
 ## QA
@@ -158,5 +154,3 @@ yarn build
 #### How do I integrate this library with a microphone user input?
 
 You can find an excellent demo [here](https://jsitor.com/PPQtOp9Yp) by @semmel
-```
-````
