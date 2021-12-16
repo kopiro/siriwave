@@ -43,6 +43,7 @@ export type IClassicCurveDefinition = {
   attenuation: number;
   lineWidth: number;
   opacity: number;
+  color?: string;
 };
 
 export type ICurveDefinition = IiOS9CurveDefinition | IClassicCurveDefinition;

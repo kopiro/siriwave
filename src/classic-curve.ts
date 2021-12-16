@@ -35,8 +35,9 @@ export class ClassicCurve implements ICurve {
     ctx.moveTo(0, 0);
     ctx.beginPath();
 
-    const color = this.ctrl.color.replace(/rgb\(/g, "").replace(/\)/g, "");
-    ctx.strokeStyle = `rgba(${color},${this.definition.opacity})`;
+    const finalColor = this.definition.color || this.ctrl.color;
+    const colorHex = finalColor.replace(/rgb\(/g, "").replace(/\)/g, "");
+    ctx.strokeStyle = `rgba(${colorHex},${this.definition.opacity})`;
     ctx.lineWidth = this.definition.lineWidth;
 
     // Cycle the graph from -X to +X every PX_DEPTH and draw the line
