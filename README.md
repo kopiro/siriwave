@@ -94,6 +94,13 @@ The default definition for the `ios` classic style is:
 
 and it results in 5 different sin-waves with different parameters and amplitude.
 
+You can set 4 attributes for each curve:
+
+- `attenuation`: the power factor determining the attenuation
+- `lineWidth`: the line width
+- `opacity`: the opacity
+- `color`: the color, default to `SiriWave.color`; optional
+
 The `ios9` style definition is instead:
 
 ```js
@@ -106,6 +113,11 @@ The `ios9` style definition is instead:
 ```
 
 and it results in 3 different colored waves + 1 support wave that needs to be there.
+
+Here you set:
+
+- `supportLine`: only one of these curves must have this to `true`, it will be used to draw the support line
+- `color`: the color of the wave
 
 #### `start()`
 

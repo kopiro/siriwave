@@ -23,6 +23,7 @@ export declare type IClassicCurveDefinition = {
     attenuation: number;
     lineWidth: number;
     opacity: number;
+    color?: string;
 };
 export declare type ICurveDefinition = IiOS9CurveDefinition | IClassicCurveDefinition;
 export interface ICurve {
