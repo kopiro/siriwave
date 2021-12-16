@@ -5,7 +5,6 @@ import serve from "rollup-plugin-serve";
 import pkg from "./package.json";
 
 const input = "./src/index.ts";
-const external = Object.keys(pkg.dependencies);
 
 const commonTSPluginOptions = {
   lib: ["es5", "es6", "ESNext", "dom"],
@@ -28,7 +27,6 @@ const esConfig = (min, plugins = []) => ({
     file: min ? pkg.module.replace(".js", ".min.js") : pkg.module,
     format: "es",
   },
-  external,
   plugins: [typescript({ ...commonTSPluginOptions, target: "es6" }), ...(min ? [terser()] : []), ...plugins],
 });
 

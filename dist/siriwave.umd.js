@@ -1,8 +1,10 @@
+
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.SiriWave = factory());
-}(this, (function () { 'use strict';
+})(this, (function () { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -68,7 +70,7 @@
             ctx.moveTo(0, 0);
             ctx.beginPath();
             var color = this.ctrl.color.replace(/rgb\(/g, "").replace(/\)/g, "");
-            ctx.strokeStyle = "rgba(" + color + "," + this.definition.opacity + ")";
+            ctx.strokeStyle = "rgba(".concat(color, ",").concat(this.definition.opacity, ")");
             ctx.lineWidth = this.definition.lineWidth;
             // Cycle the graph from -X to +X every PX_DEPTH and draw the line
             for (var i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
@@ -241,8 +243,8 @@
                     maxY = Math.max(maxY, y);
                 }
                 ctx.closePath();
-                ctx.fillStyle = "rgba(" + this.definition.color + ", 1)";
-                ctx.strokeStyle = "rgba(" + this.definition.color + ", 1)";
+                ctx.fillStyle = "rgba(".concat(this.definition.color, ", 1)");
+                ctx.strokeStyle = "rgba(".concat(this.definition.color, ", 1)");
                 ctx.fill();
             }
             if (maxY < this.DEAD_PX && this.prevMaxY > maxY) {
@@ -309,7 +311,7 @@
             /**
              * Color of the wave (used in Classic iOS)
              */
-            this.color = "rgb(" + this.hex2rgb(this.opt.color) + ")";
+            this.color = "rgb(".concat(this.hex2rgb(this.opt.color), ")");
             /**
              * An object containing controller variables that need to be interpolated
              * to an another value before to be actually changed
@@ -338,8 +340,8 @@
                 this.canvas.style.width = this.canvas.style.height = "100%";
             }
             else {
-                this.canvas.style.width = this.width / this.opt.ratio + "px";
-                this.canvas.style.height = this.height / this.opt.ratio + "px";
+                this.canvas.style.width = "".concat(this.width / this.opt.ratio, "px");
+                this.canvas.style.height = "".concat(this.height / this.opt.ratio, "px");
             }
             // Instantiate all curves based on the style
             switch (this.opt.style) {
@@ -366,7 +368,7 @@
             hex = hex.replace(shorthandRegex, function (m, r, g, b) { return r + r + g + g + b + b; });
             var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result
-                ? parseInt(result[1], 16).toString() + "," + parseInt(result[2], 16).toString() + "," + parseInt(result[3], 16).toString()
+                ? "".concat(parseInt(result[1], 16).toString(), ",").concat(parseInt(result[2], 16).toString(), ",").concat(parseInt(result[3], 16).toString())
                 : null;
         };
         SiriWave.prototype.intLerp = function (v0, v1, t) {
@@ -479,4 +481,4 @@
 
     return SiriWave;
 
-})));
+}));
