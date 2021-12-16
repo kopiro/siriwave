@@ -1,5 +1,3 @@
-
-(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
@@ -69,8 +67,9 @@
             var ctx = this.ctrl.ctx;
             ctx.moveTo(0, 0);
             ctx.beginPath();
-            var color = this.ctrl.color.replace(/rgb\(/g, "").replace(/\)/g, "");
-            ctx.strokeStyle = "rgba(".concat(color, ",").concat(this.definition.opacity, ")");
+            var finalColor = this.definition.color || this.ctrl.color;
+            var colorHex = finalColor.replace(/rgb\(/g, "").replace(/\)/g, "");
+            ctx.strokeStyle = "rgba(".concat(colorHex, ",").concat(this.definition.opacity, ")");
             ctx.lineWidth = this.definition.lineWidth;
             // Cycle the graph from -X to +X every PX_DEPTH and draw the line
             for (var i = -this.GRAPH_X; i <= this.GRAPH_X; i += this.ctrl.opt.pixelDepth) {
