@@ -99,12 +99,12 @@ class iOS9Curve {
         this.DEAD_PX = 2;
         this.ATT_FACTOR = 4;
         this.DESPAWN_FACTOR = 0.02;
-        this.NOOFCURVES_RANGES = [2, 5];
-        this.AMPLITUDE_RANGES = [0.3, 1];
-        this.OFFSET_RANGES = [-3, 3];
-        this.WIDTH_RANGES = [1, 3];
-        this.SPEED_RANGES = [0.5, 1];
-        this.DESPAWN_TIMEOUT_RANGES = [500, 2000];
+        this.DEFAULT_NOOFCURVES_RANGES = [2, 5];
+        this.DEFAULT_AMPLITUDE_RANGES = [0.3, 1];
+        this.DEFAULT_OFFSET_RANGES = [-3, 3];
+        this.DEFAULT_WIDTH_RANGES = [1, 3];
+        this.DEFAULT_SPEED_RANGES = [0.5, 1];
+        this.DEFAULT_DESPAWN_TIMEOUT_RANGES = [500, 2000];
         this.ctrl = ctrl;
         this.definition = definition;
         this.noOfCurves = 0;
@@ -123,21 +123,23 @@ class iOS9Curve {
         return e[0] + Math.random() * (e[1] - e[0]);
     }
     spawnSingle(ci) {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         this.phases[ci] = 0;
         this.amplitudes[ci] = 0;
-        this.despawnTimeouts[ci] = this.getRandomRange(this.DESPAWN_TIMEOUT_RANGES);
-        this.offsets[ci] = this.getRandomRange(this.OFFSET_RANGES);
-        this.speeds[ci] = this.getRandomRange(this.SPEED_RANGES);
-        this.finalAmplitudes[ci] = this.getRandomRange(this.AMPLITUDE_RANGES);
-        this.widths[ci] = this.getRandomRange(this.WIDTH_RANGES);
+        this.despawnTimeouts[ci] = this.getRandomRange((_b = (_a = this.ctrl.opt.ranges) === null || _a === void 0 ? void 0 : _a.despawnTimeout) !== null && _b !== void 0 ? _b : this.DEFAULT_DESPAWN_TIMEOUT_RANGES);
+        this.offsets[ci] = this.getRandomRange((_d = (_c = this.ctrl.opt.ranges) === null || _c === void 0 ? void 0 : _c.offset) !== null && _d !== void 0 ? _d : this.DEFAULT_OFFSET_RANGES);
+        this.speeds[ci] = this.getRandomRange((_f = (_e = this.ctrl.opt.ranges) === null || _e === void 0 ? void 0 : _e.speed) !== null && _f !== void 0 ? _f : this.DEFAULT_SPEED_RANGES);
+        this.finalAmplitudes[ci] = this.getRandomRange((_h = (_g = this.ctrl.opt.ranges) === null || _g === void 0 ? void 0 : _g.amplitude) !== null && _h !== void 0 ? _h : this.DEFAULT_AMPLITUDE_RANGES);
+        this.widths[ci] = this.getRandomRange((_k = (_j = this.ctrl.opt.ranges) === null || _j === void 0 ? void 0 : _j.width) !== null && _k !== void 0 ? _k : this.DEFAULT_WIDTH_RANGES);
         this.verses[ci] = this.getRandomRange([-1, 1]);
     }
     getEmptyArray(count) {
         return new Array(count);
     }
     spawn() {
+        var _a, _b;
         this.spawnAt = Date.now();
-        this.noOfCurves = Math.floor(this.getRandomRange(this.NOOFCURVES_RANGES));
+        this.noOfCurves = Math.floor(this.getRandomRange((_b = (_a = this.ctrl.opt.ranges) === null || _a === void 0 ? void 0 : _a.noOfCurves) !== null && _b !== void 0 ? _b : this.DEFAULT_NOOFCURVES_RANGES));
         this.phases = this.getEmptyArray(this.noOfCurves);
         this.offsets = this.getEmptyArray(this.noOfCurves);
         this.speeds = this.getEmptyArray(this.noOfCurves);

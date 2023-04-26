@@ -71,6 +71,24 @@ Create a div container and instantiate a new SiriWave object:
 | `pixelDepth`      | Number             | Number of step (in pixels) used when drawed on canvas.                 | 0.02       | no       |
 | `lerpSpeed`       | Number             | Lerp speed to interpolate properties.                                  | 0.01       | no       |
 | `curveDefinition` | ICurveDefinition[] | Override definition of the curves, check above for more details.       | null       | no       |
+| `ranges`          | IiOS9Ranges        | Override the default random ranges of the curves.                      | null       | no       |
+
+### Ranges
+
+Each wave chooses a random parameter for each of these ranges that factors into their creation. You can override these ranges by passing a `ranges` object to the constructor.
+
+Here is the type of the ranges object:
+
+```ts
+export type IiOS9Ranges = {
+  noOfCurves?: [number, number];
+  amplitude?: [number, number];
+  offset?: [number, number];
+  width?: [number, number];
+  speed?: [number, number];
+  despawnTimeout?: [number, number];
+};
+```
 
 ## API
 

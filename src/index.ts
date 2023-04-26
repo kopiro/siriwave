@@ -32,11 +32,23 @@ export type Options = {
   lerpSpeed?: number;
   // Curve definition override
   curveDefinition?: ICurveDefinition[];
+  // Ranges of random parameters for the curves - Only available in iOS9 Style
+  ranges?: IiOS9Ranges;
 };
 
 export type IiOS9CurveDefinition = {
   supportLine?: boolean;
   color: string;
+};
+
+// Each wave chooses a random parameter for each of these ranges that factors into their creation.
+export type IiOS9Ranges = {
+  noOfCurves?: [number, number];
+  amplitude?: [number, number];
+  offset?: [number, number];
+  width?: [number, number];
+  speed?: [number, number];
+  despawnTimeout?: [number, number];
 };
 
 export type IClassicCurveDefinition = {

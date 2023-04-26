@@ -14,10 +14,19 @@ export declare type Options = {
     pixelDepth?: number;
     lerpSpeed?: number;
     curveDefinition?: ICurveDefinition[];
+    ranges?: IiOS9Ranges;
 };
 export declare type IiOS9CurveDefinition = {
     supportLine?: boolean;
     color: string;
+};
+export declare type IiOS9Ranges = {
+    noOfCurves?: [number, number];
+    amplitude?: [number, number];
+    offset?: [number, number];
+    width?: [number, number];
+    speed?: [number, number];
+    despawnTimeout?: [number, number];
 };
 export declare type IClassicCurveDefinition = {
     attenuation: number;
