@@ -34,6 +34,8 @@ export type Options = {
   curveDefinition?: ICurveDefinition[];
   // Ranges of random parameters for the curves - Only available in iOS9 Style
   ranges?: IiOS9Ranges;
+  // Handles overlapping of waves design. - Only available in iOS9 Style
+  globalCompositeOperation?: GlobalCompositeOperation;
 };
 
 export type IiOS9CurveDefinition = {
@@ -108,6 +110,7 @@ export default class SiriWave {
       autostart: true,
       pixelDepth: 0.02,
       lerpSpeed: 0.1,
+      globalCompositeOperation: "lighter",
       ...rest,
     };
 

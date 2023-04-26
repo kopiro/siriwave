@@ -152,7 +152,7 @@ export class iOS9Curve implements ICurve {
     const { ctx } = this.ctrl;
 
     ctx.globalAlpha = 0.7;
-    ctx.globalCompositeOperation = "lighter";
+    ctx.globalCompositeOperation = this.ctrl.opt.globalCompositeOperation!;
 
     if (this.spawnAt === 0) {
       this.spawn();
