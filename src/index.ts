@@ -3,6 +3,34 @@ import { iOS9Curve } from "./ios9-curve";
 
 type CurveStyle = "ios" | "ios9";
 
+type GlobalCompositeOperation =
+  | "color"
+  | "color-burn"
+  | "color-dodge"
+  | "copy"
+  | "darken"
+  | "destination-atop"
+  | "destination-in"
+  | "destination-out"
+  | "destination-over"
+  | "difference"
+  | "exclusion"
+  | "hard-light"
+  | "hue"
+  | "lighten"
+  | "lighter"
+  | "luminosity"
+  | "multiply"
+  | "overlay"
+  | "saturation"
+  | "screen"
+  | "soft-light"
+  | "source-atop"
+  | "source-in"
+  | "source-out"
+  | "source-over"
+  | "xor";
+
 export type Options = {
   // The DOM container where the DOM canvas element will be added
   container: HTMLElement;

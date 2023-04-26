@@ -214,7 +214,7 @@
         iOS9Curve.prototype.draw = function () {
             var ctx = this.ctrl.ctx;
             ctx.globalAlpha = 0.7;
-            ctx.globalCompositeOperation = "lighter";
+            ctx.globalCompositeOperation = this.ctrl.opt.globalCompositeOperation;
             if (this.spawnAt === 0) {
                 this.spawn();
             }
@@ -288,7 +288,7 @@
             // Curves objects to animate
             this.curves = [];
             var csStyle = window.getComputedStyle(container);
-            this.opt = __assign({ container: container, style: "ios", ratio: window.devicePixelRatio || 1, speed: 0.2, amplitude: 1, frequency: 6, color: "#fff", cover: false, width: parseInt(csStyle.width.replace("px", ""), 10), height: parseInt(csStyle.height.replace("px", ""), 10), autostart: true, pixelDepth: 0.02, lerpSpeed: 0.1 }, rest);
+            this.opt = __assign({ container: container, style: "ios", ratio: window.devicePixelRatio || 1, speed: 0.2, amplitude: 1, frequency: 6, color: "#fff", cover: false, width: parseInt(csStyle.width.replace("px", ""), 10), height: parseInt(csStyle.height.replace("px", ""), 10), autostart: true, pixelDepth: 0.02, lerpSpeed: 0.1, globalCompositeOperation: "lighter" }, rest);
             /**
              * Actual speed of the animation. Is not safe to change this value directly, use `setSpeed` instead.
              */

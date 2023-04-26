@@ -196,7 +196,7 @@ class iOS9Curve {
     draw() {
         const { ctx } = this.ctrl;
         ctx.globalAlpha = 0.7;
-        ctx.globalCompositeOperation = "lighter";
+        ctx.globalCompositeOperation = this.ctrl.opt.globalCompositeOperation;
         if (this.spawnAt === 0) {
             this.spawn();
         }
@@ -267,7 +267,7 @@ class SiriWave {
         // Curves objects to animate
         this.curves = [];
         const csStyle = window.getComputedStyle(container);
-        this.opt = Object.assign({ container, style: "ios", ratio: window.devicePixelRatio || 1, speed: 0.2, amplitude: 1, frequency: 6, color: "#fff", cover: false, width: parseInt(csStyle.width.replace("px", ""), 10), height: parseInt(csStyle.height.replace("px", ""), 10), autostart: true, pixelDepth: 0.02, lerpSpeed: 0.1 }, rest);
+        this.opt = Object.assign({ container, style: "ios", ratio: window.devicePixelRatio || 1, speed: 0.2, amplitude: 1, frequency: 6, color: "#fff", cover: false, width: parseInt(csStyle.width.replace("px", ""), 10), height: parseInt(csStyle.height.replace("px", ""), 10), autostart: true, pixelDepth: 0.02, lerpSpeed: 0.1, globalCompositeOperation: "lighter" }, rest);
         /**
          * Actual speed of the animation. Is not safe to change this value directly, use `setSpeed` instead.
          */
