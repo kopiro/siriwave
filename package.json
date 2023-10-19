@@ -14,7 +14,7 @@
   "scripts": {
     "gh-pages": "git checkout master && git pull && git checkout gh-pages && git reset --hard master && git push -f origin gh-pages && git checkout master",
     "build:declaration": "rm -rf ./dist/types && tsc --outDir ./dist/types --declaration && rm -rf ./dist/types/*.js",
-    "build": "yarn build:declaration && NODE_ENV=production rollup -c",
+    "build": "npm run build:declaration && NODE_ENV=production rollup -c",
     "dev": "BUILD=watch rollup -c -w"
   },
   "repository": {

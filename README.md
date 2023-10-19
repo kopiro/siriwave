@@ -34,7 +34,7 @@ Import the UMD package via the unpkg CDN and it's ready to use.
 
 ### ES module
 
-Install it through `npm install siriwave` or `yarn add siriwave` first:
+Install it through `npm install siriwave` or `npm add siriwave` first:
 
 ```js
 import SiriWave from "siriwave";
@@ -169,7 +169,7 @@ Subsequent `start()` calls on this SiriWave instance will fail with an exception
 If you wanna make some modifications in your local environment, use:
 
 ```sh
-yarn dev
+npm dev
 ```
 
 this will create a watchable build with RollupJS and automatically create a server to see your changes in the browser.
@@ -177,7 +177,7 @@ this will create a watchable build with RollupJS and automatically create a serv
 To finally build all targets:
 
 ```sh
-yarn build
+npm build
 ```
 
 ## QA
