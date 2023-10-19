@@ -1,4 +1,5 @@
 declare type CurveStyle = "ios" | "ios9";
+declare type GlobalCompositeOperation = "color" | "color-burn" | "color-dodge" | "copy" | "darken" | "destination-atop" | "destination-in" | "destination-out" | "destination-over" | "difference" | "exclusion" | "hard-light" | "hue" | "lighten" | "lighter" | "luminosity" | "multiply" | "overlay" | "saturation" | "screen" | "soft-light" | "source-atop" | "source-in" | "source-out" | "source-over" | "xor";
 export declare type Options = {
     container: HTMLElement;
     style?: CurveStyle;
@@ -14,10 +15,20 @@ export declare type Options = {
     pixelDepth?: number;
     lerpSpeed?: number;
     curveDefinition?: ICurveDefinition[];
+    ranges?: IiOS9Ranges;
+    globalCompositeOperation?: GlobalCompositeOperation;
 };
 export declare type IiOS9CurveDefinition = {
     supportLine?: boolean;
     color: string;
+};
+export declare type IiOS9Ranges = {
+    noOfCurves?: [number, number];
+    amplitude?: [number, number];
+    offset?: [number, number];
+    width?: [number, number];
+    speed?: [number, number];
+    despawnTimeout?: [number, number];
 };
 export declare type IClassicCurveDefinition = {
     attenuation: number;

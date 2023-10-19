@@ -25,12 +25,12 @@ export class iOS9Curve implements ICurve {
 
   DESPAWN_FACTOR = 0.02;
 
-  NOOFCURVES_RANGES: [number, number] = [2, 5];
-  AMPLITUDE_RANGES: [number, number] = [0.3, 1];
-  OFFSET_RANGES: [number, number] = [-3, 3];
-  WIDTH_RANGES: [number, number] = [1, 3];
-  SPEED_RANGES: [number, number] = [0.5, 1];
-  DESPAWN_TIMEOUT_RANGES: [number, number] = [500, 2000];
+  DEFAULT_NOOFCURVES_RANGES: [number, number] = [2, 5];
+  DEFAULT_AMPLITUDE_RANGES: [number, number] = [0.3, 1];
+  DEFAULT_OFFSET_RANGES: [number, number] = [-3, 3];
+  DEFAULT_WIDTH_RANGES: [number, number] = [1, 3];
+  DEFAULT_SPEED_RANGES: [number, number] = [0.5, 1];
+  DEFAULT_DESPAWN_TIMEOUT_RANGES: [number, number] = [500, 2000];
 
   constructor(ctrl: SiriWave, definition: IiOS9CurveDefinition) {
     this.ctrl = ctrl;
@@ -58,11 +58,13 @@ export class iOS9Curve implements ICurve {
     this.phases[ci] = 0;
     this.amplitudes[ci] = 0;
 
-    this.despawnTimeouts[ci] = this.getRandomRange(this.DESPAWN_TIMEOUT_RANGES);
-    this.offsets[ci] = this.getRandomRange(this.OFFSET_RANGES);
-    this.speeds[ci] = this.getRandomRange(this.SPEED_RANGES);
-    this.finalAmplitudes[ci] = this.getRandomRange(this.AMPLITUDE_RANGES);
-    this.widths[ci] = this.getRandomRange(this.WIDTH_RANGES);
+    this.despawnTimeouts[ci] = this.getRandomRange(
+      this.ctrl.opt.ranges?.despawnTimeout ?? this.DEFAULT_DESPAWN_TIMEOUT_RANGES,
+    );
+    this.offsets[ci] = this.getRandomRange(this.ctrl.opt.ranges?.offset ?? this.DEFAULT_OFFSET_RANGES);
+    this.speeds[ci] = this.getRandomRange(this.ctrl.opt.ranges?.speed ?? this.DEFAULT_SPEED_RANGES);
+    this.finalAmplitudes[ci] = this.getRandomRange(this.ctrl.opt.ranges?.amplitude ?? this.DEFAULT_AMPLITUDE_RANGES);
+    this.widths[ci] = this.getRandomRange(this.ctrl.opt.ranges?.width ?? this.DEFAULT_WIDTH_RANGES);
     this.verses[ci] = this.getRandomRange([-1, 1]);
   }
 
@@ -73,7 +75,9 @@ export class iOS9Curve implements ICurve {
   private spawn(): void {
     this.spawnAt = Date.now();
 
-    this.noOfCurves = Math.floor(this.getRandomRange(this.NOOFCURVES_RANGES));
+    this.noOfCurves = Math.floor(
+      this.getRandomRange(this.ctrl.opt.ranges?.noOfCurves ?? this.DEFAULT_NOOFCURVES_RANGES),
+    );
 
     this.phases = this.getEmptyArray(this.noOfCurves);
     this.offsets = this.getEmptyArray(this.noOfCurves);
@@ -148,7 +152,7 @@ export class iOS9Curve implements ICurve {
     const { ctx } = this.ctrl;
 
     ctx.globalAlpha = 0.7;
-    ctx.globalCompositeOperation = "lighter";
+    ctx.globalCompositeOperation = this.ctrl.opt.globalCompositeOperation!;
 
     if (this.spawnAt === 0) {
       this.spawn();

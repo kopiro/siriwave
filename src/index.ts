@@ -3,6 +3,34 @@ import { iOS9Curve } from "./ios9-curve";
 
 type CurveStyle = "ios" | "ios9";
 
+type GlobalCompositeOperation =
+  | "color"
+  | "color-burn"
+  | "color-dodge"
+  | "copy"
+  | "darken"
+  | "destination-atop"
+  | "destination-in"
+  | "destination-out"
+  | "destination-over"
+  | "difference"
+  | "exclusion"
+  | "hard-light"
+  | "hue"
+  | "lighten"
+  | "lighter"
+  | "luminosity"
+  | "multiply"
+  | "overlay"
+  | "saturation"
+  | "screen"
+  | "soft-light"
+  | "source-atop"
+  | "source-in"
+  | "source-out"
+  | "source-over"
+  | "xor";
+
 export type Options = {
   // The DOM container where the DOM canvas element will be added
   container: HTMLElement;
@@ -32,11 +60,25 @@ export type Options = {
   lerpSpeed?: number;
   // Curve definition override
   curveDefinition?: ICurveDefinition[];
+  // Ranges of random parameters for the curves - Only available in iOS9 Style
+  ranges?: IiOS9Ranges;
+  // Handles overlapping of waves design. - Only available in iOS9 Style
+  globalCompositeOperation?: GlobalCompositeOperation;
 };
 
 export type IiOS9CurveDefinition = {
   supportLine?: boolean;
   color: string;
+};
+
+// Each wave chooses a random parameter for each of these ranges that factors into their creation.
+export type IiOS9Ranges = {
+  noOfCurves?: [number, number];
+  amplitude?: [number, number];
+  offset?: [number, number];
+  width?: [number, number];
+  speed?: [number, number];
+  despawnTimeout?: [number, number];
 };
 
 export type IClassicCurveDefinition = {
@@ -96,6 +138,7 @@ export default class SiriWave {
       autostart: true,
       pixelDepth: 0.02,
       lerpSpeed: 0.1,
+      globalCompositeOperation: "lighter",
       ...rest,
     };
 

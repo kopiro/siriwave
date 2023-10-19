@@ -19,12 +19,12 @@ export declare class iOS9Curve implements ICurve {
     DEAD_PX: number;
     ATT_FACTOR: number;
     DESPAWN_FACTOR: number;
-    NOOFCURVES_RANGES: [number, number];
-    AMPLITUDE_RANGES: [number, number];
-    OFFSET_RANGES: [number, number];
-    WIDTH_RANGES: [number, number];
-    SPEED_RANGES: [number, number];
-    DESPAWN_TIMEOUT_RANGES: [number, number];
+    DEFAULT_NOOFCURVES_RANGES: [number, number];
+    DEFAULT_AMPLITUDE_RANGES: [number, number];
+    DEFAULT_OFFSET_RANGES: [number, number];
+    DEFAULT_WIDTH_RANGES: [number, number];
+    DEFAULT_SPEED_RANGES: [number, number];
+    DEFAULT_DESPAWN_TIMEOUT_RANGES: [number, number];
     constructor(ctrl: SiriWave, definition: IiOS9CurveDefinition);
     private getRandomRange;
     private spawnSingle;
